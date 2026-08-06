@@ -3,6 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#22201b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="艋舺工作台">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
 <title>艋舺良的工作台</title>
 <style>
   /* ═══ 主題 ═══ */
@@ -171,10 +178,10 @@
       <li data-page="proj">在建工程</li>
       <li data-page="bid">投標案</li>
       <li data-page="todo">待辦清單</li>
-      <li data-lock="1">記帳理財 <span class="lk">第三批</span></li>
+      <li data-page="fin">記帳理財</li>
       <li data-page="home">長期目標</li>
-      <li data-lock="1">旅遊規劃 <span class="lk">第三批</span></li>
-      <li data-lock="1">靈感筆記 <span class="lk">第三批</span></li>
+      <li data-page="trip">旅遊規劃</li>
+      <li data-lock="1">靈感筆記 <span class="lk">下一批</span></li>
       <li data-page="set">設定・備份</li>
     </ul>
     <div class="vtag" id="vtag1"></div>
@@ -216,6 +223,10 @@
         <div style="font-size:11px; color:var(--sub); margin-top:8px;">點日期新增行程・點色籤編輯</div>
       </div></div>
       <div class="card"><h3>當月清單</h3><div class="bd"><ul class="list" id="calList"></ul></div></div>
+      <div class="card"><h3>年度熱力圖（行程＋完成事項＋記帳密度，近 12 個月）</h3><div class="bd">
+        <div id="heatBox" style="display:grid; grid-template-rows:repeat(7,10px); grid-auto-flow:column; grid-auto-columns:10px; gap:2px; overflow-x:auto;"></div>
+        <div style="font-size:10px; color:var(--sub); margin-top:6px;">顏色越深越忙・單一色相深淺</div>
+      </div></div>
     </section>
 
     <!-- ═══ 待辦 ═══ -->
@@ -247,6 +258,33 @@
       </div>
     </section>
 
+    <!-- ═══ 記帳理財 ═══ -->
+    <section class="page" id="page-fin">
+      <div class="pagehead"><h2>記帳理財</h2>
+        <button class="btn stat" id="finEye">👁 金額</button>
+        <button class="btn pri" id="finAdd">＋ 記一筆</button>
+      </div>
+      <div id="finLock" style="display:none;" class="card"><div class="empty">🔒 財務頁已上鎖<div class="iform" style="justify-content:center;"><input type="password" id="finPin" placeholder="輸入 PIN" style="max-width:140px;"><button class="btn pri" id="finUnlock">解鎖</button></div></div></div>
+      <div id="finBody">
+        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+          <div class="card" style="flex:1.2; min-width:300px;"><h3>月現金流（近六個月）</h3><div class="bd" id="cfBox"></div></div>
+          <div class="card" style="flex:1; min-width:260px;"><h3>淨資產（連動「財務自由」目標）</h3><div class="bd" id="netBox"></div></div>
+        </div>
+        <div class="card"><h3>本月收支（點項目編輯；請款「入帳」自動記收入）</h3><div class="bd" id="txBox"></div></div>
+      </div>
+    </section>
+
+    <!-- ═══ 旅遊規劃 ═══ -->
+    <section class="page" id="page-trip">
+      <div class="pagehead"><h2>旅遊規劃</h2>
+        <button class="btn pri" id="tripAdd">＋ 新增旅程</button>
+      </div>
+      <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <div class="card" style="flex:1.3; min-width:300px;"><h3>近期旅程（半年內・出發日自動進行事曆）</h3><div class="bd" id="tripNear"></div></div>
+        <div class="card" style="flex:1; min-width:280px;"><h3>長期清單・環遊世界（連動目標③）</h3><div class="bd" id="tripWish"></div></div>
+      </div>
+    </section>
+
     <!-- ═══ 設定 ═══ -->
     <section class="page" id="page-set">
       <div class="card"><h3>頁面</h3><div class="bd">
@@ -274,6 +312,14 @@
           <button class="btn pri" id="authBtn" style="margin-left:auto;">連接雲端</button>
           <small id="authInfo">用 Google 帳號登入後，資料即時同步到雲端（mengjia-workbench），手機電腦共用同一份。</small></div>
       </div></div>
+      <div class="card"><h3>安全（PIN 鎖・僅此裝置）</h3><div class="bd">
+        <div class="setrow">PIN 密碼
+          <span class="iform" style="margin:0 0 0 auto;"><input type="password" id="pinSet" placeholder="4-8 碼，留空=關閉" style="max-width:150px;"><button class="btn" id="pinSave">設定</button></span>
+          <small>設定後開啟工作台需輸入 PIN（僅存在此裝置）</small></div>
+        <div class="setrow">財務頁額外上鎖
+          <button class="btn" id="lockMoneyBtn" style="margin-left:auto;">關</button>
+          <small>開啟後進「記帳理財」需再輸入一次 PIN</small></div>
+      </div></div>
       <div class="card"><h3>資料</h3><div class="bd">
         <div class="setrow" id="statRow">—</div>
         <div class="setrow">版本 <span style="margin-left:auto; color:var(--sub);" id="vtag2"></span></div>
@@ -297,17 +343,25 @@
   <div class="modal">
     <h3 id="mTitle">快速記錄 <button class="x" id="mClose">✕</button></h3>
     <div class="frow"><div class="chips" id="mKind">
-      <button data-v="ev">行程</button><button data-v="td">待辦</button>
+      <button data-v="ev">行程</button><button data-v="td">待辦</button><button data-v="tx">記帳</button><button data-v="wt">體重</button>
     </div></div>
-    <div class="frow"><label>分類</label><div class="chips" id="mScope">
+    <div class="frow" id="mScopeRow"><label>分類</label><div class="chips" id="mScope">
       <button data-v="site" style="color:var(--site);">在建</button>
       <button data-v="case" style="color:var(--case);">投標</button>
       <button data-v="life" style="color:var(--life);">個人</button>
     </div></div>
-    <div class="frow"><label>內容</label><input id="mText" placeholder="例：大同案 複驗陪同"></div>
+    <div class="frow" id="mTextRow"><label>內容</label><input id="mText" placeholder="例：大同案 複驗陪同"></div>
+    <div class="frow" id="mTxRow" style="display:none;">
+      <div class="chips" style="margin-bottom:8px;"><button data-dir="out" id="mDirOut" style="color:var(--urgent);">− 支出</button><button data-dir="in" id="mDirIn" style="color:var(--life);">＋ 收入</button></div>
+      <div style="display:flex; gap:8px;">
+        <div style="flex:1;"><label>金額</label><input type="number" id="mAmt" placeholder="0"></div>
+        <div style="flex:1.4;"><label>掛到案件（選填）</label><select id="mProj"><option value="">—</option></select></div>
+      </div>
+    </div>
+    <div class="frow" id="mWtRow" style="display:none;"><label>體重 (kg)</label><input type="number" step="0.1" id="mKg" placeholder="72.5"></div>
     <div class="frow" style="display:flex; gap:8px;">
       <div style="flex:1.4;"><label id="mDateLb">日期</label><input type="date" id="mDate"></div>
-      <div style="flex:1;"><label>時間（選填）</label><input type="time" id="mTime"></div>
+      <div style="flex:1;" id="mTimeCol"><label>時間（選填）</label><input type="time" id="mTime"></div>
     </div>
     <div class="mbtns">
       <button class="btn del" id="mDel" style="display:none;">刪除</button>
@@ -385,6 +439,37 @@
   </div>
 </div>
 
+<div class="mask" id="tmask">
+  <div class="modal">
+    <h3 id="tTitle">旅程 <button class="x" id="tClose">✕</button></h3>
+    <div class="frow"><div class="chips" id="tKind"><button data-v="near">近期旅程</button><button data-v="wish">長期清單</button></div></div>
+    <div class="frow"><label>名稱</label><input id="t_name" placeholder="例：沖繩 4天3夜／冰島環島"></div>
+    <div class="frow" id="tNearRow" style="display:flex; gap:8px;">
+      <div style="flex:1;"><label>出發</label><input type="date" id="t_start"></div>
+      <div style="flex:1;"><label>回程</label><input type="date" id="t_end"></div>
+    </div>
+    <div class="frow" id="tWishRow" style="display:none; gap:8px;">
+      <div style="flex:1;"><label>目標年份</label><input type="number" id="t_year" placeholder="2028"></div>
+      <div style="flex:1;"><label>預算</label><input type="number" id="t_budget" placeholder="0"></div>
+    </div>
+    <div class="frow"><label>旅遊分帳連結（選填，貼該旅程網址）</label><input id="t_split" placeholder="https://nasajetta-create.github.io/travel/..."></div>
+    <div class="frow"><label>備註</label><input id="t_note" placeholder="想去的點、待辦…"></div>
+    <div class="frow"><label><input type="checkbox" id="t_done" style="width:auto;"> 已完成（累積「已踏國家」）</label></div>
+    <div class="mbtns">
+      <button class="btn del" id="tDel" style="display:none;">刪除</button>
+      <button class="btn pri" id="tSave">儲存</button>
+    </div>
+  </div>
+</div>
+
+<div class="mask" id="lockMask" style="z-index:90; align-items:center;">
+  <div class="modal" style="max-width:300px; text-align:center;">
+    <h3 style="justify-content:center;">🔒 艋舺良的工作台</h3>
+    <div class="frow"><input type="password" id="lockPin" placeholder="輸入 PIN" style="text-align:center;"></div>
+    <button class="btn pri" id="lockGo" style="width:100%;">解鎖</button>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -392,8 +477,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 'use strict';
-/* ════════ 艋舺良的工作台 W0806-03（第二批：工程線） ════════ */
-const VERSION = 'W0806-03';
+/* ════════ 艋舺良的工作台 W0806-04（第三批：生活線＋PWA） ════════ */
+const VERSION = 'W0806-04';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
   authDomain: "mengjia-workbench.firebaseapp.com",
@@ -408,14 +493,18 @@ const $$ = s => Array.from(document.querySelectorAll(s));
 /* ── 資料層：rv 樂觀鎖欄位＋墓碑（為雲端同步預留），localStorage 持久化 ── */
 const KEY = 'wb_data_v1';
 let mem = null; // localStorage 不可用時退回記憶體
-const DEF_ORDER = ['focus','goals','sched','todos','proj','bidp','cal'];
+const DEF_ORDER = ['focus','goals','sched','todos','proj','bidp','weight','cal'];
 function blank(){ return {
   items: [],                       // {id,kind:'ev'|'td',scope,title,date,time,done,rv,mt,del}
   goals: [{id:'g1',name:'財務自由',pct:0,rv:1,mt:0},{id:'g2',name:'環遊世界',pct:0,rv:1,mt:0}],
   projects: [],                    // {id,name,contract,budget,prog,status,wEnd,ret,retOk,g95,billing:[],expenses:[],rv,mt,del}
   bids: [],                        // {id,name,owner,amt,stage,dates:{},dep,depPaid,depRet,items,rv,mt,del}
   clients: [],                     // {id,name,note,rv,mt,del}
-  settings: {skin:'A', scope:'all', order:DEF_ORDER.slice(), folded:{}, showMoney:false},
+  txs: [],                         // {id,t,amt,dir:'in'|'out',scope,proj,date,rv,mt,del}
+  weights: [],                     // {id,kg,date,rv,mt,del}
+  trips: [],                       // {id,kind:'near'|'wish',name,start,end,year,budget,split,note,done,rv,mt,del}
+  prefs: {netBase:0, goalMoney:0, countries:0, countriesTarget:50, weightTarget:0, mt:0},
+  settings: {skin:'A', scope:'all', order:DEF_ORDER.slice(), folded:{}, showMoney:false, pin:null, lockMoney:false},
   ver: 1
 };}
 function load(){
@@ -423,7 +512,8 @@ function load(){
   try{ const r = localStorage.getItem(KEY); if(r) d = JSON.parse(r); }
   catch(e){ /* 私隱模式或預覽環境 */ }
   d = d || mem || blank();
-  ['projects','bids','clients'].forEach(k => { if(!Array.isArray(d[k])) d[k] = []; });
+  ['projects','bids','clients','txs','weights','trips'].forEach(k => { if(!Array.isArray(d[k])) d[k] = []; });
+  d.prefs = Object.assign({netBase:0, goalMoney:0, countries:0, countriesTarget:50, weightTarget:0, mt:0}, d.prefs||{});
   const o = (d.settings.order||[]).filter(k => DEF_ORDER.includes(k));
   DEF_ORDER.forEach(k => { if(!o.includes(k)) o.splice(DEF_ORDER.indexOf(k)===DEF_ORDER.length-1 ? o.length : Math.min(o.length, DEF_ORDER.indexOf(k)), 0, k); });
   d.settings.order = o;
@@ -491,7 +581,19 @@ function extraEvents(){
     });
     if (p.status === 'warranty' && p.wEnd) out.push({id:'x_w_'+p.id, kind:'ev', scope:'site', title:p.name+' 保固到期', date:p.wEnd, ro:'proj'});
   });
+  D.trips.filter(t => !t.del && t.kind==='near' && !t.done && t.start).forEach(t => {
+    out.push({id:'x_t_'+t.id, kind:'ev', scope:'life', title:'✈ '+t.name+' 出發', date:t.start, ro:'trip'});
+  });
   return out;
+}
+/* 財務彙總 */
+const aliveTx = () => D.txs.filter(t => !t.del);
+function txSum(mm, dir){ return aliveTx().filter(t => t.dir===dir && t.date && t.date.startsWith(mm)).reduce((s,t)=>s+(+t.amt||0),0); }
+function netWorth(){ return (+D.prefs.netBase||0) + aliveTx().reduce((s,t)=> s + (t.dir==='in' ? +t.amt : -t.amt), 0); }
+function goalPct(g){
+  if (g.id==='g1' && D.prefs.goalMoney>0) return Math.max(0, Math.min(100, Math.round(netWorth()/D.prefs.goalMoney*100)));
+  if (g.id==='g2' && D.prefs.countriesTarget>0) return Math.max(0, Math.min(100, Math.round((+D.prefs.countries||0)/D.prefs.countriesTarget*100)));
+  return g.pct||0;
 }
 function allEvents(){ return alive().filter(i => i.kind==='ev').concat(extraEvents()); }
 
@@ -531,11 +633,41 @@ const CARDS = {
   }},
   goals: {t:'長期目標', render(el){
     if (D.settings.scope==='work'){ el.innerHTML='<div class="empty">（個人範圍內容）</div>'; return; }
-    el.innerHTML = '<div style="display:flex; gap:22px; flex-wrap:wrap;">' + D.goals.map(g =>
-      `<div class="goal" style="flex:1; min-width:130px; cursor:pointer;" data-g="${g.id}">
-        <b>${esc(g.name)}</b><div class="bar"><i style="width:${g.pct}%;"></i></div>
-        <small style="color:var(--sub); font-size:11px;">${g.pct}%</small></div>`).join('') + '</div>';
+    const sub = g => g.id==='g1' ? (D.prefs.goalMoney>0 ? '連動淨資產' : '點擊設定・可到記帳頁設目標額')
+                                 : (D.prefs.countriesTarget>0 ? `已踏 ${D.prefs.countries||0}／${D.prefs.countriesTarget} 國` : '');
+    el.innerHTML = '<div style="display:flex; gap:22px; flex-wrap:wrap;">' + D.goals.map(g => {
+      const pct = goalPct(g);
+      return `<div class="goal" style="flex:1; min-width:130px; cursor:pointer;" data-g="${g.id}">
+        <b>${esc(g.name)}</b><div class="bar"><i style="width:${pct}%;"></i></div>
+        <small style="color:var(--sub); font-size:11px;">${pct}%・${sub(g)}</small></div>`;
+    }).join('') + '</div>';
     el.querySelectorAll('[data-g]').forEach(n => n.onclick = () => openGoal(n.dataset.g));
+  }},
+  weight: {t:'體重', render(el){
+    if (D.settings.scope==='work'){ el.innerHTML='<div class="empty">（個人範圍內容）</div>'; return; }
+    const ws = D.weights.filter(w => !w.del).sort((a,b)=> a.date<b.date?-1:1);
+    if (!ws.length){ el.innerHTML = '<div class="empty">按「＋」→「體重」記第一筆</div>'; return; }
+    const cur = ws[ws.length-1];
+    const cut = ymd(new Date(Date.now()-30*86400000));
+    const m30 = ws.filter(w => w.date >= cut);
+    const d30 = m30.length>1 ? (cur.kg - m30[0].kg) : 0;
+    const tgt = +D.prefs.weightTarget || 0;
+    let svg = '';
+    if (m30.length > 1){
+      const min = Math.min(...m30.map(w=>w.kg)), max = Math.max(...m30.map(w=>w.kg)), rng = (max-min)||1;
+      const pts = m30.map((w,i) => `${(i/(m30.length-1)*200).toFixed(1)},${(40-((w.kg-min)/rng*34)+3).toFixed(1)}`).join(' ');
+      svg = `<svg viewBox="0 0 200 46" style="width:100%; height:46px; margin-top:6px;"><polyline points="${pts}" fill="none" stroke="var(--life)" stroke-width="2"/></svg>`;
+    }
+    el.innerHTML = `<div style="display:flex; align-items:baseline; gap:10px; cursor:pointer;" id="wtQuick">
+      <span style="font-size:22px; font-weight:800;">${cur.kg}</span>
+      <span style="font-size:12px; color:var(--sub);">kg${tgt?`・目標 ${tgt}（差 ${(cur.kg-tgt).toFixed(1)}）`:''}・30天 ${d30>0?'+':''}${d30.toFixed(1)}</span>
+    </div>${svg}
+    <div class="iform"><input type="number" id="wtTgt" placeholder="目標 kg" value="${tgt||''}" style="max-width:100px;"><button class="btn" id="wtTgtSet">設目標</button></div>`;
+    el.querySelector('#wtQuick').onclick = () => openAdd('wt');
+    el.querySelector('#wtTgtSet').onclick = () => {
+      D.prefs.weightTarget = +el.querySelector('#wtTgt').value || 0; D.prefs.mt = now();
+      save(); fbPushPrefs(); renderAll();
+    };
   }},
   sched: {t:'近期行程（14 天內）', render(el){
     const t = todayStr();
@@ -670,6 +802,7 @@ function drawCal(tbl, y, m, mini){
 function renderCalPage(){
   $('#calTitle').textContent = calY+' 年 '+(calM+1)+' 月';
   drawCal($('#calBig'), calY, calM, false);
+  renderHeat();
   const mm = calY+'-'+String(calM+1).padStart(2,'0');
   const evs = allEvents().filter(i => i.date && i.date.startsWith(mm) && inScope(i))
     .sort((a,b)=> (a.date+(a.time||'')) < (b.date+(b.time||'')) ? -1:1);
@@ -754,8 +887,17 @@ function renderProjPage(){
 
   $('#pEdit').onclick = () => openProj(p.id);
   box.querySelectorAll('[data-bill]').forEach(b => b.onclick = () => {
-    p.billing[+b.dataset.bill].status = billStatusNext(p.billing[+b.dataset.bill].status);
-    p.rv++; p.mt = now(); save(); fbPushDoc('projects', p); renderProjPage();
+    const i = +b.dataset.bill;
+    p.billing[i].status = billStatusNext(p.billing[i].status);
+    p.rv++; p.mt = now(); save(); fbPushDoc('projects', p);
+    if (p.billing[i].status === '入帳'){
+      const amt = Math.round((+p.contract||0) * (+p.billing[i].pct||0) / 100);
+      if (amt > 0){
+        const t = {id:uid(), t:p.name+' 第'+(i+1)+'期請款入帳', amt, dir:'in', scope:'site', proj:p.id, date:todayStr(), rv:1, mt:now(), del:false};
+        D.txs.push(t); save(); fbPushTx(t); toast('💰 已自動記收入 '+money(amt));
+      }
+    }
+    renderProjPage();
   });
   $('#nb_add').onclick = () => {
     const pct = +$('#nb_pct').value || 0; if (!pct) { toast('填 % 數'); return; }
@@ -927,37 +1069,231 @@ $('#bPrint').onclick = () => {
   w.document.close();
 };
 
+/* ════════ 記帳理財頁 ════════ */
+let finOpen = false;
+function renderFinPage(){
+  const locked = D.settings.pin && D.settings.lockMoney && !sessionStorage.getItem('wb_fin_ok');
+  $('#finLock').style.display = locked ? '' : 'none';
+  $('#finBody').style.display = locked ? 'none' : '';
+  if (locked) return;
+  /* 現金流 */
+  const months = [];
+  for (let i=5; i>=0; i--){ const d = new Date(); d.setDate(1); d.setMonth(d.getMonth()-i); months.push(d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')); }
+  const data = months.map(mm => ({mm, inc: txSum(mm,'in'), out: txSum(mm,'out')}));
+  const mx = Math.max(1, ...data.map(d => Math.max(d.inc, d.out)));
+  $('#cfBox').innerHTML = `<div style="display:flex; align-items:flex-end; gap:10px; height:110px; padding-top:6px;">` +
+    data.map(d => `<div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;">
+      <div style="display:flex; align-items:flex-end; gap:3px; height:84px;">
+        <i style="display:block; width:13px; height:${Math.round(d.inc/mx*84)}px; background:var(--life);"></i>
+        <i style="display:block; width:13px; height:${Math.round(d.out/mx*84)}px; background:color-mix(in srgb, var(--ink) 28%, var(--card));"></i>
+      </div><span style="font-size:10px; color:var(--sub);">${+d.mm.slice(5)}月</span></div>`).join('') + '</div>' +
+    `<div style="font-size:11px; color:var(--sub); display:flex; gap:12px; margin-top:6px;">
+      <span><i style="display:inline-block; width:9px; height:9px; background:var(--life); margin-right:3px;"></i>收入</span>
+      <span><i style="display:inline-block; width:9px; height:9px; background:color-mix(in srgb, var(--ink) 28%, var(--card)); margin-right:3px;"></i>支出</span>
+      <span style="margin-left:auto;">本月 ${(()=>{const n=data[5].inc-data[5].out; return `<b style="color:${n>=0?'var(--life)':'var(--urgent)'};">${n>=0?'+':'−'}${money(Math.abs(n)).replace('NT$ ','')}</b>`;})()}</span></div>`;
+  /* 淨資產 */
+  $('#netBox').innerHTML = `<div style="font-size:22px; font-weight:800; letter-spacing:1px;">${money(netWorth())}</div>
+    <div style="font-size:11px; color:var(--sub); margin:4px 0 8px;">= 基準額 ＋ 所有收支累計</div>
+    <div class="iform"><input type="number" id="nbase" placeholder="基準額" value="${D.prefs.netBase||''}"><button class="btn" id="nbaseSet">設定</button></div>
+    <div class="iform"><input type="number" id="gmoney" placeholder="財務自由目標額" value="${D.prefs.goalMoney||''}"><button class="btn" id="gmoneySet">設目標</button></div>
+    ${D.prefs.goalMoney>0 ? `<div class="bar" style="margin-top:8px;"><i style="width:${goalPct(D.goals[0])}%; background:var(--accent);"></i></div><div style="font-size:11px; color:var(--sub); margin-top:3px;">財務自由 ${goalPct(D.goals[0])}%</div>` : ''}`;
+  $('#nbaseSet').onclick = () => { D.prefs.netBase = +$('#nbase').value||0; D.prefs.mt = now(); save(); fbPushPrefs(); renderFinPage(); };
+  $('#gmoneySet').onclick = () => { D.prefs.goalMoney = +$('#gmoney').value||0; D.prefs.mt = now(); save(); fbPushPrefs(); renderFinPage(); };
+  /* 本月清單 */
+  const mm = months[5];
+  const list = aliveTx().filter(t => t.date && t.date.startsWith(mm)).sort((a,b)=> a.date<b.date?1:-1);
+  const pName = id => { const p = D.projects.find(x=>x.id===id); return p ? '・'+p.name : ''; };
+  $('#txBox').innerHTML = list.length ? '<ul class="list">' + list.map(t =>
+    `<li data-tx="${t.id}"><span class="tag ${t.scope||'life'}">${SCOPE_NAME[t.scope]||'個人'}</span>
+     <span class="ttl">${esc(t.t)}<small style="color:var(--sub);">${pName(t.proj)}</small></span>
+     <span class="due" style="color:${t.dir==='in'?'var(--life)':'var(--ink)'};">${t.dir==='in'?'+':'−'}${money(t.amt)}</span></li>`).join('') + '</ul>'
+    : '<div class="empty">本月還沒有記帳，按「＋ 記一筆」</div>';
+  $('#txBox').querySelectorAll('[data-tx]').forEach(li => li.onclick = () => openTx(li.dataset.tx));
+}
+$('#finAdd').onclick = () => openAdd('tx');
+$('#finEye').onclick = toggleMoney;
+$('#finUnlock').onclick = () => {
+  if ($('#finPin').value === D.settings.pin){ sessionStorage.setItem('wb_fin_ok','1'); renderFinPage(); }
+  else toast('PIN 不對');
+};
+
+/* ════════ 旅遊規劃頁 ════════ */
+function renderTripPage(){
+  const near = D.trips.filter(t => !t.del && t.kind==='near').sort((a,b)=> (a.start||'9999') < (b.start||'9999') ? -1:1);
+  $('#tripNear').innerHTML = (near.length ? near.map(t => {
+    const n = t.start ? dayDiff(t.start) : null;
+    const cd = t.done ? '<span style="color:var(--sub);">已完成 ✓</span>' : (n===null ? '' : n>=0 ? `<b style="color:var(--life);">倒數 ${n} 天</b>` : '<span style="color:var(--sub);">已出發</span>');
+    return `<div class="trip" style="border:1px solid var(--line); padding:9px 11px; margin-bottom:8px; cursor:pointer;" data-trip="${t.id}">
+      <div style="display:flex; align-items:center; gap:8px; font-weight:700;">✈ ${esc(t.name)} <span style="margin-left:auto; font-size:12px;">${cd}</span></div>
+      <div style="font-size:11px; color:var(--sub); margin-top:3px;">${t.start||''}${t.end?' 〜 '+t.end:''}${t.note?'・'+esc(t.note):''}</div>
+      ${t.split?`<span class="btn" style="font-size:11px; padding:2px 9px; margin-top:5px; display:inline-block; color:var(--case);" data-split="${esc(t.split)}">開啟旅遊分帳 ▸</span>`:''}
+    </div>`;
+  }).join('') : '<div class="empty">還沒有近期旅程</div>');
+  const wish = D.trips.filter(t => !t.del && t.kind==='wish').sort((a,b)=> (a.year||9999) - (b.year||9999));
+  $('#tripWish').innerHTML = (wish.length ? '<ul class="list">' + wish.map(t =>
+    `<li data-trip="${t.id}"><span class="ttl">${t.done?'✅ ':''}${esc(t.name)}</span><span class="due">${t.year||''}${t.budget?'・'+money(t.budget):''}</span></li>`).join('') + '</ul>' : '<div class="empty">想去哪？加進清單</div>') +
+    `<div style="border-top:1px dashed var(--line); margin-top:10px; padding-top:10px; font-size:13px; display:flex; align-items:center; gap:8px;">
+      已踏國家 <b style="font-size:18px;">${D.prefs.countries||0}</b>／<input type="number" id="ctTgt" value="${D.prefs.countriesTarget||50}" style="width:60px; padding:4px;"> 國
+      <button class="btn" id="ctMinus" style="padding:2px 10px;">−</button><button class="btn" id="ctPlus" style="padding:2px 10px;">＋</button>
+    </div><div style="font-size:11px; color:var(--sub); margin-top:4px;">直接餵「環遊世界」目標進度（首頁③）</div>`;
+  $('#tripNear').querySelectorAll('[data-split]').forEach(b => b.onclick = e => { e.stopPropagation(); window.open(b.dataset.split); });
+  document.querySelectorAll('[data-trip]').forEach(n => n.onclick = () => openTrip(n.dataset.trip));
+  $('#ctPlus').onclick = () => { D.prefs.countries = (+D.prefs.countries||0)+1; D.prefs.mt = now(); save(); fbPushPrefs(); renderTripPage(); };
+  $('#ctMinus').onclick = () => { D.prefs.countries = Math.max(0,(+D.prefs.countries||0)-1); D.prefs.mt = now(); save(); fbPushPrefs(); renderTripPage(); };
+  $('#ctTgt').onchange = e => { D.prefs.countriesTarget = +e.target.value||50; D.prefs.mt = now(); save(); fbPushPrefs(); renderTripPage(); };
+}
+let tEditing = null, tKind = 'near';
+function openTrip(id){
+  tEditing = id ? D.trips.find(x => x.id===id) : null;
+  const t = tEditing || {};
+  tKind = t.kind || 'near';
+  $('#tTitle').firstChild.textContent = tEditing ? '編輯旅程 ' : '新增旅程 ';
+  $('#t_name').value = t.name||''; $('#t_start').value = t.start||''; $('#t_end').value = t.end||'';
+  $('#t_year').value = t.year||''; $('#t_budget').value = t.budget||'';
+  $('#t_split').value = t.split||''; $('#t_note').value = t.note||''; $('#t_done').checked = !!t.done;
+  $('#tDel').style.display = tEditing ? '' : 'none';
+  syncTripModal(); $('#tmask').classList.add('on');
+}
+function syncTripModal(){
+  $$('#tKind button').forEach(b => b.classList.toggle('on', b.dataset.v===tKind));
+  $('#tNearRow').style.display = tKind==='near' ? 'flex' : 'none';
+  $('#tWishRow').style.display = tKind==='wish' ? 'flex' : 'none';
+}
+$('#tKind').onclick = e => { if(e.target.dataset.v){ tKind = e.target.dataset.v; syncTripModal(); } };
+$('#tClose').onclick = () => $('#tmask').classList.remove('on');
+$('#tmask').onclick = e => { if (e.target===$('#tmask')) $('#tmask').classList.remove('on'); };
+$('#tripAdd').onclick = () => openTrip(null);
+$('#tSave').onclick = () => {
+  const name = $('#t_name').value.trim(); if (!name){ toast('名稱不能空白'); return; }
+  const wasDone = tEditing ? !!tEditing.done : false;
+  const v = {kind:tKind, name, start:$('#t_start').value||null, end:$('#t_end').value||null,
+    year:+$('#t_year').value||null, budget:+$('#t_budget').value||0,
+    split:$('#t_split').value.trim()||null, note:$('#t_note').value.trim()||null, done:$('#t_done').checked};
+  let t = tEditing;
+  if (t){ Object.assign(t, v, {rv:t.rv+1, mt:now()}); }
+  else { t = Object.assign({id:uid(), rv:1, mt:now(), del:false}, v); D.trips.push(t); }
+  if (!wasDone && t.done){ D.prefs.countries = (+D.prefs.countries||0)+1; D.prefs.mt = now(); fbPushPrefs(); toast('🌏 已踏國家 +1'); }
+  save(); fbPushDoc('trips', t); $('#tmask').classList.remove('on'); renderAll();
+};
+$('#tDel').onclick = () => {
+  if (tEditing && confirm('刪除這個旅程？')){
+    tEditing.del = true; tEditing.rv++; tEditing.mt = now();
+    save(); fbPushDoc('trips', tEditing); $('#tmask').classList.remove('on'); renderAll();
+  }
+};
+
+/* ════════ 熱力圖 ════════ */
+function renderHeat(){
+  const box = $('#heatBox'); if (!box) return;
+  const counts = {};
+  allEvents().forEach(i => { if (i.date) counts[i.date] = (counts[i.date]||0)+1; });
+  alive().filter(i => i.kind==='td' && i.done).forEach(i => { const d = ymd(new Date(i.mt)); counts[d] = (counts[d]||0)+1; });
+  aliveTx().forEach(t => { if (t.date) counts[t.date] = (counts[t.date]||0)+1; });
+  const end = new Date(); end.setHours(0,0,0,0);
+  const start = new Date(end); start.setDate(start.getDate() - 364);
+  start.setDate(start.getDate() - start.getDay());
+  let html = '';
+  for (let d = new Date(start); d <= end; d.setDate(d.getDate()+1)){
+    const c = counts[ymd(d)] || 0;
+    const lvl = c===0 ? 0 : c===1 ? 1 : c===2 ? 2 : c<=4 ? 3 : 4;
+    const bg = lvl===0 ? 'color-mix(in srgb, var(--ink) 6%, var(--card))' : `color-mix(in srgb, var(--case) ${lvl*25}%, var(--card))`;
+    html += `<i title="${ymd(d)}・${c}" style="display:block; background:${bg};"></i>`;
+  }
+  box.innerHTML = html;
+}
+
+/* ════════ PIN 鎖 ════════ */
+function applyLock(){
+  if (D.settings.pin && !sessionStorage.getItem('wb_ok')) $('#lockMask').classList.add('on');
+}
+$('#lockGo').onclick = () => {
+  if ($('#lockPin').value === D.settings.pin){ sessionStorage.setItem('wb_ok','1'); $('#lockMask').classList.remove('on'); }
+  else toast('PIN 不對');
+};
+$('#lockPin').addEventListener('keydown', e => { if (e.key==='Enter') $('#lockGo').click(); });
+$('#pinSave').onclick = () => {
+  const v = $('#pinSet').value.trim();
+  if (v && (v.length < 4 || v.length > 8)){ toast('PIN 要 4〜8 碼'); return; }
+  D.settings.pin = v || null; save();
+  toast(v ? '已設定 PIN 🔒' : '已關閉 PIN');
+  renderStats2();
+};
+$('#lockMoneyBtn').onclick = () => {
+  if (!D.settings.pin){ toast('先設定 PIN'); return; }
+  D.settings.lockMoney = !D.settings.lockMoney; save(); renderStats2();
+};
+function renderStats2(){
+  $('#lockMoneyBtn').textContent = D.settings.lockMoney ? '開 🔒' : '關';
+}
+
 /* ── 快速記錄／編輯 ── */
-let mEdit = null, mKind = 'ev', mScope = 'life';
+let mEdit = null, mEditTx = null, mKind = 'ev', mScope = 'life', mDir = 'out';
 function openAdd(kind, date){
-  mEdit = null; mKind = kind || 'ev';
+  mEdit = null; mEditTx = null; mKind = kind || 'ev';
   $('#mTitle').firstChild.textContent = '快速記錄 ';
   $('#mText').value = ''; $('#mDate').value = date || todayStr(); $('#mTime').value = '';
+  $('#mAmt').value = ''; $('#mKg').value = '';
   $('#mDel').style.display = 'none';
   syncModal(); $('#mask').classList.add('on');
-  setTimeout(()=>$('#mText').focus(), 50);
+  setTimeout(()=>{ (mKind==='wt' ? $('#mKg') : mKind==='tx' ? $('#mAmt') : $('#mText')).focus(); }, 50);
 }
 function openEdit(id){
   const it = D.items.find(i => i.id===id); if(!it) return;
-  mEdit = it; mKind = it.kind; mScope = it.scope;
+  mEdit = it; mEditTx = null; mKind = it.kind; mScope = it.scope;
   $('#mTitle').firstChild.textContent = '編輯 ';
   $('#mText').value = it.title; $('#mDate').value = it.date || ''; $('#mTime').value = it.time || '';
   $('#mDel').style.display = '';
   syncModal(); $('#mask').classList.add('on');
 }
+function openTx(id){
+  const t = D.txs.find(x => x.id===id); if(!t) return;
+  mEdit = null; mEditTx = t; mKind = 'tx'; mScope = t.scope || 'life'; mDir = t.dir;
+  $('#mTitle').firstChild.textContent = '編輯記帳 ';
+  $('#mText').value = t.t; $('#mAmt').value = t.amt; $('#mDate').value = t.date || todayStr(); $('#mTime').value = '';
+  $('#mDel').style.display = '';
+  syncModal(); $('#mProj').value = t.proj || '';
+  $('#mask').classList.add('on');
+}
 function syncModal(){
   $$('#mKind button').forEach(b => b.classList.toggle('on', b.dataset.v===mKind));
   $$('#mScope button').forEach(b => b.classList.toggle('on', b.dataset.v===mScope));
-  $('#mDateLb').textContent = mKind==='ev' ? '日期' : '到期日（選填）';
+  $('#mDirOut').classList.toggle('on', mDir==='out');
+  $('#mDirIn').classList.toggle('on', mDir==='in');
+  $('#mScopeRow').style.display = (mKind==='wt') ? 'none' : '';
+  $('#mTextRow').style.display = (mKind==='wt') ? 'none' : '';
+  $('#mTxRow').style.display = (mKind==='tx') ? '' : 'none';
+  $('#mWtRow').style.display = (mKind==='wt') ? '' : 'none';
+  $('#mTimeCol').style.display = (mKind==='ev') ? '' : 'none';
+  $('#mDateLb').textContent = mKind==='ev' ? '日期' : mKind==='td' ? '到期日（選填）' : '日期';
+  $('#mText').placeholder = mKind==='tx' ? '例：油錢、材料、請款入帳' : '例：大同案 複驗陪同';
+  $('#mProj').innerHTML = '<option value="">—</option>' + aliveP().filter(p=>p.status==='active').map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('');
 }
 $('#mKind').onclick = e => { if(e.target.dataset.v){ mKind = e.target.dataset.v; syncModal(); } };
+$('#mTxRow').onclick = e => { if(e.target.dataset.dir){ mDir = e.target.dataset.dir; syncModal(); } };
 $('#mScope').onclick = e => { if(e.target.dataset.v){ mScope = e.target.dataset.v; syncModal(); } };
 $('#mClose').onclick = () => $('#mask').classList.remove('on');
 $('#mask').onclick = e => { if(e.target===$('#mask')) $('#mask').classList.remove('on'); };
 $('#mSave').onclick = () => {
+  const date = $('#mDate').value || null, time = $('#mTime').value || null;
+  if (mKind === 'wt'){
+    const kg = +$('#mKg').value;
+    if (!kg || !date){ toast('填體重和日期'); return; }
+    const ex = D.weights.find(w => !w.del && w.date === date);
+    if (ex){ ex.kg = kg; ex.rv++; ex.mt = now(); fbPushDoc('weights', ex); }
+    else { const w = {id:uid(), kg, date, rv:1, mt:now(), del:false}; D.weights.push(w); fbPushDoc('weights', w); }
+    save(); $('#mask').classList.remove('on'); renderAll(); toast('已記錄 ✓'); return;
+  }
   const title = $('#mText').value.trim();
   if (!title){ toast('內容不能空白'); return; }
-  const date = $('#mDate').value || null, time = $('#mTime').value || null;
+  if (mKind === 'tx'){
+    const amt = +$('#mAmt').value;
+    if (!amt || !date){ toast('填金額和日期'); return; }
+    const v = {t:title, amt, dir:mDir, scope:mScope, proj:$('#mProj').value || null, date};
+    let t = mEditTx;
+    if (t){ Object.assign(t, v, {rv:t.rv+1, mt:now()}); }
+    else { t = Object.assign({id:uid(), rv:1, mt:now(), del:false}, v); D.txs.push(t); }
+    save(); fbPushTx(t); $('#mask').classList.remove('on'); renderAll(); toast('已記帳 ✓'); return;
+  }
   if (mKind==='ev' && !date){ toast('行程需要日期'); return; }
   let it;
   if (mEdit){
@@ -974,6 +1310,7 @@ $('#mSave').onclick = () => {
 };
 $('#mDel').onclick = () => {
   if (mEdit){ mEdit.del = true; mEdit.rv++; mEdit.mt = now(); save(); fbPushItem(mEdit); }
+  if (mEditTx){ mEditTx.del = true; mEditTx.rv++; mEditTx.mt = now(); save(); fbPushTx(mEditTx); }
   $('#mask').classList.remove('on'); renderAll(); toast('已刪除（墓碑保留可還原）');
 };
 $('#fab').onclick = () => openAdd(pageNow==='todo' ? 'td' : 'ev');
@@ -1118,12 +1455,24 @@ function fbPushDoc(coll, obj){
   if (!fbDb || !fbUser || !obj) return;
   fbDb.collection(coll).doc(obj.id).set(JSON.parse(JSON.stringify(obj))).catch(e => console.warn('sync', e));
 }
+function fbPushTx(t){
+  if (!fbDb || !fbUser || !t) return;
+  const coll = 'txs_' + (t.date ? t.date.slice(0,4) : String(new Date().getFullYear()));
+  fbDb.collection(coll).doc(t.id).set(JSON.parse(JSON.stringify(t))).catch(e => console.warn('sync', e));
+}
+function fbPushPrefs(){
+  if (!fbDb || !fbUser) return;
+  fbDb.collection('meta').doc('prefs').set(JSON.parse(JSON.stringify(D.prefs))).catch(e => console.warn('sync', e));
+}
 function fbPushAll(){
   if (!fbDb || !fbUser) return;
-  D.items.forEach(fbPushItem); fbPushGoals();
+  D.items.forEach(fbPushItem); fbPushGoals(); fbPushPrefs();
   D.projects.forEach(p => fbPushDoc('projects', p));
   D.bids.forEach(b => fbPushDoc('bids', b));
   D.clients.forEach(c => fbPushDoc('clients', c));
+  D.txs.forEach(fbPushTx);
+  D.weights.forEach(w => fbPushDoc('weights', w));
+  D.trips.forEach(t => fbPushDoc('trips', t));
 }
 function mergeArr(arr, inc){
   const ex = arr.find(x => x.id === inc.id);
@@ -1154,17 +1503,30 @@ function fbStart(){
     }, e => console.warn('snap', e));
     fbSubs.push(un);
   });
-  ['projects','bids','clients'].forEach(coll => {
+  const collMap = {projects:'projects', bids:'bids', clients:'clients', weights:'weights', trips:'trips'};
+  const y0 = new Date().getFullYear();
+  ['txs_'+(y0-1), 'txs_'+y0, 'txs_'+(y0+1)].forEach(c => collMap[c] = 'txs');
+  Object.keys(collMap).forEach(coll => {
+    const key = collMap[coll];
     const un = fbDb.collection(coll).onSnapshot(snap => {
       let changed = false;
       snap.docChanges().forEach(ch => {
         if (ch.type === 'removed') return;
-        if (mergeArr(D[coll], ch.doc.data())) changed = true;
+        if (mergeArr(D[key], ch.doc.data())) changed = true;
       });
       if (changed){ try{ localStorage.setItem(KEY, JSON.stringify(D)); }catch(e){ mem = D; } renderAll(); }
     }, e => console.warn('snap', e));
     fbSubs.push(un);
   });
+  const up = fbDb.collection('meta').doc('prefs').onSnapshot(doc => {
+    const d = doc.data();
+    if (d && (d.mt||0) > (D.prefs.mt||0)){
+      D.prefs = Object.assign(D.prefs, d);
+      try{ localStorage.setItem(KEY, JSON.stringify(D)); }catch(e){ mem = D; }
+      renderAll();
+    }
+  }, e => console.warn('snap', e));
+  fbSubs.push(up);
   const ug = fbDb.collection('meta').doc('goals').onSnapshot(doc => {
     const d = doc.data();
     if (d && d.goals && (d.mt||0) > Math.max(...D.goals.map(g => g.mt||0))){
@@ -1213,13 +1575,29 @@ function renderAll(){
   if (pageNow==='todo') renderTodoPage();
   if (pageNow==='proj') renderProjPage();
   if (pageNow==='bid') renderBidPage();
-  if (pageNow==='set') renderStats();
+  if (pageNow==='fin') renderFinPage();
+  if (pageNow==='trip') renderTripPage();
+  if (pageNow==='set'){ renderStats(); renderStats2(); }
   const mode = fbUser ? '雲端同步中' : '本機模式';
   $('#vtag1').textContent = VERSION + '・' + mode; $('#vtag2').textContent = VERSION + '・' + mode;
   applyAuthUI();
 }
 renderAll();
 fetchWX();
+applyLock();
+
+/* ════════ PWA：service worker 註冊＋強制自動更新 ════════ */
+if ('serviceWorker' in navigator && location.protocol === 'https:'){
+  const hadController = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+  let reloaded = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!hadController || reloaded) return;   // 首次安裝不重載，只有「換新版」才重載
+    reloaded = true;
+    toast('已更新到最新版，重新載入…');
+    setTimeout(()=>location.reload(), 800);
+  });
+}
 </script>
 </body>
 </html>
