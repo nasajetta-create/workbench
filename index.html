@@ -312,6 +312,7 @@
           <button class="btn pri" id="authBtn" style="margin-left:auto;">連接雲端</button>
           <small id="authInfo">用 Google 帳號登入後，資料即時同步到雲端（mengjia-workbench），手機電腦共用同一份。</small></div>
       </div></div>
+      <div class="card"><h3>Google 行事曆</h3><div class="bd" id="gcalBox">—</div></div>
       <div class="card"><h3>安全（PIN 鎖・僅此裝置）</h3><div class="bd">
         <div class="setrow">PIN 密碼
           <span class="iform" style="margin:0 0 0 auto;"><input type="password" id="pinSet" placeholder="4-8 碼，留空=關閉" style="max-width:150px;"><button class="btn" id="pinSave">設定</button></span>
@@ -472,13 +473,15 @@
 
 <div class="toast" id="toast"></div>
 
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 'use strict';
-/* ════════ 艋舺良的工作台 W0806-04（第三批：生活線＋PWA） ════════ */
-const VERSION = 'W0806-04';
+/* ════════ 艋舺良的工作台 W0806-05（Google 行事曆整合） ════════ */
+const VERSION = 'W0806-05';
+const GCAL_CLIENT_ID = '654856338073-ukdt5nvtc8riq2010lado0i0n5vuhcfl.apps.googleusercontent.com';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
   authDomain: "mengjia-workbench.firebaseapp.com",
@@ -514,6 +517,7 @@ function load(){
   d = d || mem || blank();
   ['projects','bids','clients','txs','weights','trips'].forEach(k => { if(!Array.isArray(d[k])) d[k] = []; });
   d.prefs = Object.assign({netBase:0, goalMoney:0, countries:0, countriesTarget:50, weightTarget:0, mt:0}, d.prefs||{});
+  d.settings.gcal = Object.assign({token:null, exp:0, cals:{}, writeOn:false, wId:null, cache:[]}, d.settings.gcal||{});
   const o = (d.settings.order||[]).filter(k => DEF_ORDER.includes(k));
   DEF_ORDER.forEach(k => { if(!o.includes(k)) o.splice(DEF_ORDER.indexOf(k)===DEF_ORDER.length-1 ? o.length : Math.min(o.length, DEF_ORDER.indexOf(k)), 0, k); });
   d.settings.order = o;
@@ -584,6 +588,7 @@ function extraEvents(){
   D.trips.filter(t => !t.del && t.kind==='near' && !t.done && t.start).forEach(t => {
     out.push({id:'x_t_'+t.id, kind:'ev', scope:'life', title:'✈ '+t.name+' 出發', date:t.start, ro:'trip'});
   });
+  (D.settings.gcal.cache||[]).forEach(g => out.push(Object.assign({ro:'gcal'}, g)));
   return out;
 }
 /* 財務彙總 */
@@ -731,6 +736,7 @@ function liHtml(it){
 function bindLis(root){
   root.querySelectorAll('li[data-id]').forEach(li => li.onclick = e => {
     if (e.target.dataset.chk){ toggleDone(e.target.dataset.chk); return; }
+    if (li.dataset.ro === 'gcal'){ const g = (D.settings.gcal.cache||[]).find(x => x.id===li.dataset.id); if (g && g.link) window.open(g.link); return; }
     if (li.dataset.ro){ go(li.dataset.ro); return; }
     openEdit(li.dataset.id);
   });
@@ -794,6 +800,7 @@ function drawCal(tbl, y, m, mini){
   html += '</tr>';
   tbl.innerHTML = html;
   tbl.querySelectorAll('td[data-d]').forEach(td => td.onclick = e => {
+    if (e.target.dataset.ro === 'gcal'){ const g = (D.settings.gcal.cache||[]).find(x => x.id===e.target.dataset.ev); if (g && g.link) window.open(g.link); return; }
     if (e.target.dataset.ro){ go(e.target.dataset.ro); return; }
     if (e.target.dataset.ev){ openEdit(e.target.dataset.ev); return; }
     openAdd('ev', td.dataset.d);
@@ -1226,6 +1233,137 @@ function renderStats2(){
   $('#lockMoneyBtn').textContent = D.settings.lockMoney ? '開 🔒' : '關';
 }
 
+/* ════════ Google 行事曆（GIS token client） ════════ */
+const G = () => D.settings.gcal;
+function gOK(){ return G().token && Date.now() < G().exp - 60000; }
+function gHdr(){ return {Authorization:'Bearer ' + G().token, 'Content-Type':'application/json'}; }
+let gCalsList = [];   // 記憶體：日曆清單
+function gConnect(interactive){
+  if (typeof google === 'undefined' || !google.accounts){ toast('Google 元件載入中，稍後再試'); return; }
+  const tc = google.accounts.oauth2.initTokenClient({
+    client_id: GCAL_CLIENT_ID,
+    scope: 'https://www.googleapis.com/auth/calendar',
+    callback: r => {
+      if (!r.access_token){ toast('連接失敗'); return; }
+      G().token = r.access_token; G().exp = Date.now() + (r.expires_in||3600)*1000;
+      save(); toast('Google 行事曆已連接 ✓');
+      gLoadCals().then(gSync);
+    }
+  });
+  tc.requestAccessToken(interactive ? {} : {prompt:''});
+}
+function gDisconnect(){
+  G().token = null; G().exp = 0; G().cache = [];
+  save(); renderAll(); toast('已中斷連接（資料保留）');
+}
+async function gLoadCals(){
+  if (!gOK()) return;
+  try{
+    const r = await fetch('https://www.googleapis.com/calendar/v3/users/me/calendarList', {headers:gHdr()});
+    if (r.status === 401){ G().token = null; save(); renderGcal(); return; }
+    const j = await r.json();
+    gCalsList = (j.items||[]).filter(c => c.id !== G().wId);
+    gCalsList.forEach(c => { if (!(c.id in G().cals)) G().cals[c.id] = {on: !!c.primary, scope:'life'}; });
+    save(); renderGcal();
+  }catch(e){ console.warn('gcal', e); }
+}
+async function gSync(){
+  if (!gOK()) return;
+  const out = [];
+  const tMin = new Date(Date.now()-7*86400000).toISOString();
+  const tMax = new Date(Date.now()+60*86400000).toISOString();
+  for (const c of gCalsList){
+    const cfg = G().cals[c.id];
+    if (!cfg || !cfg.on) continue;
+    try{
+      const r = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(c.id)}/events?singleEvents=true&orderBy=startTime&maxResults=250&timeMin=${encodeURIComponent(tMin)}&timeMax=${encodeURIComponent(tMax)}`, {headers:gHdr()});
+      if (!r.ok) continue;
+      const j = await r.json();
+      (j.items||[]).forEach(ev => {
+        if (ev.status === 'cancelled') return;
+        if (ev.extendedProperties && ev.extendedProperties.private && ev.extendedProperties.private.wbid) return; // 自己寫回去的不重複顯示
+        const s = ev.start || {};
+        const date = s.date || (s.dateTime ? s.dateTime.slice(0,10) : null);
+        if (!date) return;
+        out.push({id:'g_'+ev.id, kind:'ev', scope:cfg.scope||'life', title:'Ⓖ '+(ev.summary||'（無標題）'),
+          date, time: s.dateTime ? s.dateTime.slice(11,16) : null, link: ev.htmlLink||null});
+      });
+    }catch(e){ console.warn('gcal', e); }
+  }
+  G().cache = out; save(); renderAll();
+}
+async function gEnsureWCal(){
+  if (G().wId || !gOK()) return G().wId;
+  try{
+    const r = await fetch('https://www.googleapis.com/calendar/v3/calendars', {method:'POST', headers:gHdr(),
+      body: JSON.stringify({summary:'艋舺良的工作台', timeZone:'Asia/Taipei'})});
+    const j = await r.json();
+    if (j.id){ G().wId = j.id; save(); }
+  }catch(e){ console.warn('gcal', e); }
+  return G().wId;
+}
+function gEvBody(it){
+  const body = {summary: it.title, extendedProperties:{private:{wbid: it.id}}};
+  if (it.time){
+    const st = new Date(it.date + 'T' + it.time + ':00');
+    body.start = {dateTime: st.toISOString(), timeZone:'Asia/Taipei'};
+    body.end = {dateTime: new Date(st.getTime()+3600000).toISOString(), timeZone:'Asia/Taipei'};
+  } else {
+    const nx = new Date(it.date + 'T00:00:00'); nx.setDate(nx.getDate()+1);
+    body.start = {date: it.date}; body.end = {date: ymd(nx)};
+  }
+  return body;
+}
+async function gPushEvent(it){
+  if (!G().writeOn || !gOK() || it.kind !== 'ev' || !it.date) return;
+  const wId = await gEnsureWCal(); if (!wId) return;
+  try{
+    if (it.gid){
+      await fetch(`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(wId)}/events/${it.gid}`, {method:'PATCH', headers:gHdr(), body:JSON.stringify(gEvBody(it))});
+    } else {
+      const r = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(wId)}/events`, {method:'POST', headers:gHdr(), body:JSON.stringify(gEvBody(it))});
+      const j = await r.json();
+      if (j.id){ it.gid = j.id; save(); fbPushItem(it); }
+    }
+  }catch(e){ console.warn('gcal', e); }
+}
+async function gDeleteEvent(it){
+  if (!gOK() || !it.gid || !G().wId) return;
+  try{ await fetch(`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(G().wId)}/events/${it.gid}`, {method:'DELETE', headers:gHdr()}); }catch(e){}
+}
+function renderGcal(){
+  const box = $('#gcalBox'); if (!box) return;
+  if (!gOK()){
+    box.innerHTML = `<div class="setrow">${G().cache.length ? '連線已到期（快取仍顯示中）' : '未連接'}
+      <button class="btn pri" id="gConnBtn" style="margin-left:auto;">連接 Google 行事曆</button>
+      <small>連接後可把 Google 行事曆顯示進工作台，並將工作台行程回寫到手機原生日曆。</small></div>`;
+    $('#gConnBtn').onclick = () => gConnect(true);
+    return;
+  }
+  box.innerHTML = `<div class="setrow">✅ 已連接 <button class="btn" id="gDiscBtn" style="margin-left:auto;">中斷</button>
+      <button class="btn" id="gSyncBtn">↻ 立即同步</button></div>
+    <div class="setrow" style="display:block;"><small>勾選要顯示的日曆，並指定分類（影響範圍切換過濾）：</small>
+      <ul class="list" style="margin-top:6px;">` +
+    gCalsList.map(c => {
+      const cfg = G().cals[c.id] || {on:false, scope:'life'};
+      return `<li style="cursor:default;"><label style="display:flex; align-items:center; gap:8px; flex:1;">
+        <input type="checkbox" data-gon="${esc(c.id)}" ${cfg.on?'checked':''} style="width:auto;">
+        <span class="ttl">${esc(c.summary)}</span></label>
+        <select data-gsc="${esc(c.id)}" style="width:auto; padding:4px;">
+          <option value="life" ${cfg.scope==='life'?'selected':''}>個人</option>
+          <option value="site" ${cfg.scope==='site'?'selected':''}>工作</option>
+        </select></li>`;
+    }).join('') + `</ul></div>
+    <div class="setrow">工作台行程回寫到 Google
+      <button class="btn" id="gWriteBtn" style="margin-left:auto;">${G().writeOn?'開 ✓':'關'}</button>
+      <small>開啟後在你的 Google 帳號建「艋舺良的工作台」日曆，工作台的行程自動出現在手機原生日曆。</small></div>`;
+  $('#gDiscBtn').onclick = gDisconnect;
+  $('#gSyncBtn').onclick = () => { gLoadCals().then(gSync); toast('同步中…'); };
+  $('#gWriteBtn').onclick = () => { G().writeOn = !G().writeOn; save(); renderGcal(); if (G().writeOn) gEnsureWCal(); };
+  box.querySelectorAll('[data-gon]').forEach(cb => cb.onchange = () => { G().cals[cb.dataset.gon].on = cb.checked; save(); gSync(); });
+  box.querySelectorAll('[data-gsc]').forEach(se => se.onchange = () => { G().cals[se.dataset.gsc].scope = se.value; save(); gSync(); });
+}
+
 /* ── 快速記錄／編輯 ── */
 let mEdit = null, mEditTx = null, mKind = 'ev', mScope = 'life', mDir = 'out';
 function openAdd(kind, date){
@@ -1303,13 +1441,13 @@ $('#mSave').onclick = () => {
     it = {id:uid(), kind:mKind, scope:mScope, title, date, time, done:false, rv:1, mt:now(), del:false};
     D.items.push(it);
   }
-  save(); fbPushItem(it);
+  save(); fbPushItem(it); gPushEvent(it);
   $('#mask').classList.remove('on'); renderAll();
   if (it.kind==='ev' && it.scope!=='life' && it.date && allEvents().filter(x => x.date===it.date && x.scope!=='life').length >= 2) toast('⚠ 已儲存，但當天已有其他工作行程——撞期！');
   else toast('已儲存 ✓');
 };
 $('#mDel').onclick = () => {
-  if (mEdit){ mEdit.del = true; mEdit.rv++; mEdit.mt = now(); save(); fbPushItem(mEdit); }
+  if (mEdit){ mEdit.del = true; mEdit.rv++; mEdit.mt = now(); save(); fbPushItem(mEdit); gDeleteEvent(mEdit); }
   if (mEditTx){ mEditTx.del = true; mEditTx.rv++; mEditTx.mt = now(); save(); fbPushTx(mEditTx); }
   $('#mask').classList.remove('on'); renderAll(); toast('已刪除（墓碑保留可還原）');
 };
@@ -1577,7 +1715,7 @@ function renderAll(){
   if (pageNow==='bid') renderBidPage();
   if (pageNow==='fin') renderFinPage();
   if (pageNow==='trip') renderTripPage();
-  if (pageNow==='set'){ renderStats(); renderStats2(); }
+  if (pageNow==='set'){ renderStats(); renderStats2(); renderGcal(); }
   const mode = fbUser ? '雲端同步中' : '本機模式';
   $('#vtag1').textContent = VERSION + '・' + mode; $('#vtag2').textContent = VERSION + '・' + mode;
   applyAuthUI();
@@ -1585,6 +1723,7 @@ function renderAll(){
 renderAll();
 fetchWX();
 applyLock();
+if (gOK()) setTimeout(()=>{ gLoadCals().then(gSync); }, 1500);   // 連線仍有效→開頁自動同步 GCal
 
 /* ════════ PWA：service worker 註冊＋強制自動更新 ════════ */
 if ('serviceWorker' in navigator && location.protocol === 'https:'){
