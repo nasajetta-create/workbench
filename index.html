@@ -122,6 +122,30 @@
 
   .toast{position:fixed; left:50%; transform:translateX(-50%); bottom:140px; background:var(--ink); color:var(--page); padding:8px 18px; font-size:13px; z-index:80; display:none;}
 
+  /* 看板・工程 */
+  .board{display:flex; gap:8px; overflow-x:auto; padding-bottom:4px;}
+  .col{flex:1; min-width:128px; border:1px solid var(--line); background:var(--page);}
+  .col h5{font-size:11px; color:var(--sub); padding:6px 8px; border-bottom:1px solid var(--line); background:var(--card); font-weight:600;}
+  .jcard{margin:6px; border:1px solid var(--line); background:var(--card); padding:7px 8px; font-size:12px; cursor:pointer;}
+  .jcard small{display:block; color:var(--sub); font-size:10px; margin-top:2px;}
+  .jcard .w{color:var(--urgent); font-weight:700;}
+  .subtabs{display:flex; flex-wrap:wrap; gap:0; border:1px solid var(--line); background:var(--card); margin-bottom:12px;}
+  .subtabs button{padding:8px 14px; font-size:13px; color:var(--sub); border-right:1px solid var(--line);}
+  .subtabs button.on{background:var(--ink); color:var(--page); font-weight:700;}
+  .warnbox{border:1px solid var(--urgent); background:color-mix(in srgb, var(--urgent) 8%, var(--card)); color:var(--urgent); font-size:12px; font-weight:700; padding:7px 9px; margin-top:10px;}
+  .okbox{border:1px solid var(--life); background:color-mix(in srgb, var(--life) 8%, var(--card)); color:var(--life); font-size:12px; padding:7px 9px; margin-top:10px;}
+  .iform{display:flex; gap:6px; margin-top:8px; flex-wrap:wrap;}
+  .iform input{flex:1; min-width:70px; padding:7px 8px; font-size:13px;}
+  .iform .btn{flex:none;}
+  .stat{cursor:pointer; user-select:none;}
+  .pagehead{display:flex; align-items:center; gap:8px; margin-bottom:12px; flex-wrap:wrap;}
+  .pagehead h2{font-size:17px; font-weight:800; margin-right:auto;}
+  select{font-family:inherit; font-size:14px; color:var(--ink); background:var(--page); border:1px solid var(--line); padding:8px;}
+  .frow select{width:100%;}
+  .frow textarea{width:100%; border:1px solid var(--line); background:var(--page); color:var(--ink); padding:8px; font-size:13px; font-family:inherit; min-height:64px;}
+  .mbtns2{display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;}
+  .mbtns2 .btn{flex:1; text-align:center; font-size:13px; padding:7px 4px;}
+
   /* ═══ 手機 ═══ */
   .tabbar{display:none;}
   @media (max-width:760px){
@@ -144,8 +168,8 @@
     <ul class="nav" id="deskNav">
       <li data-page="home" class="on">首頁</li>
       <li data-page="cal">行事曆</li>
-      <li data-lock="1">在建工程 <span class="lk">第二批</span></li>
-      <li data-lock="1">投標案 <span class="lk">第二批</span></li>
+      <li data-page="proj">在建工程</li>
+      <li data-page="bid">投標案</li>
       <li data-page="todo">待辦清單</li>
       <li data-lock="1">記帳理財 <span class="lk">第三批</span></li>
       <li data-page="home">長期目標</li>
@@ -200,8 +224,34 @@
       <div class="card"><h3>已完成（近 30 天）</h3><div class="bd"><ul class="list" id="todoDone"></ul></div></div>
     </section>
 
+    <!-- ═══ 在建工程 ═══ -->
+    <section class="page" id="page-proj">
+      <div class="pagehead"><h2>在建工程</h2>
+        <button class="btn stat" id="projEye">👁 金額</button>
+        <button class="btn pri" id="projAdd">＋ 新增工程</button>
+      </div>
+      <div class="subtabs" id="projTabs"></div>
+      <div id="projDetail"></div>
+    </section>
+
+    <!-- ═══ 投標案 ═══ -->
+    <section class="page" id="page-bid">
+      <div class="pagehead"><h2>投標案</h2>
+        <button class="btn stat" id="bidEye">👁 金額</button>
+        <button class="btn pri" id="bidAdd">＋ 新增投標案</button>
+      </div>
+      <div class="card"><h3>投標看板（點卡片編輯・關鍵日期自動進行事曆）</h3><div class="bd"><div class="board" id="bidBoard"></div></div></div>
+      <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <div class="card" style="flex:1; min-width:260px;"><h3>待追款（押標金・保固金）</h3><div class="bd" id="chaseBox"></div></div>
+        <div class="card" style="flex:1; min-width:260px;"><h3>業主・協力名冊</h3><div class="bd" id="clientBox"></div></div>
+      </div>
+    </section>
+
     <!-- ═══ 設定 ═══ -->
     <section class="page" id="page-set">
+      <div class="card"><h3>頁面</h3><div class="bd">
+        <div class="setrow" style="cursor:pointer;" onclick="go('todo')">✅ 待辦清單<span style="margin-left:auto; color:var(--sub);">▸</span></div>
+      </div></div>
       <div class="card"><h3>外觀</h3><div class="bd">
         <div class="setrow">主題
           <span class="skins" id="skinCtl2" style="margin-left:auto;">
@@ -236,7 +286,8 @@
 <nav class="tabbar" id="mobNav">
   <button data-page="home" class="on">首頁</button>
   <button data-page="cal">行事曆</button>
-  <button data-page="todo">待辦</button>
+  <button data-page="proj">在建</button>
+  <button data-page="bid">投標</button>
   <button data-page="set">更多</button>
 </nav>
 
@@ -274,6 +325,66 @@
   </div>
 </div>
 
+<div class="mask" id="pmask">
+  <div class="modal">
+    <h3 id="pTitle">工程 <button class="x" id="pClose">✕</button></h3>
+    <div class="frow"><label>工程名稱</label><input id="p_name" placeholder="例：大同整修案"></div>
+    <div class="frow" style="display:flex; gap:8px;">
+      <div style="flex:1;"><label>合約金額</label><input type="number" id="p_contract" placeholder="0"></div>
+      <div style="flex:1;"><label>成本預算</label><input type="number" id="p_budget" placeholder="0"></div>
+      <div style="flex:1;"><label>進度 %</label><input type="number" id="p_prog" min="0" max="100"></div>
+    </div>
+    <div class="frow" style="display:flex; gap:8px;">
+      <div style="flex:1;"><label>狀態</label><select id="p_status"><option value="active">進行中</option><option value="warranty">保固中</option><option value="done">已結案</option></select></div>
+      <div style="flex:1;"><label>保固到期</label><input type="date" id="p_wend"></div>
+      <div style="flex:1;"><label>保固金</label><input type="number" id="p_ret" placeholder="0"></div>
+    </div>
+    <div class="frow"><label><input type="checkbox" id="p_retok" style="width:auto;"> 保固金已退回</label></div>
+    <div class="frow"><label>G95 連結（選填，貼該案 G95 網址）</label><input id="p_g95" placeholder="https://..."></div>
+    <div class="mbtns">
+      <button class="btn del" id="pDel" style="display:none;">刪除</button>
+      <button class="btn pri" id="pSave">儲存</button>
+    </div>
+  </div>
+</div>
+
+<div class="mask" id="bmask">
+  <div class="modal">
+    <h3 id="bTitle">投標案 <button class="x" id="bClose">✕</button></h3>
+    <div class="frow" style="display:flex; gap:8px;">
+      <div style="flex:2;"><label>案名</label><input id="b_name" placeholder="例：幼兒園整修案"></div>
+      <div style="flex:1;"><label>階段</label><select id="b_stage">
+        <option value="prep">領標・備標</option><option value="est">估算中</option>
+        <option value="sub">已送標</option><option value="open">待開標</option>
+        <option value="won">得標</option><option value="lost">未得標</option></select></div>
+    </div>
+    <div class="frow" style="display:flex; gap:8px;">
+      <div style="flex:1.4;"><label>業主</label><input id="b_owner" list="clientList"><datalist id="clientList"></datalist></div>
+      <div style="flex:1;"><label>標價</label><input type="number" id="b_amt" placeholder="0"></div>
+    </div>
+    <div class="frow"><label>關鍵日期（填了自動進行事曆＋倒數）</label>
+      <div style="display:flex; gap:6px; flex-wrap:wrap;">
+        <div style="flex:1; min-width:90px;"><label style="font-size:10px;">現勘</label><input type="date" id="b_d_site"></div>
+        <div style="flex:1; min-width:90px;"><label style="font-size:10px;">疑義截止</label><input type="date" id="b_d_qa"></div>
+        <div style="flex:1; min-width:90px;"><label style="font-size:10px;">截標 🔴</label><input type="date" id="b_d_close"></div>
+        <div style="flex:1; min-width:90px;"><label style="font-size:10px;">開標</label><input type="date" id="b_d_open"></div>
+      </div>
+    </div>
+    <div class="frow" style="display:flex; gap:8px; align-items:flex-end;">
+      <div style="flex:1;"><label>押標金</label><input type="number" id="b_dep" placeholder="0"></div>
+      <label style="flex:none; font-size:13px;"><input type="checkbox" id="b_dep_paid" style="width:auto;"> 已繳</label>
+      <label style="flex:none; font-size:13px;"><input type="checkbox" id="b_dep_ret" style="width:auto;"> 已退</label>
+    </div>
+    <div class="frow"><label>估價項目（一行一項：名稱=金額）</label><textarea id="b_items" placeholder="假設工程=50000&#10;泥作工程=120000"></textarea></div>
+    <div class="mbtns2">
+      <button class="btn" id="bPrint">🖨 估價單</button>
+      <button class="btn" id="bWin" style="color:var(--life);">🏆 得標→轉在建</button>
+      <button class="btn del" id="bDel" style="display:none;">刪除</button>
+      <button class="btn pri" id="bSave">儲存</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -281,8 +392,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 'use strict';
-/* ════════ 艋舺良的工作台 W0806-02（第一批＋雲端同步） ════════ */
-const VERSION = 'W0806-02';
+/* ════════ 艋舺良的工作台 W0806-03（第二批：工程線） ════════ */
+const VERSION = 'W0806-03';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
   authDomain: "mengjia-workbench.firebaseapp.com",
@@ -297,16 +408,26 @@ const $$ = s => Array.from(document.querySelectorAll(s));
 /* ── 資料層：rv 樂觀鎖欄位＋墓碑（為雲端同步預留），localStorage 持久化 ── */
 const KEY = 'wb_data_v1';
 let mem = null; // localStorage 不可用時退回記憶體
+const DEF_ORDER = ['focus','goals','sched','todos','proj','bidp','cal'];
 function blank(){ return {
   items: [],                       // {id,kind:'ev'|'td',scope,title,date,time,done,rv,mt,del}
   goals: [{id:'g1',name:'財務自由',pct:0,rv:1,mt:0},{id:'g2',name:'環遊世界',pct:0,rv:1,mt:0}],
-  settings: {skin:'A', scope:'all', order:['focus','goals','sched','todos','cal'], folded:{}},
+  projects: [],                    // {id,name,contract,budget,prog,status,wEnd,ret,retOk,g95,billing:[],expenses:[],rv,mt,del}
+  bids: [],                        // {id,name,owner,amt,stage,dates:{},dep,depPaid,depRet,items,rv,mt,del}
+  clients: [],                     // {id,name,note,rv,mt,del}
+  settings: {skin:'A', scope:'all', order:DEF_ORDER.slice(), folded:{}, showMoney:false},
   ver: 1
 };}
 function load(){
-  try{ const r = localStorage.getItem(KEY); if(r) return JSON.parse(r); }
+  let d = null;
+  try{ const r = localStorage.getItem(KEY); if(r) d = JSON.parse(r); }
   catch(e){ /* 私隱模式或預覽環境 */ }
-  return mem || blank();
+  d = d || mem || blank();
+  ['projects','bids','clients'].forEach(k => { if(!Array.isArray(d[k])) d[k] = []; });
+  const o = (d.settings.order||[]).filter(k => DEF_ORDER.includes(k));
+  DEF_ORDER.forEach(k => { if(!o.includes(k)) o.splice(DEF_ORDER.indexOf(k)===DEF_ORDER.length-1 ? o.length : Math.min(o.length, DEF_ORDER.indexOf(k)), 0, k); });
+  d.settings.order = o;
+  return d;
 }
 function save(){
   D.ver++;
@@ -347,14 +468,63 @@ function inScope(it){
   return it.scope === 'life';
 }
 const alive = () => D.items.filter(i => !i.del);
+const aliveP = () => D.projects.filter(p => !p.del);
+const aliveB = () => D.bids.filter(b => !b.del);
+
+/* ── 金額打碼 ── */
+function money(v){ return D.settings.showMoney ? 'NT$ ' + Number(v||0).toLocaleString() : 'NT$ ●●●'; }
+function toggleMoney(){ D.settings.showMoney = !D.settings.showMoney; save(); renderAll(); }
+
+/* ── 衍生行程（投標關鍵日期・請款日・保固到期，唯讀） ── */
+const BIDLAB = {site:'現勘', qa:'疑義截止', close:'截標', open:'開標'};
+function extraEvents(){
+  const out = [];
+  aliveB().filter(b => !['won','lost'].includes(b.stage)).forEach(b => {
+    Object.keys(BIDLAB).forEach(k => {
+      const d = b.dates && b.dates[k];
+      if (d) out.push({id:'x_b_'+b.id+'_'+k, kind:'ev', scope:'case', title:b.name+' '+BIDLAB[k], date:d, ro:'bid'});
+    });
+  });
+  aliveP().forEach(p => {
+    if (p.status === 'active') (p.billing||[]).forEach((bl,i) => {
+      if (bl.due && bl.status !== '入帳') out.push({id:'x_p_'+p.id+'_'+i, kind:'ev', scope:'site', title:p.name+' 第'+(i+1)+'期請款', date:bl.due, ro:'proj'});
+    });
+    if (p.status === 'warranty' && p.wEnd) out.push({id:'x_w_'+p.id, kind:'ev', scope:'site', title:p.name+' 保固到期', date:p.wEnd, ro:'proj'});
+  });
+  return out;
+}
+function allEvents(){ return alive().filter(i => i.kind==='ev').concat(extraEvents()); }
+
+/* ── 撞期偵測 ── */
+function clashDates(){
+  const m = {};
+  allEvents().forEach(i => { if (i.date && i.scope !== 'life') (m[i.date] = m[i.date]||[]).push(i); });
+  return new Set(Object.keys(m).filter(d => m[d].length >= 2 && dayDiff(d) >= 0));
+}
+
+/* ── 天氣（open-meteo 免金鑰） ── */
+let WX = {};
+function wxEmoji(c){ if(c===0)return '☀'; if(c<=3)return '⛅'; if(c<=48)return '🌫'; if(c<=57)return '🌦'; if(c<=67)return '🌧'; if(c<=77)return '🌨'; if(c<=82)return '🌧'; return '⛈'; }
+function wxStr(d){ const w = WX[d]; return w ? wxEmoji(w.c) + w.t + '°' : ''; }
+function fetchWX(){
+  try{
+    fetch('https://api.open-meteo.com/v1/forecast?latitude=25.037&longitude=121.564&daily=weather_code,temperature_2m_max&timezone=Asia%2FTaipei&forecast_days=14')
+      .then(r => r.json()).then(j => {
+        if (!j || !j.daily) return;
+        j.daily.time.forEach((d,i) => { WX[d] = {c:j.daily.weather_code[i], t:Math.round(j.daily.temperature_2m_max[i])}; });
+        renderAll();
+      }).catch(()=>{});
+  }catch(e){}
+}
 
 /* ── 首頁卡片 ── */
 const CARDS = {
   focus: {t:'今日焦點', render(el){
     const t = todayStr();
-    const evs = alive().filter(i => i.kind==='ev' && i.date===t && inScope(i));
+    const evs = allEvents().filter(i => i.date===t && inScope(i));
     const tds = alive().filter(i => i.kind==='td' && !i.done && i.date && dayDiff(i.date)<=0 && inScope(i));
-    const rows = [...tds, ...evs];
+    const soon = allEvents().filter(i => i.ro==='bid' && i.date && dayDiff(i.date)>0 && dayDiff(i.date)<=3 && inScope(i));
+    const rows = [...tds, ...evs, ...soon];
     el.innerHTML = rows.length ? '<ul class="list">'+rows.map(liHtml).join('')+'</ul>'
       : '<div class="empty">今天沒有到期事項 🍵 按「＋」記一筆</div>';
     bindLis(el);
@@ -369,11 +539,41 @@ const CARDS = {
   }},
   sched: {t:'近期行程（14 天內）', render(el){
     const t = todayStr();
-    const evs = alive().filter(i => i.kind==='ev' && i.date && i.date>=t && dayDiff(i.date)<=14 && inScope(i))
+    const evs = allEvents().filter(i => i.date && i.date>=t && dayDiff(i.date)<=14 && inScope(i))
       .sort((a,b)=> (a.date+(a.time||'')) < (b.date+(b.time||'')) ? -1:1).slice(0,6);
     el.innerHTML = evs.length ? '<ul class="list">'+evs.map(liHtml).join('')+'</ul>'
       : '<div class="empty">近兩週沒有行程</div>';
     bindLis(el);
+  }},
+  proj: {t:'在建工程', render(el){
+    if (D.settings.scope==='life'){ el.innerHTML='<div class="empty">（工作範圍內容）</div>'; return; }
+    const ps = aliveP().filter(p => p.status==='active');
+    if (!ps.length){ el.innerHTML = '<div class="empty">尚無在建工程，到「在建工程」頁新增</div>'; return; }
+    el.innerHTML = ps.map(p => {
+      const spent = (p.expenses||[]).reduce((s,e)=>s+(+e.amt||0),0);
+      const over = p.budget>0 && p.prog>0 && (spent/p.budget*100) > (+p.prog + 5);
+      return `<div style="margin-bottom:10px; cursor:pointer;" data-goproj="${p.id}">
+        <div style="display:flex; justify-content:space-between; font-size:13px;"><b>${esc(p.name)}</b>
+        <span style="color:var(--sub); font-size:12px;">${p.prog||0}%${over?' <b style="color:var(--urgent);">⚠超支</b>':''}</span></div>
+        <div class="bar"><i style="width:${p.prog||0}%; background:var(--site);"></i></div></div>`;
+    }).join('');
+    el.querySelectorAll('[data-goproj]').forEach(n => n.onclick = () => { projSel = n.dataset.goproj; go('proj'); });
+  }},
+  bidp: {t:'投標案', render(el){
+    if (D.settings.scope==='life'){ el.innerHTML='<div class="empty">（工作範圍內容）</div>'; return; }
+    const bs = aliveB().filter(b => !['won','lost'].includes(b.stage));
+    if (!bs.length){ el.innerHTML = '<div class="empty">目前無進行中投標案</div>'; return; }
+    const cnt = s => bs.filter(b => b.stage===s).length;
+    const closes = bs.filter(b => b.dates && b.dates.close && dayDiff(b.dates.close)>=0)
+      .sort((a,b)=> a.dates.close < b.dates.close ? -1:1);
+    el.innerHTML = `<div class="pipe">
+      <div class="st"><b>${cnt('prep')}</b><span>備標</span></div>
+      <div class="st"><b>${cnt('est')}</b><span>估算</span></div>
+      <div class="st hot"><b>${cnt('sub')}</b><span>送標</span></div>
+      <div class="st"><b>${cnt('open')}</b><span>開標</span></div></div>` +
+      (closes.length ? `<div style="font-size:12px; color:var(--urgent); font-weight:700; margin-top:8px;">⚠ ${esc(closes[0].name)} 截標倒數 ${dayDiff(closes[0].dates.close)} 天</div>` : '');
+    el.style.cursor = 'pointer';
+    el.onclick = () => go('bid');
   }},
   todos: {t:'待辦清單', render(el){
     const tds = alive().filter(i => i.kind==='td' && !i.done && inScope(i))
@@ -391,13 +591,15 @@ const SCOPE_NAME = {site:'在建', case:'投標', life:'個人'};
 function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 function liHtml(it){
   const chk = it.kind==='td' ? `<span class="tdchk" data-chk="${it.id}">${it.done?'✓':''}</span>` : '';
-  let due = '';
+  let due = '', wx = '';
   if (it.date){ const d = dueLabel(it.date, it.time); due = `<span class="due ${d.cls}">${d.txt}</span>`; }
-  return `<li data-id="${it.id}" class="${it.done?'done':''}">${chk}<span class="tag ${it.scope}">${SCOPE_NAME[it.scope]}</span><span class="ttl">${esc(it.title)}</span>${due}</li>`;
+  if (it.kind==='ev' && it.date && it.scope!=='life'){ const w = wxStr(it.date); if (w) wx = `<span class="wx">${w}</span>`; }
+  return `<li data-id="${it.id}" ${it.ro?`data-ro="${it.ro}"`:''} class="${it.done?'done':''}">${chk}<span class="tag ${it.scope}">${SCOPE_NAME[it.scope]}</span><span class="ttl">${esc(it.title)}</span>${wx}${due}</li>`;
 }
 function bindLis(root){
   root.querySelectorAll('li[data-id]').forEach(li => li.onclick = e => {
     if (e.target.dataset.chk){ toggleDone(e.target.dataset.chk); return; }
+    if (li.dataset.ro){ go(li.dataset.ro); return; }
     openEdit(li.dataset.id);
   });
 }
@@ -441,21 +643,26 @@ function renderCards(){
 let calY = new Date().getFullYear(), calM = new Date().getMonth();
 function drawCal(tbl, y, m, mini){
   const first = new Date(y, m, 1), off = first.getDay(), days = new Date(y, m+1, 0).getDate();
-  const t = todayStr();
+  const t = todayStr(), clash = clashDates();
   let html = '<tr>'+WD.map(w=>'<th>'+w+'</th>').join('')+'</tr><tr>';
   for (let i=0;i<off;i++) html += '<td class="dim"></td>';
   for (let d=1; d<=days; d++){
     const ds = y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
-    const evs = alive().filter(i => i.kind==='ev' && i.date===ds && inScope(i));
+    const evs = allEvents().filter(i => i.date===ds && inScope(i));
     const shown = evs.slice(0, mini?2:3);
-    html += `<td data-d="${ds}" class="${ds===t?'today':''}">${d}` +
-      shown.map(e=>`<span class="ev ${e.scope}" data-ev="${e.id}">${esc(e.title)}</span>`).join('') +
-      (evs.length>shown.length?`<span class="ev" style="color:var(--sub);">＋${evs.length-shown.length}</span>`:'') + '</td>';
+    const isClash = clash.has(ds) && D.settings.scope !== 'life';
+    const wx = (!mini && dayDiff(ds)>=0 && dayDiff(ds)<14) ? wxStr(ds) : '';
+    html += `<td data-d="${ds}" class="${ds===t?'today':''} ${isClash?'clash':''}" style="position:relative;">${d}` +
+      (isClash?'<span style="position:absolute; top:2px; right:2px; font-size:9px; color:#fff; background:var(--urgent); padding:0 4px; font-weight:700;">撞期</span>':'') +
+      shown.map(e=>`<span class="ev ${e.scope}" data-ev="${e.id}" ${e.ro?`data-ro="${e.ro}"`:''}>${esc(e.title)}</span>`).join('') +
+      (evs.length>shown.length?`<span class="ev" style="color:var(--sub);">＋${evs.length-shown.length}</span>`:'') +
+      (wx?`<div style="font-size:9px; color:var(--sub); text-align:right;">${wx}</div>`:'') + '</td>';
     if ((off+d)%7===0 && d<days) html += '</tr><tr>';
   }
   html += '</tr>';
   tbl.innerHTML = html;
   tbl.querySelectorAll('td[data-d]').forEach(td => td.onclick = e => {
+    if (e.target.dataset.ro){ go(e.target.dataset.ro); return; }
     if (e.target.dataset.ev){ openEdit(e.target.dataset.ev); return; }
     openAdd('ev', td.dataset.d);
   });
@@ -464,7 +671,7 @@ function renderCalPage(){
   $('#calTitle').textContent = calY+' 年 '+(calM+1)+' 月';
   drawCal($('#calBig'), calY, calM, false);
   const mm = calY+'-'+String(calM+1).padStart(2,'0');
-  const evs = alive().filter(i => i.kind==='ev' && i.date && i.date.startsWith(mm) && inScope(i))
+  const evs = allEvents().filter(i => i.date && i.date.startsWith(mm) && inScope(i))
     .sort((a,b)=> (a.date+(a.time||'')) < (b.date+(b.time||'')) ? -1:1);
   $('#calList').innerHTML = evs.length ? evs.map(liHtml).join('') : '<div class="empty">本月沒有行程</div>';
   bindLis($('#calList').parentElement);
@@ -483,6 +690,242 @@ function renderTodoPage(){
   $('#todoDone').innerHTML = done.length ? done.map(liHtml).join('') : '<div class="empty">—</div>';
   bindLis($('#page-todo'));
 }
+
+/* ════════ 在建工程頁 ════════ */
+let projSel = null;
+function billStatusNext(s){ return {'待請':'可請','可請':'已請','已請':'入帳','入帳':'待請'}[s] || '待請'; }
+function renderProjPage(){
+  const ps = aliveP().filter(p => p.status !== 'done');
+  const doneN = aliveP().filter(p => p.status === 'done').length;
+  if (!ps.find(p => p.id === projSel)) projSel = ps.length ? ps[0].id : null;
+  $('#projTabs').innerHTML = ps.map(p =>
+    `<button class="${p.id===projSel?'on':''}" data-p="${p.id}">${esc(p.name)}${p.status==='warranty'?' 🛡':''}</button>`).join('') +
+    (doneN ? `<button style="opacity:.6;">已結案 ${doneN}</button>` : '');
+  $('#projTabs').querySelectorAll('button[data-p]').forEach(b => b.onclick = () => { projSel = b.dataset.p; renderProjPage(); });
+  const box = $('#projDetail');
+  const p = ps.find(x => x.id === projSel);
+  if (!p){ box.innerHTML = '<div class="card"><div class="empty">還沒有工程。按「＋ 新增工程」，或在投標案得標後一鍵轉入。</div></div>'; return; }
+
+  const spent = (p.expenses||[]).reduce((s,e)=>s+(+e.amt||0),0);
+  const inPaid = (p.billing||[]).filter(b=>b.status==='入帳').reduce((s,b)=>s+(+p.contract||0)*(+b.pct||0)/100,0);
+  const spendPct = p.budget>0 ? Math.round(spent/p.budget*100) : 0;
+  const over = p.budget>0 && spendPct > (+p.prog||0) + 5;
+
+  box.innerHTML = `
+  <div style="display:flex; gap:12px; flex-wrap:wrap;">
+    <div class="card" style="flex:1.2; min-width:270px;">
+      <h3>基本資料 <span class="sp"><button class="btn" style="padding:3px 12px; font-size:12px;" id="pEdit">編輯</button></span></h3>
+      <div class="bd">
+        <div class="setrow">進度 <b style="margin-left:auto;">${p.prog||0}%</b></div>
+        <div class="bar"><i style="width:${p.prog||0}%; background:var(--site);"></i></div>
+        <div class="setrow" style="margin-top:6px;">合約金額 <span style="margin-left:auto;">${money(p.contract)}</span></div>
+        <div class="setrow">已入帳 <span style="margin-left:auto; color:var(--life);">${money(inPaid)}</span></div>
+        ${p.status==='warranty' ? `<div class="setrow">保固到期 <span style="margin-left:auto;" class="${p.wEnd && dayDiff(p.wEnd)<=30?'due warn':''}">${p.wEnd||'未設'}${p.wEnd?'（剩 '+dayDiff(p.wEnd)+' 天）':''}</span></div>
+        <div class="setrow">保固金 <span style="margin-left:auto;">${money(p.ret)}・${p.retOk?'已退 ✓':'<b style="color:var(--urgent);">未退</b>'}</span></div>`:''}
+        ${p.g95 ? `<div class="setrow" style="cursor:pointer;" onclick="window.open('${esc(p.g95)}')">G95 缺失追蹤 <span style="margin-left:auto; color:var(--case);">開啟 ▸</span></div>`:''}
+      </div>
+    </div>
+    <div class="card" style="flex:1.2; min-width:270px;">
+      <h3>請款期數（點狀態切換：待請→可請→已請→入帳）</h3>
+      <div class="bd">
+        <ul class="list" id="billList">${(p.billing||[]).map((b,i) => `
+          <li><span>第${i+1}期・${b.pct||0}%</span>
+            <span class="due">${b.due||''}</span>
+            <button class="btn" style="padding:2px 10px; font-size:12px; margin-left:auto; ${b.status==='入帳'?'color:var(--life);':b.status==='可請'?'color:var(--soon);':''}" data-bill="${i}">${b.status||'待請'}</button></li>`).join('') || '<div class="empty">尚無期數</div>'}
+        </ul>
+        <div class="iform"><input type="number" id="nb_pct" placeholder="%"><input type="date" id="nb_due"><button class="btn" id="nb_add">＋期數</button></div>
+      </div>
+    </div>
+    <div class="card" style="flex:1.4; min-width:280px;">
+      <h3>支出・損益</h3>
+      <div class="bd">
+        <div style="font-size:12px; display:flex; justify-content:space-between;"><span>實際支出</span><span>${money(spent)}／預算 ${money(p.budget)}</span></div>
+        <div class="bar"><i style="width:${Math.min(100,spendPct)}%; background:${over?'var(--urgent)':'var(--sub)'};"></i></div>
+        ${over ? `<div class="warnbox">⚠ 花費進度 ${spendPct}% ＞ 工程進度 ${p.prog||0}%——超支警訊</div>`
+               : `<div class="okbox">花費進度 ${spendPct}%・工程進度 ${p.prog||0}%，正常</div>`}
+        <ul class="list">${(p.expenses||[]).slice(-6).reverse().map((e,ri) => {
+          const i = p.expenses.length - 1 - ri;
+          return `<li><span>${esc(e.t)}</span><span class="due">${money(e.amt)}</span><button class="btn" style="padding:0 8px; font-size:11px;" data-exdel="${i}">✕</button></li>`;
+        }).join('')}</ul>
+        <div class="iform"><input id="ne_t" placeholder="項目（例：泥作點工）"><input type="number" id="ne_amt" placeholder="金額"><button class="btn" id="ne_add">＋記支出</button></div>
+      </div>
+    </div>
+  </div>`;
+
+  $('#pEdit').onclick = () => openProj(p.id);
+  box.querySelectorAll('[data-bill]').forEach(b => b.onclick = () => {
+    p.billing[+b.dataset.bill].status = billStatusNext(p.billing[+b.dataset.bill].status);
+    p.rv++; p.mt = now(); save(); fbPushDoc('projects', p); renderProjPage();
+  });
+  $('#nb_add').onclick = () => {
+    const pct = +$('#nb_pct').value || 0; if (!pct) { toast('填 % 數'); return; }
+    (p.billing = p.billing||[]).push({pct, due: $('#nb_due').value || null, status:'待請'});
+    p.rv++; p.mt = now(); save(); fbPushDoc('projects', p); renderProjPage();
+  };
+  $('#ne_add').onclick = () => {
+    const t = $('#ne_t').value.trim(), amt = +$('#ne_amt').value || 0;
+    if (!t || !amt){ toast('項目與金額都要填'); return; }
+    (p.expenses = p.expenses||[]).push({t, amt, at: now()});
+    p.rv++; p.mt = now(); save(); fbPushDoc('projects', p); renderProjPage(); toast('已記支出');
+  };
+  box.querySelectorAll('[data-exdel]').forEach(b => b.onclick = () => {
+    p.expenses.splice(+b.dataset.exdel, 1);
+    p.rv++; p.mt = now(); save(); fbPushDoc('projects', p); renderProjPage();
+  });
+}
+
+/* 工程編輯彈窗 */
+let pEditing = null;
+function openProj(id){
+  pEditing = id ? D.projects.find(x => x.id===id) : null;
+  $('#pTitle').firstChild.textContent = pEditing ? '編輯工程 ' : '新增工程 ';
+  $('#p_name').value = pEditing ? pEditing.name : '';
+  $('#p_contract').value = pEditing ? (pEditing.contract||'') : '';
+  $('#p_budget').value = pEditing ? (pEditing.budget||'') : '';
+  $('#p_prog').value = pEditing ? (pEditing.prog||0) : 0;
+  $('#p_status').value = pEditing ? (pEditing.status||'active') : 'active';
+  $('#p_wend').value = pEditing ? (pEditing.wEnd||'') : '';
+  $('#p_ret').value = pEditing ? (pEditing.ret||'') : '';
+  $('#p_retok').checked = pEditing ? !!pEditing.retOk : false;
+  $('#p_g95').value = pEditing ? (pEditing.g95||'') : '';
+  $('#pDel').style.display = pEditing ? '' : 'none';
+  $('#pmask').classList.add('on');
+}
+$('#pClose').onclick = () => $('#pmask').classList.remove('on');
+$('#pmask').onclick = e => { if (e.target===$('#pmask')) $('#pmask').classList.remove('on'); };
+$('#pSave').onclick = () => {
+  const name = $('#p_name').value.trim(); if (!name){ toast('名稱不能空白'); return; }
+  const v = {name, contract:+$('#p_contract').value||0, budget:+$('#p_budget').value||0,
+    prog:Math.max(0,Math.min(100,+$('#p_prog').value||0)), status:$('#p_status').value,
+    wEnd:$('#p_wend').value||null, ret:+$('#p_ret').value||0, retOk:$('#p_retok').checked, g95:$('#p_g95').value.trim()||null};
+  let p = pEditing;
+  if (p){ Object.assign(p, v, {rv:p.rv+1, mt:now()}); }
+  else { p = Object.assign({id:uid(), billing:[], expenses:[], rv:1, mt:now(), del:false}, v); D.projects.push(p); projSel = p.id; }
+  save(); fbPushDoc('projects', p); $('#pmask').classList.remove('on'); renderAll(); toast('已儲存 ✓');
+};
+$('#pDel').onclick = () => {
+  if (pEditing && confirm('刪除這個工程？（墓碑保留可還原）')){
+    pEditing.del = true; pEditing.rv++; pEditing.mt = now();
+    save(); fbPushDoc('projects', pEditing); $('#pmask').classList.remove('on'); renderAll();
+  }
+};
+
+/* ════════ 投標案頁 ════════ */
+const STAGE_NAME = {prep:'領標・備標', est:'估算中', sub:'已送標', open:'待開標', won:'得標', lost:'未得標'};
+function renderBidPage(){
+  const bs = aliveB();
+  const colHtml = (stages, title, extra) => {
+    const list = bs.filter(b => stages.includes(b.stage));
+    return `<div class="col"><h5>${title} ${list.length||''}</h5>` + list.map(b => {
+      const close = b.dates && b.dates.close;
+      const closeTxt = close ? (dayDiff(close)>=0 ? `截標 ${close.slice(5)}${dayDiff(close)<=3?' 🔴':''}` : '') : '';
+      return `<div class="jcard" data-bid="${b.id}">${esc(b.name)}
+        <small>${esc(b.owner||'')}・${money(b.amt)}</small>
+        ${closeTxt?`<small class="${dayDiff(close)<=3?'w':''}">${closeTxt}</small>`:''}
+        ${b.stage==='won'?'<small style="color:var(--life);">得標 ✓</small>':''}${b.stage==='lost'?'<small>歸檔</small>':''}</div>`;
+    }).join('') + '</div>';
+  };
+  $('#bidBoard').innerHTML =
+    colHtml(['prep'],'領標・備標') + colHtml(['est'],'估算中') + colHtml(['sub'],'已送標') +
+    colHtml(['open'],'待開標') + colHtml(['won','lost'],'結果');
+  $('#bidBoard').querySelectorAll('[data-bid]').forEach(n => n.onclick = () => openBid(n.dataset.bid));
+
+  /* 待追款 */
+  const chase = [];
+  bs.filter(b => b.dep>0 && b.depPaid && !b.depRet).forEach(b => chase.push({t:b.name+' 押標金', amt:b.dep, warn:['won','lost'].includes(b.stage)}));
+  aliveP().filter(p => p.status!=='active' && p.ret>0 && !p.retOk).forEach(p => chase.push({t:p.name+' 保固金', amt:p.ret, warn:p.status==='done' || (p.wEnd && dayDiff(p.wEnd)<=0)}));
+  $('#chaseBox').innerHTML = chase.length ? '<ul class="list">' + chase.map(c =>
+    `<li><span>${esc(c.t)}</span><span class="due ${c.warn?'warn':''}">${money(c.amt)}${c.warn?'・該追了！':''}</span></li>`).join('') + '</ul>'
+    : '<div class="empty">目前沒有卡住的錢 ✓</div>';
+
+  /* 名冊 */
+  const cs = D.clients.filter(c => !c.del);
+  $('#clientBox').innerHTML = (cs.length ? '<ul class="list">' + cs.map(c =>
+    `<li data-cl="${c.id}"><span>${esc(c.name)}</span><span class="due">${esc(c.note||'')}</span><button class="btn" style="padding:0 8px; font-size:11px;" data-cldel="${c.id}">✕</button></li>`).join('') + '</ul>' : '<div class="empty">尚無名冊</div>') +
+    `<div class="iform"><input id="nc_name" placeholder="名稱（業主／協力）"><input id="nc_note" placeholder="備註"><button class="btn" id="nc_add">＋加入</button></div>`;
+  $('#nc_add').onclick = () => {
+    const name = $('#nc_name').value.trim(); if (!name){ toast('填名稱'); return; }
+    const c = {id:uid(), name, note:$('#nc_note').value.trim(), rv:1, mt:now(), del:false};
+    D.clients.push(c); save(); fbPushDoc('clients', c); renderBidPage();
+  };
+  $('#clientBox').querySelectorAll('[data-cldel]').forEach(b => b.onclick = e => {
+    e.stopPropagation();
+    const c = D.clients.find(x => x.id===b.dataset.cldel);
+    if (c && confirm('移除「'+c.name+'」？')){ c.del = true; c.rv++; c.mt = now(); save(); fbPushDoc('clients', c); renderBidPage(); }
+  });
+}
+
+/* 投標編輯彈窗 */
+let bEditing = null;
+function openBid(id){
+  bEditing = id ? D.bids.find(x => x.id===id) : null;
+  $('#bTitle').firstChild.textContent = bEditing ? '編輯投標案 ' : '新增投標案 ';
+  const b = bEditing || {dates:{}};
+  $('#b_name').value = b.name||''; $('#b_stage').value = b.stage||'prep';
+  $('#b_owner').value = b.owner||''; $('#b_amt').value = b.amt||'';
+  $('#b_d_site').value = (b.dates&&b.dates.site)||''; $('#b_d_qa').value = (b.dates&&b.dates.qa)||'';
+  $('#b_d_close').value = (b.dates&&b.dates.close)||''; $('#b_d_open').value = (b.dates&&b.dates.open)||'';
+  $('#b_dep').value = b.dep||''; $('#b_dep_paid').checked = !!b.depPaid; $('#b_dep_ret').checked = !!b.depRet;
+  $('#b_items').value = b.items||'';
+  $('#bDel').style.display = bEditing ? '' : 'none';
+  $('#clientList').innerHTML = D.clients.filter(c=>!c.del).map(c=>`<option value="${esc(c.name)}">`).join('');
+  $('#bmask').classList.add('on');
+}
+function bidFromForm(){
+  return {name:$('#b_name').value.trim(), stage:$('#b_stage').value, owner:$('#b_owner').value.trim(),
+    amt:+$('#b_amt').value||0,
+    dates:{site:$('#b_d_site').value||null, qa:$('#b_d_qa').value||null, close:$('#b_d_close').value||null, open:$('#b_d_open').value||null},
+    dep:+$('#b_dep').value||0, depPaid:$('#b_dep_paid').checked, depRet:$('#b_dep_ret').checked,
+    items:$('#b_items').value};
+}
+$('#bClose').onclick = () => $('#bmask').classList.remove('on');
+$('#bmask').onclick = e => { if (e.target===$('#bmask')) $('#bmask').classList.remove('on'); };
+$('#bSave').onclick = () => {
+  const v = bidFromForm(); if (!v.name){ toast('案名不能空白'); return; }
+  let b = bEditing;
+  if (b){ Object.assign(b, v, {rv:b.rv+1, mt:now()}); }
+  else { b = Object.assign({id:uid(), rv:1, mt:now(), del:false}, v); D.bids.push(b); }
+  save(); fbPushDoc('bids', b); $('#bmask').classList.remove('on'); renderAll(); toast('已儲存 ✓');
+};
+$('#bDel').onclick = () => {
+  if (bEditing && confirm('刪除這個投標案？')){
+    bEditing.del = true; bEditing.rv++; bEditing.mt = now();
+    save(); fbPushDoc('bids', bEditing); $('#bmask').classList.remove('on'); renderAll();
+  }
+};
+$('#bWin').onclick = () => {
+  const v = bidFromForm(); if (!v.name){ toast('案名不能空白'); return; }
+  let b = bEditing;
+  if (!b){ b = Object.assign({id:uid(), rv:1, mt:now(), del:false}, v); D.bids.push(b); }
+  else Object.assign(b, v);
+  b.stage = 'won'; b.rv++; b.mt = now();
+  const p = {id:uid(), name:b.name, contract:b.amt, budget:b.amt, prog:0, status:'active',
+    wEnd:null, ret:0, retOk:false, g95:null,
+    billing:[{pct:30,due:null,status:'待請'},{pct:40,due:null,status:'待請'},{pct:30,due:null,status:'待請'}],
+    expenses:[], rv:1, mt:now(), del:false};
+  D.projects.push(p); projSel = p.id;
+  save(); fbPushDoc('bids', b); fbPushDoc('projects', p);
+  $('#bmask').classList.remove('on'); go('proj'); toast('🏆 已轉為在建工程，估價金額成為預算基準');
+};
+$('#bPrint').onclick = () => {
+  const v = bidFromForm();
+  const rows = (v.items||'').split('\n').map(l => l.split('=')).filter(a => a[0] && a[0].trim());
+  const tot = rows.reduce((s,a)=>s+(+String(a[1]||'').replace(/[^\d.]/g,'')||0),0);
+  const w = window.open('', '_blank');
+  w.document.write(`<html><head><meta charset="utf-8"><title>估價單</title>
+  <style>body{font-family:"PingFang TC","Microsoft JhengHei",sans-serif; padding:40px; color:#222; max-width:640px; margin:0 auto;}
+  h1{font-size:20px; border-bottom:2px solid #222; padding-bottom:8px;} table{width:100%; border-collapse:collapse; margin-top:16px;}
+  td,th{border-bottom:1px solid #ccc; padding:8px 4px; text-align:left; font-size:14px;} .r{text-align:right;}
+  .tot{font-size:16px; font-weight:700; text-align:right; margin-top:14px;} .ft{color:#888; font-size:12px; margin-top:30px;}</style></head><body>
+  <h1>估價單</h1>
+  <p>案名：${esc(v.name)}　業主：${esc(v.owner||'—')}　日期：${todayStr()}</p>
+  <table><tr><th>項目</th><th class="r">金額</th></tr>` +
+  rows.map(a => `<tr><td>${esc(a[0].trim())}</td><td class="r">NT$ ${(+String(a[1]||'').replace(/[^\d.]/g,'')||0).toLocaleString()}</td></tr>`).join('') +
+  `</table><div class="tot">合計 NT$ ${tot.toLocaleString()}</div>
+  <div class="ft">艋舺良　敬上・本估價單有效期 14 天</div>
+  <script>window.print()<\/script></body></html>`);
+  w.document.close();
+};
 
 /* ── 快速記錄／編輯 ── */
 let mEdit = null, mKind = 'ev', mScope = 'life';
@@ -525,7 +968,9 @@ $('#mSave').onclick = () => {
     D.items.push(it);
   }
   save(); fbPushItem(it);
-  $('#mask').classList.remove('on'); renderAll(); toast('已儲存 ✓');
+  $('#mask').classList.remove('on'); renderAll();
+  if (it.kind==='ev' && it.scope!=='life' && it.date && allEvents().filter(x => x.date===it.date && x.scope!=='life').length >= 2) toast('⚠ 已儲存，但當天已有其他工作行程——撞期！');
+  else toast('已儲存 ✓');
 };
 $('#mDel').onclick = () => {
   if (mEdit){ mEdit.del = true; mEdit.rv++; mEdit.mt = now(); save(); fbPushItem(mEdit); }
@@ -635,7 +1080,8 @@ function toast(msg){
 function renderTop(){
   const d = new Date(), h = d.getHours();
   $('#greet').textContent = (h<5?'晚安':h<11?'早安':h<18?'午安':'晚安') + '，艋舺 👋';
-  $('#today').textContent = `${d.getFullYear()} 年 ${d.getMonth()+1} 月 ${d.getDate()} 日 · 星期${WD[d.getDay()]}`;
+  const wx = wxStr(todayStr());
+  $('#today').textContent = `${d.getFullYear()} 年 ${d.getMonth()+1} 月 ${d.getDate()} 日 · 星期${WD[d.getDay()]}` + (wx ? ` ｜ 台北 ${wx}` : '');
   const doy = Math.floor((d - new Date(d.getFullYear(),0,0)) / 86400000);
   $('#quote').textContent = '「' + QUOTES[doy % QUOTES.length] + '」';
 }
@@ -643,7 +1089,11 @@ function renderStats(){
   const a = alive();
   $('#statRow').textContent = `行程 ${a.filter(i=>i.kind==='ev').length} 筆・待辦 ${a.filter(i=>i.kind==='td').length} 筆・儲存於本機瀏覽器`;
 }
-$('#resetOrder').onclick = () => { D.settings.order = ['focus','goals','sched','todos','cal']; D.settings.folded = {}; save(); renderAll(); toast('已還原'); };
+$('#resetOrder').onclick = () => { D.settings.order = DEF_ORDER.slice(); D.settings.folded = {}; save(); renderAll(); toast('已還原'); };
+$('#projAdd').onclick = () => openProj(null);
+$('#bidAdd').onclick = () => openBid(null);
+$('#projEye').onclick = toggleMoney;
+$('#bidEye').onclick = toggleMoney;
 
 /* ════════ 雲端同步（Firebase・單人多裝置・新者勝＋墓碑） ════════ */
 const FB_ON = typeof firebase !== 'undefined';
@@ -664,9 +1114,25 @@ function fbPushGoals(){
   if (!fbDb || !fbUser) return;
   fbDb.collection('meta').doc('goals').set({goals: D.goals, mt: now()}).catch(e => console.warn('sync', e));
 }
+function fbPushDoc(coll, obj){
+  if (!fbDb || !fbUser || !obj) return;
+  fbDb.collection(coll).doc(obj.id).set(JSON.parse(JSON.stringify(obj))).catch(e => console.warn('sync', e));
+}
 function fbPushAll(){
   if (!fbDb || !fbUser) return;
   D.items.forEach(fbPushItem); fbPushGoals();
+  D.projects.forEach(p => fbPushDoc('projects', p));
+  D.bids.forEach(b => fbPushDoc('bids', b));
+  D.clients.forEach(c => fbPushDoc('clients', c));
+}
+function mergeArr(arr, inc){
+  const ex = arr.find(x => x.id === inc.id);
+  if (!ex){ arr.push(inc); return true; }
+  if ((inc.mt||0) > (ex.mt||0)){
+    Object.keys(ex).forEach(k => delete ex[k]);
+    Object.assign(ex, inc); return true;
+  }
+  return false;
 }
 function mergeIncoming(inc){
   let changed = false;
@@ -683,6 +1149,17 @@ function fbStart(){
       snap.docChanges().forEach(ch => {
         if (ch.type === 'removed') return;
         if (mergeIncoming(ch.doc.data())) changed = true;
+      });
+      if (changed){ try{ localStorage.setItem(KEY, JSON.stringify(D)); }catch(e){ mem = D; } renderAll(); }
+    }, e => console.warn('snap', e));
+    fbSubs.push(un);
+  });
+  ['projects','bids','clients'].forEach(coll => {
+    const un = fbDb.collection(coll).onSnapshot(snap => {
+      let changed = false;
+      snap.docChanges().forEach(ch => {
+        if (ch.type === 'removed') return;
+        if (mergeArr(D[coll], ch.doc.data())) changed = true;
       });
       if (changed){ try{ localStorage.setItem(KEY, JSON.stringify(D)); }catch(e){ mem = D; } renderAll(); }
     }, e => console.warn('snap', e));
@@ -734,12 +1211,15 @@ function renderAll(){
   if (pageNow==='home') renderCards();
   if (pageNow==='cal') renderCalPage();
   if (pageNow==='todo') renderTodoPage();
+  if (pageNow==='proj') renderProjPage();
+  if (pageNow==='bid') renderBidPage();
   if (pageNow==='set') renderStats();
   const mode = fbUser ? '雲端同步中' : '本機模式';
   $('#vtag1').textContent = VERSION + '・' + mode; $('#vtag2').textContent = VERSION + '・' + mode;
   applyAuthUI();
 }
 renderAll();
+fetchWX();
 </script>
 </body>
 </html>
