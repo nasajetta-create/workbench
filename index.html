@@ -181,7 +181,7 @@
       <li data-page="fin">記帳理財</li>
       <li data-page="home">長期目標</li>
       <li data-page="trip">旅遊規劃</li>
-      <li data-lock="1">靈感筆記 <span class="lk">下一批</span></li>
+      <li data-page="note">靈感筆記</li>
       <li data-page="set">設定・備份</li>
     </ul>
     <div class="vtag" id="vtag1"></div>
@@ -285,10 +285,21 @@
       </div>
     </section>
 
+    <!-- ═══ 靈感筆記 ═══ -->
+    <section class="page" id="page-note">
+      <div class="pagehead"><h2>靈感筆記</h2></div>
+      <div class="card"><div class="bd">
+        <div class="frow"><textarea id="noteTxt" placeholder="想到什麼記什麼——工法、點子、要問的事…" style="width:100%; border:1px solid var(--line); background:var(--page); color:var(--ink); padding:10px; font-family:inherit; font-size:14px; min-height:70px;"></textarea></div>
+        <div class="iform"><input id="noteTag" placeholder="標籤（選填，例：工法）" style="max-width:180px;"><button class="btn pri" id="noteSave">儲存筆記</button><button class="btn" id="noteCancel" style="display:none;">取消編輯</button></div>
+      </div></div>
+      <div class="card"><h3>筆記（📌 置頂・點內容編輯）</h3><div class="bd" id="noteList"></div></div>
+    </section>
+
     <!-- ═══ 設定 ═══ -->
     <section class="page" id="page-set">
       <div class="card"><h3>頁面</h3><div class="bd">
         <div class="setrow" style="cursor:pointer;" onclick="go('todo')">✅ 待辦清單<span style="margin-left:auto; color:var(--sub);">▸</span></div>
+        <div class="setrow" style="cursor:pointer;" onclick="go('note')">💡 靈感筆記<span style="margin-left:auto; color:var(--sub);">▸</span></div>
       </div></div>
       <div class="card"><h3>外觀</h3><div class="bd">
         <div class="setrow">主題
@@ -479,8 +490,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 'use strict';
-/* ════════ 艋舺良的工作台 W0806-05（Google 行事曆整合） ════════ */
-const VERSION = 'W0806-05';
+/* ════════ 艋舺良的工作台 W0806-06（靈感筆記） ════════ */
+const VERSION = 'W0806-06';
 const GCAL_CLIENT_ID = '654856338073-ukdt5nvtc8riq2010lado0i0n5vuhcfl.apps.googleusercontent.com';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
@@ -506,6 +517,7 @@ function blank(){ return {
   txs: [],                         // {id,t,amt,dir:'in'|'out',scope,proj,date,rv,mt,del}
   weights: [],                     // {id,kg,date,rv,mt,del}
   trips: [],                       // {id,kind:'near'|'wish',name,start,end,year,budget,split,note,done,rv,mt,del}
+  notes: [],                       // {id,txt,tag,pin,rv,mt,del}
   prefs: {netBase:0, goalMoney:0, countries:0, countriesTarget:50, weightTarget:0, mt:0},
   settings: {skin:'A', scope:'all', order:DEF_ORDER.slice(), folded:{}, showMoney:false, pin:null, lockMoney:false},
   ver: 1
@@ -515,7 +527,7 @@ function load(){
   try{ const r = localStorage.getItem(KEY); if(r) d = JSON.parse(r); }
   catch(e){ /* 私隱模式或預覽環境 */ }
   d = d || mem || blank();
-  ['projects','bids','clients','txs','weights','trips'].forEach(k => { if(!Array.isArray(d[k])) d[k] = []; });
+  ['projects','bids','clients','txs','weights','trips','notes'].forEach(k => { if(!Array.isArray(d[k])) d[k] = []; });
   d.prefs = Object.assign({netBase:0, goalMoney:0, countries:0, countriesTarget:50, weightTarget:0, mt:0}, d.prefs||{});
   d.settings.gcal = Object.assign({token:null, exp:0, cals:{}, writeOn:false, wId:null, cache:[]}, d.settings.gcal||{});
   const o = (d.settings.order||[]).filter(k => DEF_ORDER.includes(k));
@@ -1209,6 +1221,43 @@ function renderHeat(){
   box.innerHTML = html;
 }
 
+/* ════════ 靈感筆記頁 ════════ */
+let noteEditing = null;
+function renderNotePage(){
+  const ns = D.notes.filter(n => !n.del).sort((a,b) => (b.pin?1:0)-(a.pin?1:0) || b.mt - a.mt);
+  $('#noteList').innerHTML = ns.length ? '<ul class="list">' + ns.map(n =>
+    `<li style="align-items:flex-start;"><button class="btn" style="padding:1px 8px; font-size:12px; ${n.pin?'':'opacity:.4;'}" data-npin="${n.id}">📌</button>
+     <span class="ttl" data-nedit="${n.id}" style="white-space:pre-wrap; flex:1; cursor:pointer;">${esc(n.txt)}</span>
+     ${n.tag?`<span class="tag life">${esc(n.tag)}</span>`:''}
+     <span class="due">${ymd(new Date(n.mt)).slice(5)}</span>
+     <button class="btn" style="padding:0 8px; font-size:11px;" data-ndel="${n.id}">✕</button></li>`).join('') + '</ul>'
+    : '<div class="empty">還沒有筆記</div>';
+  $('#noteList').querySelectorAll('[data-npin]').forEach(b => b.onclick = () => {
+    const n = D.notes.find(x => x.id===b.dataset.npin);
+    n.pin = !n.pin; n.rv++; n.mt = now(); save(); fbPushDoc('notes', n); renderNotePage();
+  });
+  $('#noteList').querySelectorAll('[data-nedit]').forEach(s => s.onclick = () => {
+    noteEditing = D.notes.find(x => x.id===s.dataset.nedit);
+    $('#noteTxt').value = noteEditing.txt; $('#noteTag').value = noteEditing.tag||'';
+    $('#noteSave').textContent = '更新筆記'; $('#noteCancel').style.display = '';
+    window.scrollTo(0,0); $('#noteTxt').focus();
+  });
+  $('#noteList').querySelectorAll('[data-ndel]').forEach(b => b.onclick = () => {
+    const n = D.notes.find(x => x.id===b.dataset.ndel);
+    if (n && confirm('刪除這則筆記？')){ n.del = true; n.rv++; n.mt = now(); save(); fbPushDoc('notes', n); renderNotePage(); }
+  });
+}
+function noteReset(){ noteEditing = null; $('#noteTxt').value=''; $('#noteTag').value=''; $('#noteSave').textContent='儲存筆記'; $('#noteCancel').style.display='none'; }
+$('#noteSave').onclick = () => {
+  const txt = $('#noteTxt').value.trim(); if (!txt){ toast('內容不能空白'); return; }
+  const tag = $('#noteTag').value.trim() || null;
+  let n = noteEditing;
+  if (n){ Object.assign(n, {txt, tag, rv:n.rv+1, mt:now()}); }
+  else { n = {id:uid(), txt, tag, pin:false, rv:1, mt:now(), del:false}; D.notes.push(n); }
+  save(); fbPushDoc('notes', n); noteReset(); renderNotePage(); toast('已儲存 ✓');
+};
+$('#noteCancel').onclick = noteReset;
+
 /* ════════ PIN 鎖 ════════ */
 function applyLock(){
   if (D.settings.pin && !sessionStorage.getItem('wb_ok')) $('#lockMask').classList.add('on');
@@ -1611,6 +1660,7 @@ function fbPushAll(){
   D.txs.forEach(fbPushTx);
   D.weights.forEach(w => fbPushDoc('weights', w));
   D.trips.forEach(t => fbPushDoc('trips', t));
+  D.notes.forEach(n => fbPushDoc('notes', n));
 }
 function mergeArr(arr, inc){
   const ex = arr.find(x => x.id === inc.id);
@@ -1641,7 +1691,7 @@ function fbStart(){
     }, e => console.warn('snap', e));
     fbSubs.push(un);
   });
-  const collMap = {projects:'projects', bids:'bids', clients:'clients', weights:'weights', trips:'trips'};
+  const collMap = {projects:'projects', bids:'bids', clients:'clients', weights:'weights', trips:'trips', notes:'notes'};
   const y0 = new Date().getFullYear();
   ['txs_'+(y0-1), 'txs_'+y0, 'txs_'+(y0+1)].forEach(c => collMap[c] = 'txs');
   Object.keys(collMap).forEach(coll => {
@@ -1715,6 +1765,7 @@ function renderAll(){
   if (pageNow==='bid') renderBidPage();
   if (pageNow==='fin') renderFinPage();
   if (pageNow==='trip') renderTripPage();
+  if (pageNow==='note') renderNotePage();
   if (pageNow==='set'){ renderStats(); renderStats2(); renderGcal(); }
   const mode = fbUser ? '雲端同步中' : '本機模式';
   $('#vtag1').textContent = VERSION + '・' + mode; $('#vtag2').textContent = VERSION + '・' + mode;
