@@ -1,8 +1,11 @@
-/* 艋舺良的工作台 — 每朝簡報＋自動備份 Worker（WK0806-01）
+/* 艋舺良的工作台 — 每朝簡報＋自動備份 Worker（WK0806-02）
  * cron: "0 23 * * *" = 台北 07:00 每朝簡報（ntfy 推播）
  *       "0 19 * * *" = 台北 03:00 自動備份（GitHub 私有 repo）
  * 環境變數：SA_KEY（GCP 服務帳戶 JSON，Secret）、GH_TOKEN（GitHub PAT，Secret）、
+ *           NTFY_TOKEN（ntfy 存取權杖，Secret，選用——沒有也能跑）、
  *           NTFY_TOPIC、TEST_KEY（一般變數）
+ * WK0806-02 變更：push() 改為三段式備援＋回報每一段的 HTTP 狀態，
+ *   推播失敗不再靜默；支援 ntfy 帳號權杖以避開共用 IP 的匿名速率限制。
  */
 const PROJECT = 'mengjia-workbench';
 const BACKUP_REPO = 'nasajetta-create/workbench-backup';
@@ -16,7 +19,7 @@ export default {
     const url = new URL(req.url);
     if (url.searchParams.get('key') !== env.TEST_KEY) return new Response('forbidden', {status:403});
     try{
-      if (url.pathname === '/brief'){ const m = await brief(env); return new Response('已推播：\n' + m); }
+      if (url.pathname === '/brief'){ const m = await brief(env); return new Response(m); }
       if (url.pathname === '/backup'){ const n = await backup(env); return new Response('備份完成：' + n); }
       return new Response('ok（/brief 或 /backup）');
     }catch(e){ return new Response('錯誤：' + e.message, {status:500}); }
@@ -125,9 +128,42 @@ async function brief(env){
   L.push('量個體重再出門 💪');
   const d = new Date(tpe() + 'T00:00:00Z');
   const msg = `${+today.slice(5,7)}/${+today.slice(8,10)}（${WD[d.getUTCDay()]}）\n` + L.join('\n');
-  await fetch('https://ntfy.sh', {method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({topic: env.NTFY_TOPIC, title: '早安，艋舺 👋 每朝簡報', message: msg, tags: ['sunrise']})});
-  return msg;
+  const how = await push(env, '早安，艋舺 👋 每朝簡報', msg);
+  return '已推播（' + how + '）：\n' + msg;
+}
+
+/* ── ntfy 推播：三段式備援，失敗就吵 ── */
+function b64ascii(str){
+  const bytes = new TextEncoder().encode(str);
+  let bin = ''; for (const b of bytes) bin += String.fromCharCode(b);
+  return btoa(bin);
+}
+async function push(env, title, msg){
+  const H = {'User-Agent': 'mengjia-workbench/1.0'};
+  if (env.NTFY_TOKEN) H.Authorization = 'Bearer ' + env.NTFY_TOKEN;
+  const log = [];
+  const attempt = async (label, url, opt) => {
+    try{
+      const r = await fetch(url, opt);
+      if (r.ok){ log.push(label + '=ok'); return true; }
+      log.push(label + '=' + r.status + ':' + (await r.text()).slice(0,120).replace(/\s+/g,' '));
+    }catch(e){ log.push(label + '=ERR:' + e.message); }
+    return false;
+  };
+  /* ① JSON 打根路徑（原本的做法） */
+  if (await attempt('json', 'https://ntfy.sh/', {method:'POST',
+    headers: Object.assign({}, H, {'Content-Type':'application/json'}),
+    body: JSON.stringify({topic: env.NTFY_TOPIC, title, message: msg, tags: ['sunrise']})})) return log.join(' ');
+  /* ② 純文字打 /主題（標題走 RFC2047 編碼，避開非 ASCII 標頭問題） */
+  if (await attempt('text', 'https://ntfy.sh/' + env.NTFY_TOPIC, {method:'POST',
+    headers: Object.assign({}, H, {'Content-Type':'text/plain; charset=utf-8',
+      Title: '=?UTF-8?B?' + b64ascii(title) + '?=', Tags: 'sunrise'}),
+    body: msg})) return log.join(' ');
+  /* ③ /主題/publish，連標題都不帶（最陽春） */
+  if (await attempt('publish', 'https://ntfy.sh/' + env.NTFY_TOPIC + '/publish', {method:'POST',
+    headers: Object.assign({}, H, {'Content-Type':'text/plain; charset=utf-8'}),
+    body: title + '\n' + msg})) return log.join(' ');
+  throw new Error('ntfy 推播三種方式都失敗｜' + log.join(' ｜'));
 }
 
 /* ── 自動備份 ── */
