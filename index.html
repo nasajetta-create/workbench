@@ -324,6 +324,7 @@
           <small id="authInfo">用 Google 帳號登入後，資料即時同步到雲端（mengjia-workbench），手機電腦共用同一份。</small></div>
       </div></div>
       <div class="card"><h3>Google 行事曆</h3><div class="bd" id="gcalBox">—</div></div>
+      <div class="card"><h3>每朝推播</h3><div class="bd" id="pushBox">—</div></div>
       <div class="card"><h3>安全（PIN 鎖・僅此裝置）</h3><div class="bd">
         <div class="setrow">PIN 密碼
           <span class="iform" style="margin:0 0 0 auto;"><input type="password" id="pinSet" placeholder="4-8 碼，留空=關閉" style="max-width:150px;"><button class="btn" id="pinSave">設定</button></span>
@@ -491,7 +492,7 @@
 <script>
 'use strict';
 /* ════════ 艋舺良的工作台 W0806-06（靈感筆記） ════════ */
-const VERSION = 'W0806-06';
+const VERSION = 'W0806-07';
 const GCAL_CLIENT_ID = '654856338073-ukdt5nvtc8riq2010lado0i0n5vuhcfl.apps.googleusercontent.com';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
@@ -1413,6 +1414,106 @@ function renderGcal(){
   box.querySelectorAll('[data-gsc]').forEach(se => se.onchange = () => { G().cals[se.dataset.gsc].scope = se.value; save(); gSync(); });
 }
 
+/* ════════ 每朝推播（PWA 原生 Web Push） ════════
+ * Cloudflare Worker 每天台北 07:00 讀 Firestore 的 pushsubs，
+ * 用 VAPID 簽章＋aes128gcm 加密，直接把通知推到這支 App。不經任何第三方推播服務。 */
+const VAPID_PUB = 'BLm3fcUuRX5DSQqziOWr7F_2N4hgZN9sL2gF5dsGqiXw-bTa6A4dU2lUyChiKbvMb9RZkvUVSuFnrWwF4KuytO0';
+const pushOK = () => 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+const isIOS = () => /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const standalone = () => window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+function devName(){
+  const u = navigator.userAgent;
+  if (/iPhone/.test(u)) return 'iPhone';
+  if (/iPad/.test(u)) return 'iPad';
+  if (/Android/.test(u)) return 'Android';
+  if (/Mac/.test(u)) return 'Mac';
+  return '電腦';
+}
+function u8key(b64){
+  const s = (b64 + '='.repeat((4 - b64.length % 4) % 4)).replace(/-/g,'+').replace(/_/g,'/');
+  const bin = atob(s), out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+}
+function subId(endpoint){                       // 由端點推出固定的文件 id（同一裝置重訂不會長出第二筆）
+  let h = 5381;
+  for (let i = 0; i < endpoint.length; i++) h = ((h * 33) ^ endpoint.charCodeAt(i)) >>> 0;
+  return 'd' + h.toString(36) + endpoint.length.toString(36);
+}
+
+async function pushOn(){
+  if (!fbUser){ toast('請先在上面「連接雲端」'); return; }
+  let perm;
+  try { perm = await Notification.requestPermission(); }        // 必須在點擊手勢裡直接呼叫
+  catch(e){ toast('這個瀏覽器擋住了通知權限'); return; }
+  if (perm !== 'granted'){ toast('沒有通知權限，推播無法開啟'); renderPush(); return; }
+  try{
+    const reg = await navigator.serviceWorker.ready;
+    let sub = await reg.pushManager.getSubscription();
+    if (!sub) sub = await reg.pushManager.subscribe({userVisibleOnly:true, applicationServerKey: u8key(VAPID_PUB)});
+    const j = sub.toJSON();
+    const id = subId(j.endpoint);
+    await fbDb.collection('pushsubs').doc(id).set({
+      id, endpoint: j.endpoint, p256dh: j.keys.p256dh, auth: j.keys.auth,
+      name: devName(), mt: now(), del: false
+    });
+    D.settings.push = {on:true, id};
+    save(); renderPush();
+    toast('每朝推播已開啟 🔔');
+  }catch(e){ toast('訂閱失敗：' + (e.message || e.name)); console.warn('push', e); renderPush(); }
+}
+async function pushOff(){
+  try{
+    const reg = await navigator.serviceWorker.ready;
+    const sub = await reg.pushManager.getSubscription();
+    if (sub){
+      const id = subId(sub.toJSON().endpoint);
+      await sub.unsubscribe();
+      if (fbDb && fbUser) await fbDb.collection('pushsubs').doc(id).set({id, del:true, mt: now()}, {merge:true});
+    }
+  }catch(e){ console.warn('push off', e); }
+  D.settings.push = {on:false};
+  save(); renderPush();
+  toast('已關閉每朝推播');
+}
+
+async function renderPush(){
+  const box = $('#pushBox'); if (!box) return;
+  const row = (html) => `<div class="setrow" style="display:block;">${html}</div>`;
+
+  if (!pushOK() || !window.isSecureContext){
+    box.innerHTML = row('這個瀏覽器不支援網頁推播。<small>請改用 Safari（iPhone）或 Chrome（Android／電腦）開啟工作台。</small>');
+    return;
+  }
+  if (isIOS() && !standalone()){
+    box.innerHTML = row(`<b>iPhone 要先把工作台加入主畫面</b>
+      <small>iOS 只允許「已加入主畫面」的網頁 App 收推播。做法：Safari 下方<b>分享</b>鈕 → <b>加入主畫面</b> → 之後從桌面那個圖示打開工作台，再回到這裡開啟推播。</small>`);
+    return;
+  }
+  if (!fbUser){
+    box.innerHTML = row('請先在上面「雲端同步」連接 Google 帳號，推播訂閱要存在雲端才能讓排程找到你。');
+    return;
+  }
+  if (Notification.permission === 'denied'){
+    box.innerHTML = row(`通知權限被封鎖了。<small>到 iPhone「設定 → 通知 → 艋舺工作台」或瀏覽器的網站設定把通知打開，再回來這頁。</small>`);
+    return;
+  }
+
+  let sub = null;
+  try{ sub = await (await navigator.serviceWorker.ready).pushManager.getSubscription(); }catch(e){}
+  if (sub && D.settings.push && D.settings.push.on){
+    box.innerHTML = `<div class="setrow">✅ 已開啟（${devName()}）
+        <button class="btn" id="pushOffBtn" style="margin-left:auto;">關閉</button>
+        <small>每天早上 7:00 推一則簡報：天氣、今日行程、到期待辦、截標倒數、可請款期數、保固到期、旅程倒數。</small></div>`;
+    $('#pushOffBtn').onclick = pushOff;
+  } else {
+    box.innerHTML = `<div class="setrow">每天早上 7:00 推簡報到這台裝置
+        <button class="btn pri" id="pushOnBtn" style="margin-left:auto;">開啟推播</button>
+        <small>通知直接跳在工作台圖示上，不需要另外裝任何 App，也沒有則數限制。可以多台裝置各自開啟。</small></div>`;
+    $('#pushOnBtn').onclick = pushOn;
+  }
+}
+
 /* ── 快速記錄／編輯 ── */
 let mEdit = null, mEditTx = null, mKind = 'ev', mScope = 'life', mDir = 'out';
 function openAdd(kind, date){
@@ -1766,7 +1867,7 @@ function renderAll(){
   if (pageNow==='fin') renderFinPage();
   if (pageNow==='trip') renderTripPage();
   if (pageNow==='note') renderNotePage();
-  if (pageNow==='set'){ renderStats(); renderStats2(); renderGcal(); }
+  if (pageNow==='set'){ renderStats(); renderStats2(); renderGcal(); renderPush(); }
   const mode = fbUser ? '雲端同步中' : '本機模式';
   $('#vtag1').textContent = VERSION + '・' + mode; $('#vtag2').textContent = VERSION + '・' + mode;
   applyAuthUI();
@@ -1777,7 +1878,7 @@ applyLock();
 if (gOK()) setTimeout(()=>{ gLoadCals().then(gSync); }, 1500);   // 連線仍有效→開頁自動同步 GCal
 
 /* ════════ PWA：service worker 註冊＋強制自動更新 ════════ */
-if ('serviceWorker' in navigator && location.protocol === 'https:'){
+if ('serviceWorker' in navigator && window.isSecureContext){
   const hadController = !!navigator.serviceWorker.controller;
   navigator.serviceWorker.register('sw.js').catch(()=>{});
   let reloaded = false;
