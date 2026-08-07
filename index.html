@@ -550,7 +550,7 @@
 <script>
 'use strict';
 /* ════════ 艋舺良的工作台 W0806-06（靈感筆記） ════════ */
-const VERSION = 'W0807-01';
+const VERSION = 'W0807-02';
 const GCAL_CLIENT_ID = '654856338073-ukdt5nvtc8riq2010lado0i0n5vuhcfl.apps.googleusercontent.com';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
@@ -1780,7 +1780,8 @@ function renderTop(){
   const d = new Date(), h = d.getHours();
   $('#greet').textContent = (h<5?'晚安':h<11?'早安':h<18?'午安':'晚安') + '，艋舺';
   const wx = wxStr(todayStr());
-  $('#today').textContent = `${d.getFullYear()} 年 ${d.getMonth()+1} 月 ${d.getDate()} 日 · 星期${WD[d.getDay()]}` + (wx ? ` ｜ 台北 ${wx}` : '');
+  /* wx 內含 SVG 標記，必須用 innerHTML；日期部分先 esc 保險 */
+  $('#today').innerHTML = esc(`${d.getFullYear()} 年 ${d.getMonth()+1} 月 ${d.getDate()} 日 · 星期${WD[d.getDay()]}`) + (wx ? ` ｜ 台北 ${wx}` : '');
   const doy = Math.floor((d - new Date(d.getFullYear(),0,0)) / 86400000);
   $('#quote').textContent = '「' + QUOTES[doy % QUOTES.length] + '」';
 }
