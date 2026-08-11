@@ -626,8 +626,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 'use strict';
-/* ════════ 艋舺良的工作台 W0811-05（全局鎖開關＋月曆改星期一開頭） ════════ */
-const VERSION = 'W0811-05';
+/* ════════ 艋舺良的工作台 W0811-06（日期帶星期 8/11(二)＋月曆 Google 事件用日曆原色） ════════ */
+const VERSION = 'W0811-06';
 const GCAL_CLIENT_ID = '654856338073-ukdt5nvtc8riq2010lado0i0n5vuhcfl.apps.googleusercontent.com';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
@@ -699,14 +699,18 @@ function dayDiff(dateStr){ // dateStr - today（天）
   const d = new Date(dateStr+'T00:00:00');
   return Math.round((d - t) / 86400000);
 }
+function mdw(dateStr){ // 8/11(二) 格式
+  const d = new Date(dateStr + 'T00:00:00');
+  return (+dateStr.slice(5,7)) + '/' + (+dateStr.slice(8,10)) + '(' + WD[d.getDay()] + ')';
+}
 function dueLabel(dateStr, time){
   const n = dayDiff(dateStr);
-  let txt = dateStr.slice(5).replace('-','/') + (time ? ' '+time : '');
+  let txt = mdw(dateStr) + (time ? ' '+time : '');
   let cls = '';
   if (n < 0){ txt = '逾期 '+(-n)+' 天'; cls = 'warn'; }
   else if (n === 0){ txt = '今天'+(time?' '+time:''); cls = 'warn'; }
   else if (n === 1){ txt = '明天'+(time?' '+time:''); cls = 'soon'; }
-  else if (n <= 3){ txt = n+' 天後'; cls = 'soon'; }
+  else if (n <= 3){ cls = 'soon'; }
   return {txt, cls, n};
 }
 const QUOTES = ['把疑惑說出來，答案通常就在對話裡。','工地的事今天收，帳的事今天記。','慢慢來，比較快。','先把最難的那通電話打完。','錢要追，身體要顧。','標單再看一次，再送。','今天的日誌，是明天請款的證據。'];
@@ -959,7 +963,7 @@ function drawCal(tbl, y, m, mini){
     const wx = (!mini && dayDiff(ds)>=0 && dayDiff(ds)<14) ? wxStr(ds) : '';
     html += `<td data-d="${ds}" class="${ds===t?'today':''} ${isClash?'clash':''}" style="position:relative;">${d}` +
       (isClash?'<span style="position:absolute; top:2px; right:2px; font-size:.65rem; color:#fff; background:var(--urgent); padding:0 4px; font-weight:700;">撞期</span>':'') +
-      shown.map(e=>`<span class="ev ${e.scope}" data-ev="${e.id}" ${e.ro?`data-ro="${e.ro}"`:''}>${esc(e.title)}</span>`).join('') +
+      shown.map(e=>`<span class="ev ${e.scope}" data-ev="${e.id}" ${e.ro?`data-ro="${e.ro}"`:''} ${e.color?`style="background:${esc(e.color)};color:#fff;"`:''}>${esc(e.title)}</span>`).join('') +
       (evs.length>shown.length?`<span class="ev" style="color:var(--sub);">＋${evs.length-shown.length}</span>`:'') +
       (wx?`<div style="font-size:.65rem; color:var(--sub); text-align:right;">${wx}</div>`:'') + '</td>';
     if ((off+d)%7===0 && d<days) html += '</tr><tr>';
@@ -1752,7 +1756,10 @@ async function gLoadCals(){
     if (r.status === 401){ G().token = null; save(); renderGcal(); return; }
     const j = await r.json();
     gCalsList = (j.items||[]).filter(c => c.id !== G().wId);
-    gCalsList.forEach(c => { if (!(c.id in G().cals)) G().cals[c.id] = {on: !!c.primary, scope:'life'}; });
+    gCalsList.forEach(c => {
+      if (!(c.id in G().cals)) G().cals[c.id] = {on: !!c.primary, scope:'life'};
+      G().cals[c.id].color = c.backgroundColor || null;   // Google 日曆本身的顏色
+    });
     save(); renderGcal();
   }catch(e){ console.warn('gcal', e); }
 }
@@ -1775,7 +1782,7 @@ async function gSync(){
         const date = s.date || (s.dateTime ? s.dateTime.slice(0,10) : null);
         if (!date) return;
         out.push({id:'g_'+ev.id, kind:'ev', scope:cfg.scope||'life', title:'Ⓖ '+(ev.summary||'（無標題）'),
-          date, time: s.dateTime ? s.dateTime.slice(11,16) : null, link: ev.htmlLink||null});
+          date, time: s.dateTime ? s.dateTime.slice(11,16) : null, link: ev.htmlLink||null, color: cfg.color||null});
       });
     }catch(e){ console.warn('gcal', e); }
   }
