@@ -623,8 +623,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 'use strict';
-/* ════════ 艋舺良的工作台 W0811-03（報稅預估改表格＋版次顯示在標題與更多頁頂端） ════════ */
-const VERSION = 'W0811-03';
+/* ════════ 艋舺良的工作台 W0811-04（待確認固定項目允許金額 0＝不定期獎金型） ════════ */
+const VERSION = 'W0811-04';
 const GCAL_CLIENT_ID = '654856338073-ukdt5nvtc8riq2010lado0i0n5vuhcfl.apps.googleusercontent.com';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
@@ -1370,7 +1370,7 @@ function renderFinPage(){
     pend.map(p => `<div style="border:1px dashed var(--soon); background:color-mix(in srgb, var(--soon) 8%, var(--card)); padding:8px 10px; margin-bottom:6px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:.88rem;">
       <svg class="ic" style="color:var(--soon);"><use href="#i-warn"></use></svg>
       <span style="flex:1;">${p.due.slice(5).replace('-','/')} 到期：<b>${esc(p.r.name)}</b>（${p.r.dir==='in'?'收入':'支出'}）</span>
-      <input type="number" value="${p.r.amt||''}" data-pamt="${p.r.id}_${p.mm}" style="width:110px; padding:5px 8px; font-size:.88rem;">
+      <input type="number" value="${p.r.amt||''}" placeholder="金額" data-pamt="${p.r.id}_${p.mm}" style="width:110px; padding:5px 8px; font-size:.88rem;">
       <button class="btn pri" style="padding:5px 14px; font-size:.85rem;" data-pgo="${p.r.id}" data-pmm="${p.mm}" data-pdue="${p.due}">入帳</button>
       <button class="btn" style="padding:5px 10px; font-size:.85rem; color:var(--sub);" data-pskip="${p.r.id}" data-pmm="${p.mm}" data-pdue="${p.due}">略過</button>
     </div>`).join('') +
@@ -1517,7 +1517,7 @@ $('#recurAdd').onclick = () => openRecur(null);
 $('#rSave').onclick = () => {
   const name = $('#r_name').value.trim(); if (!name){ toast('名稱不能空白'); return; }
   const amt = +$('#r_amt').value||0, day = Math.max(1, Math.min(31, +$('#r_day').value||1));
-  if (!amt){ toast('金額不能是 0'); return; }
+  if (!amt && rMode==='auto'){ toast('自動入帳的項目金額不能是 0（不固定的金額請改「待確認」）'); return; }
   const v = {name, amt, day, dir:rDir, scope:rScope, mode:rMode, tax:rDir==='in'?rTax:null,
     taxAmt:rDir==='in' ? (+$('#r_taxamt').value||null) : null, on:$('#r_on').checked};
   let r = rEditing;
