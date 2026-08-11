@@ -620,18 +620,22 @@
     <div class="frow"><label>名稱</label><input id="l_name" placeholder="例：房貸、貨車貸款"></div>
     <div class="frow" style="display:flex; gap:8px;">
       <div style="flex:1;"><label>剩餘本金</label><input type="number" id="l_remain" placeholder="0"></div>
-      <div style="flex:1;"><label>月付金</label><input type="number" id="l_monthly" placeholder="0"></div>
+      <div style="flex:1;"><label>月付金（填 0＝手動還款）</label><input type="number" id="l_monthly" placeholder="0"></div>
       <div style="flex:1;"><label>扣款日</label><input type="number" id="l_day" min="1" max="31" placeholder="5"></div>
     </div>
     <div class="frow" style="display:flex; gap:8px;">
       <div style="flex:1;"><label>已還期數</label><input type="number" id="l_paid" placeholder="0"></div>
-      <div style="flex:1;"><label>總期數（親友借貸可不填）</label><input type="number" id="l_total" placeholder="無期限"></div>
+      <div style="flex:1;"><label>總期數（可不填）</label><input type="number" id="l_total" placeholder="無期限"></div>
     </div>
+    <div class="frow" style="display:flex; gap:8px;">
+      <div style="flex:1;"><label>利率%（選填，浮動填目前值）</label><input type="number" step="0.01" id="l_rate" placeholder="2.95"></div>
+      <div style="flex:1.4;"><label>到期日（選填）</label><input type="date" id="l_end"></div>
+    </div>
+    <div style="font-size:.75rem; color:var(--sub); margin-bottom:6px;">月付金填 0 的貸款不會自動入帳——卡片上會有「還一筆」，還多少記多少。利息浮動的建議另建固定項目「房貸利息」（待確認）按月記實際利息。</div>
     <div class="frow"><label>分類</label><div class="chips" id="lScope">
       <button data-v="site" style="color:var(--site);">工程</button>
       <button data-v="life" style="color:var(--life);">個人</button>
     </div></div>
-    <div style="font-size:.75rem; color:var(--sub); margin-bottom:6px;">每月扣款日自動記一筆還款支出（月付金全列支出）。</div>
     <div class="mbtns">
       <button class="btn del" id="lDel" style="display:none;">刪除</button>
       <button class="btn pri" id="lSave">儲存</button>
@@ -655,8 +659,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 'use strict';
-/* ════════ 艋舺良的工作台 W0811-10（還款卡顯示已還累計/總額；總期數改選填＝無期限親友借貸） ════════ */
-const VERSION = 'W0811-10';
+/* ════════ 艋舺良的工作台 W0811-11（貸款加利率/到期日；月付 0＝手動還款型＋還一筆） ════════ */
+const VERSION = 'W0811-11';
 const GCAL_CLIENT_ID = '654856338073-ukdt5nvtc8riq2010lado0i0n5vuhcfl.apps.googleusercontent.com';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
@@ -1322,11 +1326,12 @@ function processRecurs(){
          recur:r.id, date:due})) n++;
     });
   });
-  aliveL().forEach(l => {
+  aliveL().filter(l => (+l.monthly||0) > 0).forEach(l => {   // 月付 0＝手動還款型，不自動入帳
     dueWindow(l.start).forEach(mm => {
       const due = dueOf(mm, l.day);
       if (due <= t && bookTx('ln_' + l.id + '_' + mm.replace('-',''),
         {t:l.name + ' 還款', amt:+l.monthly||0, dir:'out', scope:l.scope||'life', proj:null, tax:null, loan:l.id, date:due})){
+        l.paidAmt = paidAmtOf(l) + (+l.monthly||0);
         l.remain = Math.max(0, (+l.remain||0) - (+l.monthly||0));
         l.paid = (+l.paid||0) + 1;
         l.rv++; l.mt = now(); fbPushDoc('loans', l); n++;
@@ -1440,28 +1445,47 @@ function renderFinPage(){
   /* ── 還款計畫 ── */
   const ls = aliveL().filter(l => inFinScope(l));
   $('#loanBox').innerHTML = ls.length ? ls.map(l => {
-    const paid = +l.paid||0, total = +l.total||0;
-    const paidAmt = paid * (+l.monthly||0);                 // 已還累計（月付固定）
+    const paid = +l.paid||0, total = +l.total||0, monthly = +l.monthly||0, rate = +l.rate||0;
+    const paidAmt = paidAmtOf(l);
     const principal = (+l.remain||0) + paidAmt;             // 總借款額 = 剩餘 + 已還
     const pct = principal > 0 ? Math.round(paidAmt / principal * 100) : 0;
-    let tail;
+    const parts = [];
+    parts.push(monthly > 0 ? '月還 ' + money(monthly) : '手動還款');
+    if (rate > 0) parts.push('利率 ' + rate + '%・月息約 ' + money(Math.round((+l.remain||0) * rate / 1200)));
     if (total > 0){
       const left = Math.max(0, total - paid);
       const endD = new Date(); endD.setMonth(endD.getMonth() + left);
-      tail = `第 ${paid}／${total} 期・` + (left>0 ? '預計 '+endD.getFullYear()+'-'+String(endD.getMonth()+1).padStart(2,'0')+' 還完' : '已還完 🎉');
+      parts.push(`第 ${paid}／${total} 期・` + (left>0 ? '預計 '+endD.getFullYear()+'-'+String(endD.getMonth()+1).padStart(2,'0')+' 還完' : '已還完 🎉'));
+    } else if (l.end){
+      parts.push('到期 ' + l.end + (dayDiff(l.end) > 0 ? '（剩 ' + Math.round(dayDiff(l.end)/30.4) + ' 個月）' : ''));
     } else {
-      tail = (+l.remain||0) > 0 ? '無期限（親友借貸）' : '已還完 🎉';
+      parts.push((+l.remain||0) > 0 ? '無期限（親友借貸）' : '已還完 🎉');
     }
-    return `<div data-loan="${l.id}" style="cursor:pointer; padding:8px 0; border-bottom:1px dashed var(--line);">
+    return `<div style="padding:8px 0; border-bottom:1px dashed var(--line);">
+      <div data-loan="${l.id}" style="cursor:pointer;">
       <div style="display:flex; justify-content:space-between; font-size:.95rem;"><b>${esc(l.name)}<small style="color:var(--sub); font-weight:400;">・每月${l.day}日</small></b>
         <span>剩 <b>${money(l.remain)}</b></span></div>
       <div style="display:flex; justify-content:space-between; font-size:.78rem; color:var(--sub); margin-top:2px;">
         <span>已還 <b style="color:var(--life);">${money(paidAmt)}</b>／總額 ${money(principal)}</span><span>${pct}%</span></div>
       <div class="bar"><i style="width:${pct}%; background:var(--case);"></i></div>
-      <div style="font-size:.75rem; color:var(--sub); margin-top:3px;">月還 ${money(l.monthly)}・${tail}</div>
+      <div style="font-size:.75rem; color:var(--sub); margin-top:3px;">${parts.join('・')}</div>
+      </div>
+      ${monthly === 0 ? `<div class="iform" style="margin-top:6px;"><input type="number" placeholder="這次還多少（本金）" data-lramt="${l.id}" style="max-width:150px;"><button class="btn" data-lrepay="${l.id}">－還一筆</button></div>` : ''}
     </div>`;
   }).join('') : '<div class="empty">沒有貸款——或按「＋貸款」把房貸車貸掛進來追蹤</div>';
   $('#loanBox').querySelectorAll('[data-loan]').forEach(n => n.onclick = () => openLoan(n.dataset.loan));
+  $('#loanBox').querySelectorAll('[data-lrepay]').forEach(b => b.onclick = e => {
+    e.stopPropagation();
+    const l = D.loans.find(x => x.id === b.dataset.lrepay); if (!l) return;
+    const amt = +($('#loanBox').querySelector(`[data-lramt="${l.id}"]`).value) || 0;
+    if (!amt){ toast('填這次還的金額'); return; }
+    const tx = {id:uid(), t:l.name + ' 還款', amt, dir:'out', scope:l.scope||'life', proj:null, tax:null, loan:l.id, date:todayStr(), rv:1, mt:now(), del:false};
+    D.txs.push(tx); fbPushTx(tx);
+    l.paidAmt = paidAmtOf(l) + amt;
+    l.remain = Math.max(0, (+l.remain||0) - amt);
+    l.rv++; l.mt = now(); fbPushDoc('loans', l);
+    save(); renderFinPage(); toast('已記還款 ' + money(amt) + ' ✓');
+  });
   /* ── 明年報稅預估（表格版） ── */
   const P = D.prefs.taxP, tc = taxCalc();
   const yy = new Date().getFullYear();
@@ -1587,6 +1611,7 @@ function openLoan(id){
   $('#lTitle').firstChild.textContent = lEditing ? '編輯貸款 ' : '新增貸款 ';
   $('#l_name').value = l.name||''; $('#l_remain').value = l.remain||''; $('#l_monthly').value = l.monthly||'';
   $('#l_day').value = l.day||''; $('#l_paid').value = l.paid||0; $('#l_total').value = l.total||'';
+  $('#l_rate').value = l.rate||''; $('#l_end').value = l.end||'';
   $$('#lScope button').forEach(b => b.classList.toggle('on', b.dataset.v===lScope));
   $('#lDel').style.display = lEditing ? '' : 'none';
   $('#lmask').classList.add('on');
@@ -1598,8 +1623,9 @@ $('#loanAdd').onclick = () => openLoan(null);
 $('#lSave').onclick = () => {
   const name = $('#l_name').value.trim(); if (!name){ toast('名稱不能空白'); return; }
   const v = {name, remain:+$('#l_remain').value||0, monthly:+$('#l_monthly').value||0,
-    day:Math.max(1, Math.min(31, +$('#l_day').value||1)), paid:+$('#l_paid').value||0, total:+$('#l_total').value||0, scope:lScope};
-  if (!v.monthly){ toast('月付金要填'); return; }
+    day:Math.max(1, Math.min(31, +$('#l_day').value||1)), paid:+$('#l_paid').value||0, total:+$('#l_total').value||0,
+    rate:+$('#l_rate').value||null, end:$('#l_end').value||null, scope:lScope};
+  if (!v.remain && !v.monthly){ toast('剩餘本金或月付金至少填一個'); return; }
   let l = lEditing;
   if (l){ Object.assign(l, v, {rv:l.rv+1, mt:now()}); }
   else { l = Object.assign({id:uid(), start:mmNow(), rv:1, mt:now(), del:false}, v); D.loans.push(l); }
@@ -1614,6 +1640,8 @@ $('#lDel').onclick = () => {
 
 /* ════════ 健康管理頁（V10：51-57） ════════ */
 const aliveW = () => D.weights.filter(w => !w.del);
+/* 貸款已還累計：新資料用 paidAmt 金額欄；舊資料退回 期數×月付 推算 */
+const paidAmtOf = l => (l.paidAmt != null) ? +l.paidAmt : (+l.paid||0) * (+l.monthly||0);
 const aliveBP = () => D.bp.filter(b => !b.del);
 function weekMonday(){ const d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate() - ((d.getDay()+6)%7)); return ymd(d); }
 function exerciseWeekCount(){

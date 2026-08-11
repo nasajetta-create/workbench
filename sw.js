@@ -1,5 +1,5 @@
 /* 艋舺良的工作台 service worker（強制自動更新版，沿用旅遊分帳做法） */
-const CACHE = 'wb-v19';
+const CACHE = 'wb-v20';
 const CORE = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
