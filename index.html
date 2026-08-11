@@ -655,8 +655,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 'use strict';
-/* ════════ 艋舺良的工作台 W0811-08（58B：舊體重 App 自動橋接） ════════ */
-const VERSION = 'W0811-08';
+/* ════════ 艋舺良的工作台 W0811-09（月曆 Google 事件文字改黑色） ════════ */
+const VERSION = 'W0811-09';
 const GCAL_CLIENT_ID = '654856338073-ukdt5nvtc8riq2010lado0i0n5vuhcfl.apps.googleusercontent.com';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
@@ -991,7 +991,7 @@ function drawCal(tbl, y, m, mini){
     const wx = (!mini && dayDiff(ds)>=0 && dayDiff(ds)<14) ? wxStr(ds) : '';
     html += `<td data-d="${ds}" class="${ds===t?'today':''} ${isClash?'clash':''}" style="position:relative;">${d}` +
       (isClash?'<span style="position:absolute; top:2px; right:2px; font-size:.65rem; color:#fff; background:var(--urgent); padding:0 4px; font-weight:700;">撞期</span>':'') +
-      shown.map(e=>`<span class="ev ${e.scope}" data-ev="${e.id}" ${e.ro?`data-ro="${e.ro}"`:''} ${e.color?`style="background:${esc(e.color)};color:#fff;"`:''}>${esc(e.title)}</span>`).join('') +
+      shown.map(e=>`<span class="ev ${e.scope}" data-ev="${e.id}" ${e.ro?`data-ro="${e.ro}"`:''} ${e.color?`style="background:${esc(e.color)};color:#000;"`:''}>${esc(e.title)}</span>`).join('') +
       (evs.length>shown.length?`<span class="ev" style="color:var(--sub);">＋${evs.length-shown.length}</span>`:'') +
       (wx?`<div style="font-size:.65rem; color:var(--sub); text-align:right;">${wx}</div>`:'') + '</td>';
     if ((off+d)%7===0 && d<days) html += '</tr><tr>';
