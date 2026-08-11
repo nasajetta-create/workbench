@@ -79,6 +79,16 @@
   .pn{display:inline-block;}
   .acct{color:var(--sub); font-weight:400;}
   .pair{white-space:nowrap; display:inline-block;}
+  /* V13：首頁工作／個人分區＋空卡摺行 */
+  .zone{border:1px solid var(--line); background:color-mix(in srgb, var(--ink) 3%, var(--page)); padding:10px 10px 0; margin-bottom:14px;}
+  .zone > .zt{font-family:var(--serif); font-size:.8rem; font-weight:700; color:var(--sub); letter-spacing:.18em; margin-bottom:10px; display:flex; align-items:center; gap:8px; user-select:none;}
+  .zone > .zt i{width:14px; height:3px; background:var(--site); flex:none;}
+  .zone.zp > .zt i{background:var(--life);}
+  .zone .card:last-child{margin-bottom:10px;}
+  .card.afold .bd{display:none;}
+  .card.afold h3{border-bottom:none; margin-bottom:-15px; color:var(--sub);}
+  .card.afold h3 .astat{margin-left:auto; font-weight:400; font-size:.75rem; color:var(--sub);}
+  .card.afold h3 .sp{margin-left:8px;}
   [data-loan]>div:first-child{gap:8px;}
   [data-loan]>div:first-child>b{overflow-wrap:anywhere; min-width:0;}
   [data-loan]>div:first-child>span{flex:none; white-space:nowrap;}
@@ -230,6 +240,9 @@
     .card{margin-bottom:12px;}
     .card{padding:13px;}
     .card h3{margin:-13px -13px 12px; padding:10px 13px; font-size:.88rem;}
+    .card.afold h3{margin-bottom:-13px;}
+    .main{padding-bottom:calc(96px + env(safe-area-inset-bottom));}
+    .fab{bottom:calc(88px + env(safe-area-inset-bottom));}
     .taxtbl{font-size:.82rem;}
     .taxtbl td{padding:6px 8px;}
     .taxtbl td:first-child{min-width:10em;}
@@ -717,8 +730,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 'use strict';
-/* ════════ 艋舺良的工作台 W0811-16（卡頭括號註記手機隱藏＋帳號顯示拆分＋體組成快覽不拆字） ════════ */
-const VERSION = 'W0811-16';
+/* ════════ 艋舺良的工作台 W0811-17（首頁工作個人分區＋列內去籤去天氣去G＋空卡摺行沉底＋iOS 安全區） ════════ */
+const VERSION = 'W0811-17';
 const GCAL_CLIENT_ID = '654856338073-ukdt5nvtc8riq2010lado0i0n5vuhcfl.apps.googleusercontent.com';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
@@ -734,7 +747,7 @@ const $$ = s => Array.from(document.querySelectorAll(s));
 /* ── 資料層：rv 樂觀鎖欄位＋墓碑（為雲端同步預留），localStorage 持久化 ── */
 const KEY = 'wb_data_v1';
 let mem = null; // localStorage 不可用時退回記憶體
-const DEF_ORDER = ['focus','goals','sched','todos','proj','bidp','fin','weight','cal'];
+const DEF_ORDER = ['focus','schedW','proj','bidp','todos','schedP','fin','weight','goals','cal'];   /* V13：工作在前、個人在後 */
 /* 115年度（2026 所得、2027/5 申報）公告值——僅作預設，設定後存 prefs.taxP 可編輯 */
 const TAXP_DEF = {exemptPer:101000, exemptN:2, stdDed:272000, salDedPer:227000, bizCost:0, spouseInc:0, withheldM:0,
   brk:[{up:610000,r:5,d:0},{up:1380000,r:12,d:42700},{up:2770000,r:20,d:153100},{up:5190000,r:30,d:430100},{up:0,r:40,d:949100}]};
@@ -769,6 +782,15 @@ function load(){
   if (!Array.isArray(d.prefs.taxP.brk) || !d.prefs.taxP.brk.length) d.prefs.taxP.brk = JSON.parse(JSON.stringify(TAXP_DEF.brk));
   d.settings.gcal = Object.assign({token:null, exp:0, cals:{}, writeOn:false, wId:null, cache:[]}, d.settings.gcal||{});
   if (!d.settings.finScope) d.settings.finScope = 'all';
+  /* V13：舊快取的 Ⓖ 前綴一次清掉（顯示資料，本機快取，可安全改寫） */
+  if (d.settings.gcal && Array.isArray(d.settings.gcal.cache)) d.settings.gcal.cache.forEach(e => { if (e && e.title) e.title = String(e.title).replace(/^Ⓖ\s*/,''); });
+  /* V13：近期行程拆成 工作行程/個人行程；補齊缺卡（既有拖曳順序保留） */
+  if (Array.isArray(d.settings.order)){
+    let o = [];
+    d.settings.order.forEach(k => { if (k==='sched'){ o.push('schedW','schedP'); } else o.push(k); });
+    ['focus','schedW','proj','bidp','todos','schedP','fin','weight','goals','cal'].forEach(k => { if (!o.includes(k)) o.push(k); });
+    d.settings.order = o;
+  }
   if (typeof d.settings.lockApp === 'undefined') d.settings.lockApp = true;
   if (typeof d.settings.lockHealth === 'undefined') d.settings.lockHealth = false;
   const o = (d.settings.order||[]).filter(k => DEF_ORDER.includes(k));
@@ -926,12 +948,22 @@ const CARDS = {
       `</div><div style="text-align:center; padding-top:10px;"><button class="btn" id="healthEnter">進入健康管理 ▸</button></div>`;
     el.querySelector('#healthEnter').onclick = () => go('health');
   }},
-  sched: {t:'近期行程<span class="pn">（14 天內）</span>', ic:'i-sched', render(el){
+  schedW: {t:'工作行程<span class="pn">（14 天內）</span>', ic:'i-sched', render(el){
+    if (D.settings.scope==='life'){ el.innerHTML='<div class="empty">（工作範圍內容）</div>'; return; }
     const t = todayStr();
-    const evs = allEvents().filter(i => i.date && i.date>=t && dayDiff(i.date)<=14 && inScope(i))
+    const evs = allEvents().filter(i => i.date && i.date>=t && dayDiff(i.date)<=14 && i.scope!=='life' && inScope(i))
       .sort((a,b)=> (a.date+(a.time||'')) < (b.date+(b.time||'')) ? -1:1).slice(0,6);
     el.innerHTML = evs.length ? '<ul class="list">'+evs.map(liHtml).join('')+'</ul>'
-      : '<div class="empty">近兩週沒有行程</div>';
+      : '<div class="empty">近兩週沒有工作行程</div>';
+    bindLis(el);
+  }},
+  schedP: {t:'個人行程<span class="pn">（14 天內）</span>', ic:'i-sched', render(el){
+    if (D.settings.scope==='work'){ el.innerHTML='<div class="empty">（個人範圍內容）</div>'; return; }
+    const t = todayStr();
+    const evs = allEvents().filter(i => i.date && i.date>=t && dayDiff(i.date)<=14 && i.scope==='life' && inScope(i))
+      .sort((a,b)=> (a.date+(a.time||'')) < (b.date+(b.time||'')) ? -1:1).slice(0,6);
+    el.innerHTML = evs.length ? '<ul class="list">'+evs.map(liHtml).join('')+'</ul>'
+      : '<div class="empty">近兩週沒有個人行程</div>';
     bindLis(el);
   }},
   proj: {t:'在建工程', ic:'i-proj', render(el){
@@ -989,11 +1021,11 @@ function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt
 /* 顯示用：名稱裡的長帳號（括號＋4 位以上數字）包成 .acct——桌機小字、手機隱藏；資料本身不動 */
 function acctFmt(s){ return esc(s).replace(/([\(（][^\)）]*\d{4,}[^\)）]*[\)）])/g, '<span class="acct">$1</span>'); }
 function liHtml(it){
+  /* V13：列內不再放範圍籤（4A）、不再放 G 前綴與天氣（1）——分區／全站切換已表明歸屬 */
   const chk = it.kind==='td' ? `<span class="tdchk" data-chk="${it.id}">${it.done?'✓':''}</span>` : '';
-  let due = '', wx = '';
+  let due = '';
   if (it.date){ const d = dueLabel(it.date, it.time); due = `<span class="due ${d.cls}">${d.txt}</span>`; }
-  if (it.kind==='ev' && it.date && it.scope!=='life'){ const w = wxStr(it.date); if (w) wx = `<span class="wx">${w}</span>`; }
-  return `<li data-id="${it.id}" ${it.ro?`data-ro="${it.ro}"`:''} class="${it.done?'done':''}">${chk}<span class="tag ${it.scope}">${SCOPE_NAME[it.scope]}</span><span class="ttl">${esc(it.title)}</span>${wx}${due}</li>`;
+  return `<li data-id="${it.id}" ${it.ro?`data-ro="${it.ro}"`:''} class="${it.done?'done':''}">${chk}<span class="ttl">${esc(it.title)}</span>${due}</li>`;
 }
 function bindLis(root){
   root.querySelectorAll('li[data-id]').forEach(li => li.onclick = e => {
@@ -1008,30 +1040,63 @@ function toggleDone(id){
   it.done = !it.done; it.rv++; it.mt = now(); save(); fbPushItem(it); renderAll();
 }
 
+/* V13（3A＋5A＋5C）：首頁分「工作／個人」兩區；空卡摺成一行並沉到區尾；月曆獨立在最下 */
+const CARD_ZONE = {focus:'w', schedW:'w', proj:'w', bidp:'w', todos:'w', schedP:'p', fin:'p', weight:'p', goals:'p', cal:'x'};
+const _emptyOpen = new Set();   // 空卡本次點開名單（不存檔）
 function renderCards(){
   const box = $('#cards'); box.innerHTML = '';
-  D.settings.order.forEach(key => {
-    const c = CARDS[key]; if(!c) return;
+  const mkCard = key => {
+    const c = CARDS[key]; if(!c) return null;
     const el = document.createElement('div');
     el.className = 'card' + (D.settings.folded[key] ? ' folded' : '');
     el.dataset.card = key;
     el.innerHTML = `<h3>${c.ic?`<svg class="ic"><use href="#${c.ic}"></use></svg>`:''}${c.t}<span class="sp"><span class="handle" draggable="true">⠿</span><button class="fold">${D.settings.folded[key]?'▸':'▾'}</button></span></h3><div class="bd"></div>`;
-    box.appendChild(el);
     c.render(el.querySelector('.bd'));
     el.querySelector('.fold').onclick = () => {
       D.settings.folded[key] = !D.settings.folded[key]; save(); renderCards();
     };
-    /* 拖曳排序 */
     const h = el.querySelector('.handle');
     h.addEventListener('dragstart', e => { el.classList.add('dragging'); e.dataTransfer.setData('text', key); });
     h.addEventListener('dragend', () => el.classList.remove('dragging'));
+    return el;
+  };
+  const isEmptyCard = el => { const bd = el.querySelector('.bd'); const em = bd.querySelector('.empty'); return !!em && bd.children.length === 1; };
+  const zones = [ {z:'w', name:'工　作', cls:'zw'}, {z:'p', name:'個　人', cls:'zp'} ];
+  zones.forEach(({z, name, cls}) => {
+    const zone = document.createElement('div');
+    zone.className = 'zone ' + cls;
+    zone.innerHTML = `<div class="zt"><i></i>${name}</div>`;
+    const keys = D.settings.order.filter(k => CARD_ZONE[k]===z && CARDS[k]);
+    const els = keys.map(k => [k, mkCard(k)]).filter(x => x[1]);
+    const full = els.filter(([k,el]) => !isEmptyCard(el));
+    const emp  = els.filter(([k,el]) =>  isEmptyCard(el));   // 5C：空卡沉到區尾
+    full.concat(emp).forEach(([k,el]) => {
+      if (isEmptyCard(el) && !_emptyOpen.has(k)){            // 5A：空卡摺成一行
+        el.classList.add('afold');
+        const em = el.querySelector('.bd .empty');
+        const h3 = el.querySelector('h3');
+        const st = document.createElement('small');
+        st.className = 'astat'; st.textContent = (em ? em.textContent.trim() : '') + ' ▸';
+        h3.insertBefore(st, h3.querySelector('.sp'));
+        h3.style.cursor = 'pointer';
+        h3.addEventListener('click', e => {
+          if (e.target.closest('.fold') || e.target.closest('.handle')) return;
+          _emptyOpen.add(k); renderCards();
+        });
+      }
+      zone.appendChild(el);
+    });
+    box.appendChild(zone);
   });
+  /* 月曆：跨範圍，獨立收在最下 */
+  D.settings.order.filter(k => CARD_ZONE[k]==='x' && CARDS[k]).forEach(k => { const el = mkCard(k); if (el) box.appendChild(el); });
   box.querySelectorAll('.card').forEach(card => {
     card.addEventListener('dragover', e => e.preventDefault());
     card.addEventListener('drop', e => {
       e.preventDefault();
       const from = e.dataTransfer.getData('text'), to = card.dataset.card;
       if (!from || from===to) return;
+      if (CARD_ZONE[from] !== CARD_ZONE[to]) return;   // 只能在同區內排序
       const o = D.settings.order.filter(k => k!==from);
       o.splice(o.indexOf(to), 0, from);
       D.settings.order = o; save(); renderCards();
@@ -2063,7 +2128,7 @@ async function gSync(){
         const s = ev.start || {};
         const date = s.date || (s.dateTime ? s.dateTime.slice(0,10) : null);
         if (!date) return;
-        out.push({id:'g_'+ev.id, kind:'ev', scope:cfg.scope||'life', title:'Ⓖ '+(ev.summary||'（無標題）'),
+        out.push({id:'g_'+ev.id, kind:'ev', scope:cfg.scope||'life', title:(ev.summary||'（無標題）'),
           date, time: s.dateTime ? s.dateTime.slice(11,16) : null, link: ev.htmlLink||null, color: cfg.color||null, cal: c.summary||null});
       });
     }catch(e){ console.warn('gcal', e); }
