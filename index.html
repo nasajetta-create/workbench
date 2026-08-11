@@ -655,8 +655,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 'use strict';
-/* ════════ 艋舺良的工作台 W0811-07（健康管理 51-57：體組成十年趨勢＋血壓＋運動＋回診用藥＋藥物過敏） ════════ */
-const VERSION = 'W0811-07';
+/* ════════ 艋舺良的工作台 W0811-08（58B：舊體重 App 自動橋接） ════════ */
+const VERSION = 'W0811-08';
 const GCAL_CLIENT_ID = '654856338073-ukdt5nvtc8riq2010lado0i0n5vuhcfl.apps.googleusercontent.com';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
@@ -1727,6 +1727,24 @@ function renderHealthPage(){
     if (a && confirm('移除「'+a.name+'」？')){ a.del = true; a.rv++; a.mt = now(); save(); fbPushDoc('allergy', a); renderHealthPage(); }
   });
 }
+/* 【58B】舊體重 App 自動橋接：同網域共用 localStorage，開啟工作台時把舊 App 的新日期補進來。
+ * 確定性 id wh_日期＋同日去重 → 重跑不重複；補進來後走雲端同步到所有裝置。 */
+function bridgeWeight(){
+  try{
+    const raw = localStorage.getItem('weightCloudCache_v1'); if (!raw) return;
+    const src = JSON.parse(raw); if (!Array.isArray(src)) return;
+    let add = 0;
+    src.forEach(r => {
+      if (!r.date || !r.weight) return;
+      const id = 'wh_' + String(r.date).replace(/-/g,'');
+      if (D.weights.find(w => w.id === id || (!w.del && w.date === r.date))) return;
+      const w = {id, kg:+r.weight, date:r.date, rv:1, mt:now(), del:false};
+      ['fat','muscle','visceral','bmi','bmr','bodyAge'].forEach(k => { if (r[k] != null) w[k] = +r[k]; });
+      D.weights.push(w); fbPushDoc('weights', w); add++;
+    });
+    if (add){ save(); renderAll(); toast('已從舊體重 App 帶入 ' + add + ' 筆 ✓'); }
+  }catch(e){ console.warn('bridgeWeight', e); }
+}
 $('#whAdd').onclick = () => openAdd('wt');
 $('#healthUnlock').onclick = () => {
   if ($('#healthPin').value === D.settings.pin){ sessionStorage.setItem('wb_health_ok','1'); $('#healthPin').value=''; renderHealthPage(); }
@@ -2521,6 +2539,7 @@ function renderAll(){
 renderAll();
 fetchWX();
 applyLock();
+bridgeWeight();   // 58B：開啟時自動補舊體重 App 的新紀錄
 if (gOK()) setTimeout(()=>{ gLoadCals().then(gSync); }, 1500);   // 連線仍有效→開頁自動同步 GCal
 
 /* ════════ PWA：service worker 註冊＋強制自動更新 ════════ */
