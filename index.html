@@ -230,7 +230,7 @@
       <li data-page="proj"><svg class="ic"><use href="#i-proj"></use></svg>在建工程</li>
       <li data-page="bid"><svg class="ic"><use href="#i-bid"></use></svg>投標案</li>
       <li data-page="todo"><svg class="ic"><use href="#i-todo"></use></svg>待辦清單</li>
-      <li data-page="fin"><svg class="ic"><use href="#i-fin"></use></svg>記帳理財</li>
+      <li data-page="fin"><svg class="ic"><use href="#i-fin"></use></svg>財務看板</li>
       <li data-page="home" data-anchor="goals"><svg class="ic"><use href="#i-goal"></use></svg>長期目標</li>
       <li data-page="trip"><svg class="ic"><use href="#i-trip"></use></svg>旅遊規劃</li>
       <li data-page="note"><svg class="ic"><use href="#i-note"></use></svg>靈感筆記</li>
@@ -310,18 +310,24 @@
       </div>
     </section>
 
-    <!-- ═══ 記帳理財 ═══ -->
+    <!-- ═══ 財務看板（V8/V9：獨立分頁・PIN 閘門・五區塊） ═══ -->
     <section class="page" id="page-fin">
-      <div class="pagehead"><h2>記帳理財</h2>
+      <div class="pagehead"><h2>財務看板</h2>
         <button class="btn stat" id="finEye"><svg class="ic"><use href="#i-eye"></use></svg> 金額</button>
         <button class="btn pri" id="finAdd">＋ 記一筆</button>
       </div>
-      <div id="finLock" style="display:none;" class="card"><div class="empty"><svg class="ic"><use href="#i-lock"></use></svg> 財務頁已上鎖<div class="iform" style="justify-content:center;"><input type="password" id="finPin" placeholder="輸入 PIN" style="max-width:140px;"><button class="btn pri" id="finUnlock">解鎖</button></div></div></div>
+      <div id="finLock" style="display:none;" class="card"><div class="empty"><svg class="ic"><use href="#i-lock"></use></svg> 財務看板已上鎖<div class="iform" style="justify-content:center;"><input type="password" id="finPin" placeholder="輸入 PIN" style="max-width:140px;"><button class="btn pri" id="finUnlock">解鎖</button></div></div></div>
       <div id="finBody">
-        <div style="display:flex; gap:12px; flex-wrap:wrap;">
-          <div class="card" style="flex:1.2; min-width:300px;"><h3>月現金流（近六個月）</h3><div class="bd" id="cfBox"></div></div>
-          <div class="card" style="flex:1; min-width:260px;"><h3>淨資產（連動「財務自由」目標）</h3><div class="bd" id="netBox"></div></div>
+        <div class="subtabs" id="finTabs">
+          <button data-fsc="all">全部</button><button data-fsc="work">工程</button><button data-fsc="life">個人</button>
         </div>
+        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+          <div class="card" style="flex:1; min-width:260px;"><h3>淨資產・財務自由</h3><div class="bd" id="netBox"></div></div>
+          <div class="card" style="flex:1.2; min-width:300px;"><h3>月現金流（近六個月）</h3><div class="bd" id="cfBox"></div></div>
+        </div>
+        <div class="card"><h3><svg class="ic"><use href="#i-sched"></use></svg>固定收支（每月自動或待確認）<span class="sp"><button class="btn" style="padding:3px 12px; font-size:.82rem;" id="recurAdd">＋固定項目</button></span></h3><div class="bd" id="recurBox"></div></div>
+        <div class="card"><h3><svg class="ic"><use href="#i-fin"></use></svg>還款計畫<span class="sp"><button class="btn" style="padding:3px 12px; font-size:.82rem;" id="loanAdd">＋貸款</button></span></h3><div class="bd" id="loanBox"></div></div>
+        <div class="card"><h3><svg class="ic"><use href="#i-bid"></use></svg>明年報稅預估（點金額列展開稅務參數）</h3><div class="bd" id="taxBox"></div></div>
         <div class="card"><h3>本月收支（點項目編輯；請款「入帳」自動記收入）</h3><div class="bd" id="txBox"></div></div>
       </div>
     </section>
@@ -351,6 +357,8 @@
     <section class="page" id="page-set">
       <div class="card"><h3><svg class="ic"><use href="#i-page"></use></svg>頁面</h3><div class="bd">
         <div class="setrow" style="cursor:pointer;" onclick="go('todo')">待辦清單<span style="margin-left:auto; color:var(--sub);">▸</span></div>
+        <div class="setrow" style="cursor:pointer;" onclick="go('fin')">財務看板<span style="margin-left:auto; color:var(--sub);">▸</span></div>
+        <div class="setrow" style="cursor:pointer;" onclick="go('trip')">旅遊規劃<span style="margin-left:auto; color:var(--sub);">▸</span></div>
         <div class="setrow" style="cursor:pointer;" onclick="go('note')">靈感筆記<span style="margin-left:auto; color:var(--sub);">▸</span></div>
       </div></div>
       <div class="card"><h3><svg class="ic"><use href="#i-look"></use></svg>外觀</h3><div class="bd">
@@ -427,6 +435,9 @@
       <div style="display:flex; gap:8px;">
         <div style="flex:1;"><label>金額</label><input type="number" id="mAmt" placeholder="0"></div>
         <div style="flex:1.4;"><label>掛到案件（選填）</label><select id="mProj"><option value="">—</option></select></div>
+      </div>
+      <div id="mTaxRow" style="margin-top:8px; display:none;"><label>稅務類別（報稅預估用）</label>
+        <div class="chips" id="mTax"><button data-v="biz">執行業務</button><button data-v="sal">薪資</button><button data-v="none">免稅</button></div>
       </div>
     </div>
     <div class="frow" id="mWtRow" style="display:none;"><label>體重 (kg)</label><input type="number" step="0.1" id="mKg" placeholder="72.5"></div>
@@ -533,6 +544,58 @@
   </div>
 </div>
 
+<div class="mask" id="rmask">
+  <div class="modal">
+    <h3 id="rTitle">固定項目 <button class="x" id="rClose">✕</button></h3>
+    <div class="frow"><label>名稱</label><input id="r_name" placeholder="例：房貸、倉庫租金、保險"></div>
+    <div class="frow"><div class="chips" id="rDir"><button data-v="out" style="color:var(--urgent);">− 固定支出</button><button data-v="in" style="color:var(--life);">＋ 固定收入</button></div></div>
+    <div class="frow" style="display:flex; gap:8px;">
+      <div style="flex:1;"><label>金額</label><input type="number" id="r_amt" placeholder="0"></div>
+      <div style="flex:1;"><label>每月幾號</label><input type="number" id="r_day" min="1" max="31" placeholder="5"></div>
+    </div>
+    <div class="frow"><label>分類</label><div class="chips" id="rScope">
+      <button data-v="site" style="color:var(--site);">工程</button>
+      <button data-v="life" style="color:var(--life);">個人</button>
+    </div></div>
+    <div class="frow"><label>入帳方式</label><div class="chips" id="rMode">
+      <button data-v="auto">到日自動入帳</button><button data-v="conf">到日待確認（可改金額）</button>
+    </div></div>
+    <div class="frow" id="rTaxRow" style="display:none;"><label>稅務類別</label><div class="chips" id="rTax">
+      <button data-v="biz">執行業務</button><button data-v="sal">薪資</button><button data-v="none">免稅</button>
+    </div></div>
+    <div class="frow"><label><input type="checkbox" id="r_on" style="width:auto;" checked> 啟用中（取消勾選＝暫停，不刪紀錄）</label></div>
+    <div class="mbtns">
+      <button class="btn del" id="rDel" style="display:none;">刪除</button>
+      <button class="btn pri" id="rSave">儲存</button>
+    </div>
+  </div>
+</div>
+
+<div class="mask" id="lmask">
+  <div class="modal">
+    <h3 id="lTitle">貸款 <button class="x" id="lClose">✕</button></h3>
+    <div class="frow"><label>名稱</label><input id="l_name" placeholder="例：房貸、貨車貸款"></div>
+    <div class="frow" style="display:flex; gap:8px;">
+      <div style="flex:1;"><label>剩餘本金</label><input type="number" id="l_remain" placeholder="0"></div>
+      <div style="flex:1;"><label>月付金</label><input type="number" id="l_monthly" placeholder="0"></div>
+      <div style="flex:1;"><label>扣款日</label><input type="number" id="l_day" min="1" max="31" placeholder="5"></div>
+    </div>
+    <div class="frow" style="display:flex; gap:8px;">
+      <div style="flex:1;"><label>已還期數</label><input type="number" id="l_paid" placeholder="0"></div>
+      <div style="flex:1;"><label>總期數</label><input type="number" id="l_total" placeholder="240"></div>
+    </div>
+    <div class="frow"><label>分類</label><div class="chips" id="lScope">
+      <button data-v="site" style="color:var(--site);">工程</button>
+      <button data-v="life" style="color:var(--life);">個人</button>
+    </div></div>
+    <div style="font-size:.75rem; color:var(--sub); margin-bottom:6px;">每月扣款日自動記一筆還款支出（月付金全列支出）。</div>
+    <div class="mbtns">
+      <button class="btn del" id="lDel" style="display:none;">刪除</button>
+      <button class="btn pri" id="lSave">儲存</button>
+    </div>
+  </div>
+</div>
+
 <div class="mask" id="lockMask" style="z-index:90; align-items:center;">
   <div class="modal" style="max-width:300px; text-align:center;">
     <h3 style="justify-content:center;"><svg class="ic"><use href="#i-lock"></use></svg> 艋舺良的工作台</h3>
@@ -549,8 +612,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 'use strict';
-/* ════════ 艋舺良的工作台 W0806-06（靈感筆記） ════════ */
-const VERSION = 'W0807-02';
+/* ════════ 艋舺良的工作台 W0811-01（財務看板：獨立分頁＋PIN＋固定收支＋還款計畫＋報稅預估） ════════ */
+const VERSION = 'W0811-01';
 const GCAL_CLIENT_ID = '654856338073-ukdt5nvtc8riq2010lado0i0n5vuhcfl.apps.googleusercontent.com';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
@@ -566,14 +629,19 @@ const $$ = s => Array.from(document.querySelectorAll(s));
 /* ── 資料層：rv 樂觀鎖欄位＋墓碑（為雲端同步預留），localStorage 持久化 ── */
 const KEY = 'wb_data_v1';
 let mem = null; // localStorage 不可用時退回記憶體
-const DEF_ORDER = ['focus','goals','sched','todos','proj','bidp','weight','cal'];
+const DEF_ORDER = ['focus','goals','sched','todos','proj','bidp','fin','weight','cal'];
+/* 115年度（2026 所得、2027/5 申報）公告值——僅作預設，設定後存 prefs.taxP 可編輯 */
+const TAXP_DEF = {exemptPer:101000, exemptN:2, stdDed:272000, salDedPer:227000, bizCost:0, spouseInc:0,
+  brk:[{up:610000,r:5,d:0},{up:1380000,r:12,d:42700},{up:2770000,r:20,d:153100},{up:5190000,r:30,d:430100},{up:0,r:40,d:949100}]};
 function blank(){ return {
   items: [],                       // {id,kind:'ev'|'td',scope,title,date,time,done,rv,mt,del}
   goals: [{id:'g1',name:'財務自由',pct:0,rv:1,mt:0},{id:'g2',name:'環遊世界',pct:0,rv:1,mt:0}],
   projects: [],                    // {id,name,contract,budget,prog,status,wEnd,ret,retOk,g95,billing:[],expenses:[],rv,mt,del}
   bids: [],                        // {id,name,owner,amt,stage,dates:{},dep,depPaid,depRet,items,rv,mt,del}
   clients: [],                     // {id,name,note,rv,mt,del}
-  txs: [],                         // {id,t,amt,dir:'in'|'out',scope,proj,date,rv,mt,del}
+  txs: [],                         // {id,t,amt,dir:'in'|'out',scope,proj,date,tax,recur,loan,rv,mt,del}
+  recurs: [],                      // {id,name,amt,dir,scope,day,mode:'auto'|'conf',tax,on,start:'YYYY-MM',rv,mt,del}
+  loans: [],                       // {id,name,remain,monthly,day,paid,total,scope,start:'YYYY-MM',rv,mt,del}
   weights: [],                     // {id,kg,date,rv,mt,del}
   trips: [],                       // {id,kind:'near'|'wish',name,start,end,year,budget,split,note,done,rv,mt,del}
   notes: [],                       // {id,txt,tag,pin,rv,mt,del}
@@ -586,9 +654,12 @@ function load(){
   try{ const r = localStorage.getItem(KEY); if(r) d = JSON.parse(r); }
   catch(e){ /* 私隱模式或預覽環境 */ }
   d = d || mem || blank();
-  ['projects','bids','clients','txs','weights','trips','notes'].forEach(k => { if(!Array.isArray(d[k])) d[k] = []; });
+  ['projects','bids','clients','txs','weights','trips','notes','recurs','loans'].forEach(k => { if(!Array.isArray(d[k])) d[k] = []; });
   d.prefs = Object.assign({netBase:0, goalMoney:0, countries:0, countriesTarget:50, weightTarget:0, mt:0}, d.prefs||{});
+  d.prefs.taxP = Object.assign(JSON.parse(JSON.stringify(TAXP_DEF)), d.prefs.taxP||{});
+  if (!Array.isArray(d.prefs.taxP.brk) || !d.prefs.taxP.brk.length) d.prefs.taxP.brk = JSON.parse(JSON.stringify(TAXP_DEF.brk));
   d.settings.gcal = Object.assign({token:null, exp:0, cals:{}, writeOn:false, wId:null, cache:[]}, d.settings.gcal||{});
+  if (!d.settings.finScope) d.settings.finScope = 'all';
   const o = (d.settings.order||[]).filter(k => DEF_ORDER.includes(k));
   DEF_ORDER.forEach(k => { if(!o.includes(k)) o.splice(DEF_ORDER.indexOf(k)===DEF_ORDER.length-1 ? o.length : Math.min(o.length, DEF_ORDER.indexOf(k)), 0, k); });
   d.settings.order = o;
@@ -794,6 +865,14 @@ const CARDS = {
   cal: {t:'本月行事曆', ic:'i-cal', render(el){
     el.innerHTML = '<table class="cal" id="calMini"></table>';
     drawCal(el.querySelector('#calMini'), calY, calM, true);
+  }},
+  fin: {t:'記帳理財', ic:'i-fin', render(el){
+    /* ㊴A 純入口：首頁不顯示任何數字，財務世界隔離在第二層 */
+    const nPend = pendingRecurs().length;
+    el.innerHTML = `<div style="text-align:center; padding:8px 0 4px;">
+      ${nPend ? `<div style="font-size:.82rem; color:var(--soon); margin-bottom:8px;"><svg class="ic"><use href="#i-warn"></use></svg> ${nPend} 筆固定收支待確認</div>` : ''}
+      <button class="btn" id="finEnter" style="padding:9px 26px;"><svg class="ic"><use href="#i-lock"></use></svg> 進入財務看板 ▸</button></div>`;
+    el.querySelector('#finEnter').onclick = () => go('fin');
   }}
 };
 const SCOPE_NAME = {site:'在建', case:'投標', life:'個人'};
@@ -972,7 +1051,7 @@ function renderProjPage(){
     if (p.billing[i].status === '入帳'){
       const amt = Math.round((+p.contract||0) * (+p.billing[i].pct||0) / 100);
       if (amt > 0){
-        const t = {id:uid(), t:p.name+' 第'+(i+1)+'期請款入帳', amt, dir:'in', scope:'site', proj:p.id, date:todayStr(), rv:1, mt:now(), del:false};
+        const t = {id:uid(), t:p.name+' 第'+(i+1)+'期請款入帳', amt, dir:'in', scope:'site', proj:p.id, date:todayStr(), tax:'biz', rv:1, mt:now(), del:false};
         D.txs.push(t); save(); fbPushTx(t); toast('已自動記收入 '+money(amt));
       }
     }
@@ -1148,17 +1227,101 @@ $('#bPrint').onclick = () => {
   w.document.close();
 };
 
-/* ════════ 記帳理財頁 ════════ */
-let finOpen = false;
+/* ════════ 財務看板（V8/V9） ════════ */
+/* ── 月份工具 ── */
+function mmNow(){ const d = new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'); }
+function mmShift(mm, n){ const d = new Date(+mm.slice(0,4), +mm.slice(5)-1+n, 1); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'); }
+function dueOf(mm, day){ // 該月的到期日（超過月底就取月底）
+  const y = +mm.slice(0,4), m = +mm.slice(5);
+  const last = new Date(y, m, 0).getDate();
+  return mm + '-' + String(Math.min(Math.max(1, +day||1), last)).padStart(2,'0');
+}
+const aliveR = () => D.recurs.filter(r => !r.del);
+const aliveL = () => D.loans.filter(l => !l.del);
+/* 檢查視窗：本月＋前兩個月（漏開 App 也補得回來），不早於項目建立月 */
+function dueWindow(startMM){
+  const cur = mmNow();
+  return [mmShift(cur,-2), mmShift(cur,-1), cur].filter(mm => mm >= (startMM || cur));
+}
+/* 待確認清單：conf 模式、到期了、該期還沒入帳（用確定性 tx id 判斷，多裝置不重複） */
+function pendingRecurs(){
+  const t = todayStr(), out = [];
+  aliveR().filter(r => r.on && r.mode === 'conf').forEach(r => {
+    dueWindow(r.start).forEach(mm => {
+      const due = dueOf(mm, r.day);
+      if (due <= t && !D.txs.find(x => x.id === 'rc_' + r.id + '_' + mm.replace('-','')))
+        out.push({r, mm, due});
+    });
+  });
+  return out;
+}
+/* 自動入帳：auto 模式固定項目＋貸款月付。確定性 id → set() 冪等，多裝置同時跑也只會有一筆 */
+let fbReadyTx = false;   // 🔴 資料就緒旗標：登入時要等 txs 快照到了才准自動入帳，避免拿舊資料重複產生
+function bookTx(id, base){
+  if (D.txs.find(x => x.id === id)) return false;
+  const t = Object.assign({id, rv:1, mt:now(), del:false}, base);
+  D.txs.push(t); fbPushTx(t); return true;
+}
+function processRecurs(){
+  if (fbUser && !fbReadyTx) return;
+  const t = todayStr(); let n = 0;
+  aliveR().filter(r => r.on && r.mode === 'auto').forEach(r => {
+    dueWindow(r.start).forEach(mm => {
+      const due = dueOf(mm, r.day);
+      if (due <= t && bookTx('rc_' + r.id + '_' + mm.replace('-',''),
+        {t:r.name, amt:+r.amt||0, dir:r.dir, scope:r.scope||'life', proj:null,
+         tax:r.dir==='in' ? (r.tax||'biz') : null, recur:r.id, date:due})) n++;
+    });
+  });
+  aliveL().forEach(l => {
+    dueWindow(l.start).forEach(mm => {
+      const due = dueOf(mm, l.day);
+      if (due <= t && bookTx('ln_' + l.id + '_' + mm.replace('-',''),
+        {t:l.name + ' 還款', amt:+l.monthly||0, dir:'out', scope:l.scope||'life', proj:null, tax:null, loan:l.id, date:due})){
+        l.remain = Math.max(0, (+l.remain||0) - (+l.monthly||0));
+        l.paid = (+l.paid||0) + 1;
+        l.rv++; l.mt = now(); fbPushDoc('loans', l); n++;
+      }
+    });
+  });
+  if (n){ save(); toast('固定收支已自動入帳 ' + n + ' 筆'); }
+}
+/* ── 看板範圍（㊺B：看板自帶頁籤，不連動全域） ── */
+function inFinScope(t){
+  const s = D.settings.finScope || 'all';
+  if (s === 'all') return true;
+  if (s === 'work') return t.scope === 'site' || t.scope === 'case';
+  return !t.scope || t.scope === 'life';
+}
+function txSumF(mm, dir){ return aliveTx().filter(t => inFinScope(t) && t.dir===dir && t.date && t.date.startsWith(mm)).reduce((s,t)=>s+(+t.amt||0),0); }
+/* ── 報稅預估（㊽A 個人綜所稅・㊿夫妻合併 0 扶養；參數可編輯） ── */
+function taxCalc(){
+  const P = D.prefs.taxP, y = String(new Date().getFullYear());
+  const inc = aliveTx().filter(t => t.dir==='in' && t.date && t.date.startsWith(y));
+  const sum = f => inc.filter(f).reduce((s,t)=>s+(+t.amt||0),0);
+  const sal = sum(t => t.tax==='sal');
+  const biz = sum(t => t.tax==='biz' || !t.tax);          // 沒標的當執行業務（保守）
+  const spouse = +P.spouseInc||0;
+  const salNet = Math.max(0, sal - Math.min(sal, +P.salDedPer||0));
+  const spNet = Math.max(0, spouse - Math.min(spouse, +P.salDedPer||0));
+  const bizNet = Math.round(biz * (1 - (+P.bizCost||0)/100));
+  const exempt = (+P.exemptPer||0) * (+P.exemptN||1);
+  const netI = Math.max(0, salNet + spNet + bizNet - exempt - (+P.stdDed||0));
+  let tax = 0, rate = 0;
+  for (const b of P.brk){ if (!b.up || netI <= b.up){ tax = Math.max(0, Math.round(netI * b.r / 100 - b.d)); rate = b.r; break; } }
+  return {sal, biz, spouse, exempt, netI, tax, rate};
+}
+let taxOpen = false;
 function renderFinPage(){
   const locked = D.settings.pin && D.settings.lockMoney && !sessionStorage.getItem('wb_fin_ok');
   $('#finLock').style.display = locked ? '' : 'none';
   $('#finBody').style.display = locked ? 'none' : '';
   if (locked) return;
+  $$('#finTabs button').forEach(b => b.classList.toggle('on', b.dataset.fsc === (D.settings.finScope||'all')));
   /* 現金流 */
   const months = [];
   for (let i=5; i>=0; i--){ const d = new Date(); d.setDate(1); d.setMonth(d.getMonth()-i); months.push(d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')); }
-  const data = months.map(mm => ({mm, inc: txSum(mm,'in'), out: txSum(mm,'out')}));
+  const data = months.map(mm => ({mm, inc: txSumF(mm,'in'), out: txSumF(mm,'out')}));
   const mx = Math.max(1, ...data.map(d => Math.max(d.inc, d.out)));
   $('#cfBox').innerHTML = `<div style="display:flex; align-items:flex-end; gap:10px; height:110px; padding-top:6px;">` +
     data.map(d => `<div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;">
@@ -1171,29 +1334,193 @@ function renderFinPage(){
       <span><i style="display:inline-block; width:9px; height:9px; background:color-mix(in srgb, var(--ink) 28%, var(--card)); margin-right:3px;"></i>支出</span>
       <span style="margin-left:auto;">本月 ${(()=>{const n=data[5].inc-data[5].out; return `<b style="color:${n>=0?'var(--life)':'var(--urgent)'};">${n>=0?'+':'−'}${money(Math.abs(n)).replace('NT$ ','')}</b>`;})()}</span></div>`;
   /* 淨資產 */
+  /* 🔒 打碼時不能把基準額／目標額的原始數字留在輸入框裡 */
   $('#netBox').innerHTML = `<div style="font-size:1.4rem; font-weight:800; letter-spacing:1px;">${money(netWorth())}</div>
-    <div style="font-size:.75rem; color:var(--sub); margin:4px 0 8px;">= 基準額 ＋ 所有收支累計</div>
-    <div class="iform"><input type="number" id="nbase" placeholder="基準額" value="${D.prefs.netBase||''}"><button class="btn" id="nbaseSet">設定</button></div>
-    <div class="iform"><input type="number" id="gmoney" placeholder="財務自由目標額" value="${D.prefs.goalMoney||''}"><button class="btn" id="gmoneySet">設目標</button></div>
-    ${D.prefs.goalMoney>0 ? `<div class="bar" style="margin-top:8px;"><i style="width:${goalPct(D.goals[0])}%; background:var(--accent);"></i></div><div style="font-size:.75rem; color:var(--sub); margin-top:3px;">財務自由 ${goalPct(D.goals[0])}%</div>` : ''}`;
-  $('#nbaseSet').onclick = () => { D.prefs.netBase = +$('#nbase').value||0; D.prefs.mt = now(); save(); fbPushPrefs(); renderFinPage(); };
-  $('#gmoneySet').onclick = () => { D.prefs.goalMoney = +$('#gmoney').value||0; D.prefs.mt = now(); save(); fbPushPrefs(); renderFinPage(); };
-  /* 本月清單 */
+    <div style="font-size:.75rem; color:var(--sub); margin:4px 0 8px;">= 基準額 ＋ 所有收支累計</div>` +
+    (D.settings.showMoney
+      ? `<div class="iform"><input type="number" id="nbase" placeholder="基準額" value="${D.prefs.netBase||''}"><button class="btn" id="nbaseSet">設定</button></div>
+         <div class="iform"><input type="number" id="gmoney" placeholder="財務自由目標額" value="${D.prefs.goalMoney||''}"><button class="btn" id="gmoneySet">設目標</button></div>`
+      : `<div style="font-size:.75rem; color:var(--sub);">點右上「<svg class="ic"><use href="#i-eye"></use></svg> 金額」顯示後，可編輯基準額與目標額</div>`) +
+    `${D.prefs.goalMoney>0 ? `<div class="bar" style="margin-top:8px;"><i style="width:${goalPct(D.goals[0])}%; background:var(--accent);"></i></div><div style="font-size:.75rem; color:var(--sub); margin-top:3px;">財務自由 ${goalPct(D.goals[0])}%</div>` : ''}`;
+  if (D.settings.showMoney){
+    $('#nbaseSet').onclick = () => { D.prefs.netBase = +$('#nbase').value||0; D.prefs.mt = now(); save(); fbPushPrefs(); renderFinPage(); };
+    $('#gmoneySet').onclick = () => { D.prefs.goalMoney = +$('#gmoney').value||0; D.prefs.mt = now(); save(); fbPushPrefs(); renderFinPage(); };
+  }
+  /* ── 固定收支 ── */
+  const pend = pendingRecurs().filter(p => inFinScope(p.r));
+  const rs = aliveR().filter(r => inFinScope(r));
+  const rIn = rs.filter(r => r.on && r.dir==='in').reduce((s,r)=>s+(+r.amt||0),0);
+  const rOut = rs.filter(r => r.on && r.dir==='out').reduce((s,r)=>s+(+r.amt||0),0);
+  $('#recurBox').innerHTML =
+    `<div style="font-size:.82rem; color:var(--sub); margin-bottom:8px;">月固定收入 <b style="color:var(--life);">${money(rIn)}</b>　月固定支出 <b>${money(rOut)}</b></div>` +
+    pend.map(p => `<div style="border:1px dashed var(--soon); background:color-mix(in srgb, var(--soon) 8%, var(--card)); padding:8px 10px; margin-bottom:6px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:.88rem;">
+      <svg class="ic" style="color:var(--soon);"><use href="#i-warn"></use></svg>
+      <span style="flex:1;">${p.due.slice(5).replace('-','/')} 到期：<b>${esc(p.r.name)}</b>（${p.r.dir==='in'?'收入':'支出'}）</span>
+      <input type="number" value="${p.r.amt||''}" data-pamt="${p.r.id}_${p.mm}" style="width:110px; padding:5px 8px; font-size:.88rem;">
+      <button class="btn pri" style="padding:5px 14px; font-size:.85rem;" data-pgo="${p.r.id}" data-pmm="${p.mm}" data-pdue="${p.due}">入帳</button>
+    </div>`).join('') +
+    (rs.length ? '<ul class="list">' + rs.map(r =>
+      `<li data-recur="${r.id}" style="${r.on?'':'opacity:.45;'}"><span class="tag ${r.scope==='site'?'site':'life'}">${r.scope==='site'?'工程':'個人'}</span>
+       <span class="ttl">${esc(r.name)}<small style="color:var(--sub);">・每月${r.day}日・${r.mode==='auto'?'自動':'待確認'}${r.on?'':'・暫停中'}</small></span>
+       <span class="due" style="color:${r.dir==='in'?'var(--life)':'var(--ink)'};">${r.dir==='in'?'+':'−'}${money(r.amt)}</span></li>`).join('') + '</ul>'
+     : '<div class="empty">還沒有固定項目——房租、貸款、保險、常態收入都可以掛進來</div>');
+  $('#recurBox').querySelectorAll('[data-pgo]').forEach(b => b.onclick = e => {
+    e.stopPropagation();
+    const r = D.recurs.find(x => x.id === b.dataset.pgo); if (!r) return;
+    const amt = +($('#recurBox').querySelector(`[data-pamt="${r.id}_${b.dataset.pmm}"]`).value) || 0;
+    if (!amt){ toast('金額不能是 0'); return; }
+    if (bookTx('rc_' + r.id + '_' + b.dataset.pmm.replace('-',''),
+      {t:r.name, amt, dir:r.dir, scope:r.scope||'life', proj:null, tax:r.dir==='in'?(r.tax||'biz'):null, recur:r.id, date:b.dataset.pdue})){
+      save(); renderFinPage(); toast('已入帳 ✓');
+    }
+  });
+  $('#recurBox').querySelectorAll('[data-recur]').forEach(li => li.onclick = () => openRecur(li.dataset.recur));
+  /* ── 還款計畫 ── */
+  const ls = aliveL().filter(l => inFinScope(l));
+  $('#loanBox').innerHTML = ls.length ? ls.map(l => {
+    const total = Math.max(1, +l.total||1), paid = Math.min(total, +l.paid||0);
+    const pct = Math.round(paid / total * 100);
+    const left = total - paid;
+    const endD = new Date(); endD.setMonth(endD.getMonth() + left);
+    const endTxt = endD.getFullYear() + '-' + String(endD.getMonth()+1).padStart(2,'0');
+    return `<div data-loan="${l.id}" style="cursor:pointer; padding:8px 0; border-bottom:1px dashed var(--line);">
+      <div style="display:flex; justify-content:space-between; font-size:.95rem;"><b>${esc(l.name)}<small style="color:var(--sub); font-weight:400;">・每月${l.day}日</small></b>
+        <span>剩 ${money(l.remain)}</span></div>
+      <div class="bar"><i style="width:${pct}%; background:var(--case);"></i></div>
+      <div style="font-size:.75rem; color:var(--sub); margin-top:3px;">第 ${paid}／${total} 期・月付 ${money(l.monthly)}・${left>0?'預計 '+endTxt+' 還完':'已還完 🎉'}</div>
+    </div>`;
+  }).join('') : '<div class="empty">沒有貸款——或按「＋貸款」把房貸車貸掛進來追蹤</div>';
+  $('#loanBox').querySelectorAll('[data-loan]').forEach(n => n.onclick = () => openLoan(n.dataset.loan));
+  /* ── 明年報稅預估 ── */
+  const P = D.prefs.taxP, tc = taxCalc();
+  const yy = new Date().getFullYear();
+  const kv = (k,v,hl) => `<div style="display:flex; justify-content:space-between; padding:3px 0; font-size:.88rem; ${hl?'border-top:1px solid var(--line); margin-top:4px; padding-top:7px; font-weight:700;':''}"><span>${k}</span><span>${v}</span></div>`;
+  $('#taxBox').innerHTML =
+    kv(`今年（${yy}）累計應稅所得`, `<span id="taxHead" style="cursor:pointer;">${money(tc.sal + tc.biz + tc.spouse)} ▾</span>`) +
+    kv(`－免稅額（${P.exemptN} 人）`, money(tc.exempt)) +
+    kv('－標準扣除額（夫妻）', money(P.stdDed)) +
+    kv('－薪資特別扣除額', `每人上限 ${money(P.salDedPer)}`) +
+    kv('課稅所得 × ' + (tc.rate||0) + '%', money(tc.netI)) +
+    kv('<b>預估明年 5 月應繳</b>', `<b style="color:var(--urgent);">${money(tc.tax)}</b>`, true) +
+    kv('建議每月預留', money(Math.ceil(tc.tax/12))) +
+    `<div style="font-size:.75rem; color:var(--sub); margin-top:6px;">以今年已入帳、有標稅務類別的收入估算（執行業務 ${money(tc.biz)}・薪資 ${money(tc.sal)}${tc.spouse?'・配偶 '+money(tc.spouse):''}）。粗估參考，實際以申報為準。</div>` +
+    (taxOpen ? `<div style="border-top:1px dashed var(--line); margin-top:8px; padding-top:8px;">
+      <div style="font-size:.82rem; font-weight:700; margin-bottom:6px;">稅務參數（115年度公告值，每年 12 月更新）</div>
+      <div class="iform"><span style="font-size:.82rem; align-self:center;">免稅額/人</span><input type="number" id="tp_ex" value="${P.exemptPer}" style="max-width:110px;">
+        <span style="font-size:.82rem; align-self:center;">×人數</span><input type="number" id="tp_exn" value="${P.exemptN}" style="max-width:60px;"></div>
+      <div class="iform"><span style="font-size:.82rem; align-self:center;">標準扣除額</span><input type="number" id="tp_std" value="${P.stdDed}" style="max-width:110px;">
+        <span style="font-size:.82rem; align-self:center;">薪資扣除/人</span><input type="number" id="tp_sal" value="${P.salDedPer}" style="max-width:110px;"></div>
+      <div class="iform"><span style="font-size:.82rem; align-self:center;">執行業務費用率%</span><input type="number" id="tp_bc" value="${P.bizCost||0}" style="max-width:70px;">
+        <span style="font-size:.82rem; align-self:center;">配偶年收入(約)</span><input type="number" id="tp_sp" value="${P.spouseInc||0}" style="max-width:110px;"></div>
+      <div class="iform"><button class="btn pri" id="tpSave">儲存參數</button></div>
+    </div>` : '');
+  $('#taxHead').onclick = () => { taxOpen = !taxOpen; renderFinPage(); };
+  if (taxOpen){
+    $('#tpSave').onclick = () => {
+      P.exemptPer = +$('#tp_ex').value||0; P.exemptN = +$('#tp_exn').value||1;
+      P.stdDed = +$('#tp_std').value||0; P.salDedPer = +$('#tp_sal').value||0;
+      P.bizCost = Math.max(0, Math.min(100, +$('#tp_bc').value||0)); P.spouseInc = +$('#tp_sp').value||0;
+      D.prefs.mt = now(); save(); fbPushPrefs(); taxOpen = false; renderFinPage(); toast('稅務參數已更新');
+    };
+  }
+  /* ── 本月清單 ── */
   const mm = months[5];
-  const list = aliveTx().filter(t => t.date && t.date.startsWith(mm)).sort((a,b)=> a.date<b.date?1:-1);
+  const list = aliveTx().filter(t => inFinScope(t) && t.date && t.date.startsWith(mm)).sort((a,b)=> a.date<b.date?1:-1);
   const pName = id => { const p = D.projects.find(x=>x.id===id); return p ? '・'+p.name : ''; };
   $('#txBox').innerHTML = list.length ? '<ul class="list">' + list.map(t =>
     `<li data-tx="${t.id}"><span class="tag ${t.scope||'life'}">${SCOPE_NAME[t.scope]||'個人'}</span>
-     <span class="ttl">${esc(t.t)}<small style="color:var(--sub);">${pName(t.proj)}</small></span>
+     <span class="ttl">${esc(t.t)}<small style="color:var(--sub);">${pName(t.proj)}${t.recur?'・固定':''}${t.loan?'・還款':''}</small></span>
      <span class="due" style="color:${t.dir==='in'?'var(--life)':'var(--ink)'};">${t.dir==='in'?'+':'−'}${money(t.amt)}</span></li>`).join('') + '</ul>'
     : '<div class="empty">本月還沒有記帳，按「＋ 記一筆」</div>';
   $('#txBox').querySelectorAll('[data-tx]').forEach(li => li.onclick = () => openTx(li.dataset.tx));
 }
 $('#finAdd').onclick = () => openAdd('tx');
 $('#finEye').onclick = toggleMoney;
+$('#finTabs').onclick = e => {
+  if (!e.target.dataset.fsc) return;
+  D.settings.finScope = e.target.dataset.fsc; save(); renderFinPage();
+};
 $('#finUnlock').onclick = () => {
-  if ($('#finPin').value === D.settings.pin){ sessionStorage.setItem('wb_fin_ok','1'); renderFinPage(); }
+  if ($('#finPin').value === D.settings.pin){ sessionStorage.setItem('wb_fin_ok','1'); $('#finPin').value=''; renderFinPage(); }
   else toast('PIN 不對');
+};
+$('#finPin') && $('#finPin').addEventListener('keydown', e => { if (e.key==='Enter') $('#finUnlock').click(); });
+
+/* ── 固定項目彈窗 ── */
+let rEditing = null, rDir = 'out', rScope = 'life', rMode = 'auto', rTax = 'biz';
+function syncRecurModal(){
+  $$('#rDir button').forEach(b => b.classList.toggle('on', b.dataset.v===rDir));
+  $$('#rScope button').forEach(b => b.classList.toggle('on', b.dataset.v===rScope));
+  $$('#rMode button').forEach(b => b.classList.toggle('on', b.dataset.v===rMode));
+  $$('#rTax button').forEach(b => b.classList.toggle('on', b.dataset.v===rTax));
+  $('#rTaxRow').style.display = rDir==='in' ? '' : 'none';
+}
+function openRecur(id){
+  rEditing = id ? D.recurs.find(x => x.id===id) : null;
+  const r = rEditing || {};
+  rDir = r.dir||'out'; rScope = r.scope||'life'; rMode = r.mode||'auto'; rTax = r.tax||'biz';
+  $('#rTitle').firstChild.textContent = rEditing ? '編輯固定項目 ' : '新增固定項目 ';
+  $('#r_name').value = r.name||''; $('#r_amt').value = r.amt||''; $('#r_day').value = r.day||'';
+  $('#r_on').checked = rEditing ? !!r.on : true;
+  $('#rDel').style.display = rEditing ? '' : 'none';
+  syncRecurModal(); $('#rmask').classList.add('on');
+}
+$('#rDir').onclick = e => { if(e.target.dataset.v){ rDir = e.target.dataset.v; syncRecurModal(); } };
+$('#rScope').onclick = e => { if(e.target.dataset.v){ rScope = e.target.dataset.v; syncRecurModal(); } };
+$('#rMode').onclick = e => { if(e.target.dataset.v){ rMode = e.target.dataset.v; syncRecurModal(); } };
+$('#rTax').onclick = e => { if(e.target.dataset.v){ rTax = e.target.dataset.v; syncRecurModal(); } };
+$('#rClose').onclick = () => $('#rmask').classList.remove('on');
+$('#rmask').onclick = e => { if (e.target===$('#rmask')) $('#rmask').classList.remove('on'); };
+$('#recurAdd').onclick = () => openRecur(null);
+$('#rSave').onclick = () => {
+  const name = $('#r_name').value.trim(); if (!name){ toast('名稱不能空白'); return; }
+  const amt = +$('#r_amt').value||0, day = Math.max(1, Math.min(31, +$('#r_day').value||1));
+  if (!amt){ toast('金額不能是 0'); return; }
+  const v = {name, amt, day, dir:rDir, scope:rScope, mode:rMode, tax:rDir==='in'?rTax:null, on:$('#r_on').checked};
+  let r = rEditing;
+  if (r){ Object.assign(r, v, {rv:r.rv+1, mt:now()}); }
+  else { r = Object.assign({id:uid(), start:mmNow(), rv:1, mt:now(), del:false}, v); D.recurs.push(r); }
+  save(); fbPushDoc('recurs', r); $('#rmask').classList.remove('on'); renderAll(); toast('已儲存 ✓');
+};
+$('#rDel').onclick = () => {
+  if (rEditing && confirm('刪除「'+rEditing.name+'」？（已入帳的紀錄保留）')){
+    rEditing.del = true; rEditing.rv++; rEditing.mt = now();
+    save(); fbPushDoc('recurs', rEditing); $('#rmask').classList.remove('on'); renderAll();
+  }
+};
+
+/* ── 貸款彈窗 ── */
+let lEditing = null, lScope = 'life';
+function openLoan(id){
+  lEditing = id ? D.loans.find(x => x.id===id) : null;
+  const l = lEditing || {};
+  lScope = l.scope||'life';
+  $('#lTitle').firstChild.textContent = lEditing ? '編輯貸款 ' : '新增貸款 ';
+  $('#l_name').value = l.name||''; $('#l_remain').value = l.remain||''; $('#l_monthly').value = l.monthly||'';
+  $('#l_day').value = l.day||''; $('#l_paid').value = l.paid||0; $('#l_total').value = l.total||'';
+  $$('#lScope button').forEach(b => b.classList.toggle('on', b.dataset.v===lScope));
+  $('#lDel').style.display = lEditing ? '' : 'none';
+  $('#lmask').classList.add('on');
+}
+$('#lScope').onclick = e => { if(e.target.dataset.v){ lScope = e.target.dataset.v; $$('#lScope button').forEach(b => b.classList.toggle('on', b.dataset.v===lScope)); } };
+$('#lClose').onclick = () => $('#lmask').classList.remove('on');
+$('#lmask').onclick = e => { if (e.target===$('#lmask')) $('#lmask').classList.remove('on'); };
+$('#loanAdd').onclick = () => openLoan(null);
+$('#lSave').onclick = () => {
+  const name = $('#l_name').value.trim(); if (!name){ toast('名稱不能空白'); return; }
+  const v = {name, remain:+$('#l_remain').value||0, monthly:+$('#l_monthly').value||0,
+    day:Math.max(1, Math.min(31, +$('#l_day').value||1)), paid:+$('#l_paid').value||0, total:+$('#l_total').value||0, scope:lScope};
+  if (!v.monthly || !v.total){ toast('月付金和總期數都要填'); return; }
+  let l = lEditing;
+  if (l){ Object.assign(l, v, {rv:l.rv+1, mt:now()}); }
+  else { l = Object.assign({id:uid(), start:mmNow(), rv:1, mt:now(), del:false}, v); D.loans.push(l); }
+  save(); fbPushDoc('loans', l); $('#lmask').classList.remove('on'); renderAll(); toast('已儲存 ✓');
+};
+$('#lDel').onclick = () => {
+  if (lEditing && confirm('刪除「'+lEditing.name+'」？（已入帳的還款紀錄保留）')){
+    lEditing.del = true; lEditing.rv++; lEditing.mt = now();
+    save(); fbPushDoc('loans', lEditing); $('#lmask').classList.remove('on'); renderAll();
+  }
 };
 
 /* ════════ 旅遊規劃頁 ════════ */
@@ -1574,9 +1901,9 @@ async function renderPush(){
 }
 
 /* ── 快速記錄／編輯 ── */
-let mEdit = null, mEditTx = null, mKind = 'ev', mScope = 'life', mDir = 'out';
+let mEdit = null, mEditTx = null, mKind = 'ev', mScope = 'life', mDir = 'out', mTax = 'biz';
 function openAdd(kind, date){
-  mEdit = null; mEditTx = null; mKind = kind || 'ev';
+  mEdit = null; mEditTx = null; mKind = kind || 'ev'; mTax = 'biz';
   $('#mTitle').firstChild.textContent = '快速記錄 ';
   $('#mText').value = ''; $('#mDate').value = date || todayStr(); $('#mTime').value = '';
   $('#mAmt').value = ''; $('#mKg').value = '';
@@ -1594,7 +1921,7 @@ function openEdit(id){
 }
 function openTx(id){
   const t = D.txs.find(x => x.id===id); if(!t) return;
-  mEdit = null; mEditTx = t; mKind = 'tx'; mScope = t.scope || 'life'; mDir = t.dir;
+  mEdit = null; mEditTx = t; mKind = 'tx'; mScope = t.scope || 'life'; mDir = t.dir; mTax = t.tax || 'biz';
   $('#mTitle').firstChild.textContent = '編輯記帳 ';
   $('#mText').value = t.t; $('#mAmt').value = t.amt; $('#mDate').value = t.date || todayStr(); $('#mTime').value = '';
   $('#mDel').style.display = '';
@@ -1606,6 +1933,8 @@ function syncModal(){
   $$('#mScope button').forEach(b => b.classList.toggle('on', b.dataset.v===mScope));
   $('#mDirOut').classList.toggle('on', mDir==='out');
   $('#mDirIn').classList.toggle('on', mDir==='in');
+  $$('#mTax button').forEach(b => b.classList.toggle('on', b.dataset.v===mTax));
+  $('#mTaxRow').style.display = (mKind==='tx' && mDir==='in') ? '' : 'none';
   $('#mScopeRow').style.display = (mKind==='wt') ? 'none' : '';
   $('#mTextRow').style.display = (mKind==='wt') ? 'none' : '';
   $('#mTxRow').style.display = (mKind==='tx') ? '' : 'none';
@@ -1616,7 +1945,10 @@ function syncModal(){
   $('#mProj').innerHTML = '<option value="">—</option>' + aliveP().filter(p=>p.status==='active').map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('');
 }
 $('#mKind').onclick = e => { if(e.target.dataset.v){ mKind = e.target.dataset.v; syncModal(); } };
-$('#mTxRow').onclick = e => { if(e.target.dataset.dir){ mDir = e.target.dataset.dir; syncModal(); } };
+$('#mTxRow').onclick = e => {
+  if (e.target.dataset.dir){ mDir = e.target.dataset.dir; syncModal(); }
+  else if (e.target.dataset.v && e.target.closest('#mTax')){ mTax = e.target.dataset.v; syncModal(); }
+};
 $('#mScope').onclick = e => { if(e.target.dataset.v){ mScope = e.target.dataset.v; syncModal(); } };
 $('#mClose').onclick = () => $('#mask').classList.remove('on');
 $('#mask').onclick = e => { if(e.target===$('#mask')) $('#mask').classList.remove('on'); };
@@ -1635,7 +1967,7 @@ $('#mSave').onclick = () => {
   if (mKind === 'tx'){
     const amt = +$('#mAmt').value;
     if (!amt || !date){ toast('填金額和日期'); return; }
-    const v = {t:title, amt, dir:mDir, scope:mScope, proj:$('#mProj').value || null, date};
+    const v = {t:title, amt, dir:mDir, scope:mScope, proj:$('#mProj').value || null, date, tax: mDir==='in' ? mTax : null};
     let t = mEditTx;
     if (t){ Object.assign(t, v, {rv:t.rv+1, mt:now()}); }
     else { t = Object.assign({id:uid(), rv:1, mt:now(), del:false}, v); D.txs.push(t); }
@@ -1837,6 +2169,8 @@ function fbPushAll(){
   D.weights.forEach(w => fbPushDoc('weights', w));
   D.trips.forEach(t => fbPushDoc('trips', t));
   D.notes.forEach(n => fbPushDoc('notes', n));
+  D.recurs.forEach(r => fbPushDoc('recurs', r));
+  D.loans.forEach(l => fbPushDoc('loans', l));
 }
 function mergeArr(arr, inc){
   const ex = arr.find(x => x.id === inc.id);
@@ -1867,12 +2201,13 @@ function fbStart(){
     }, e => console.warn('snap', e));
     fbSubs.push(un);
   });
-  const collMap = {projects:'projects', bids:'bids', clients:'clients', weights:'weights', trips:'trips', notes:'notes'};
+  const collMap = {projects:'projects', bids:'bids', clients:'clients', weights:'weights', trips:'trips', notes:'notes', recurs:'recurs', loans:'loans'};
   const y0 = new Date().getFullYear();
   ['txs_'+(y0-1), 'txs_'+y0, 'txs_'+(y0+1)].forEach(c => collMap[c] = 'txs');
   Object.keys(collMap).forEach(coll => {
     const key = collMap[coll];
     const un = fbDb.collection(coll).onSnapshot(snap => {
+      if (key === 'txs') fbReadyTx = true;   // 🔴 txs 快照到了才准固定收支自動入帳
       let changed = false;
       snap.docChanges().forEach(ch => {
         if (ch.type === 'removed') return;
@@ -1933,6 +2268,7 @@ document.addEventListener('click', e => {
 });
 
 function renderAll(){
+  processRecurs();   // 固定收支／貸款到期自動入帳（確定性 id 冪等；登入時綁 txs 資料就緒旗標）
   renderTop(); applyScope(); applySkin(); applyFs();
   if (pageNow==='home') renderCards();
   if (pageNow==='cal') renderCalPage();
