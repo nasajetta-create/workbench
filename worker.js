@@ -1,11 +1,16 @@
-/* 艋舺良的工作台 — 每朝簡報＋自動備份 Worker（WK0806-03）
+/* 艋舺良的工作台 — 每朝簡報＋自動備份＋Notion 鏡像 Worker（WK0811-01）
  * cron: "0 23 * * *" = 台北 07:00 每朝簡報（Web Push 直接推到工作台 App）
  *       "0 19 * * *" = 台北 03:00 自動備份（GitHub 私有 repo）
- * 環境變數（機密）：SA_KEY（GCP 服務帳戶 JSON）、GH_TOKEN（GitHub PAT）、VAPID_KEY（VAPID 私鑰 PKCS8 base64）
+ *       "0 15 * * *" = 台北 23:00 Notion 鏡像同步（單向 工作台 → Notion）
+ * 環境變數（機密）：SA_KEY（GCP 服務帳戶 JSON）、GH_TOKEN（GitHub PAT）、VAPID_KEY（VAPID 私鑰 PKCS8 base64）、
+ *                   NOTION_KEY（Notion internal integration token，鏡像頁要先分享給該 integration）
  * 環境變數（純文字）：TEST_KEY
  * WK0806-03 變更：推播從 ntfy 改成 PWA 原生 Web Push（RFC 8188/8291/8292）。
  *   ntfy 免費版額度綁來源 IP，Cloudflare Worker 出口 IP 是共用的、永遠 429，因此棄用。
  *   加密實作已用 RFC 8291 §5 官方測試向量逐位元組比對通過。
+ * WK0811-01 變更：新增 Notion 鏡像同步（③3a）。讀 Firestore → 以 wbid 對應 upsert 到
+ *   Notion 五個資料庫（待辦/行事曆/投標/在建/筆記）；墓碑（del）→ 封存頁面；內容沒變就跳過不寫；
+ *   重複 wbid 的多餘頁面自動封存。方向鐵律：單向 工作台→Notion，Notion 端手改會被覆蓋。
  */
 const PROJECT = 'mengjia-workbench';
 const BACKUP_REPO = 'nasajetta-create/workbench-backup';
@@ -17,6 +22,7 @@ export default {
   async scheduled(event, env, ctx){
     if (event.cron === '0 23 * * *') await brief(env);
     else if (event.cron === '0 19 * * *') await backup(env);
+    else if (event.cron === '0 15 * * *') await notionSync(env);
   },
   async fetch(req, env){
     const url = new URL(req.url);
@@ -25,7 +31,8 @@ export default {
       if (url.pathname === '/brief'){ return new Response(await brief(env)); }
       if (url.pathname === '/backup'){ return new Response('備份完成：' + await backup(env)); }
       if (url.pathname === '/ping'){ return new Response(await ping(env)); }
-      return new Response('ok（/brief、/backup 或 /ping）');
+      if (url.pathname === '/notion'){ return new Response(await notionSync(env)); }
+      return new Response('ok（/brief、/backup、/ping 或 /notion）');
     }catch(e){ return new Response('錯誤：' + e.message, {status:500}); }
   }
 };
@@ -249,4 +256,131 @@ async function backup(env){
   await ghPut(env, 'backup/' + today + '.json', json, '自動備份 ' + today);
   await ghPut(env, 'latest.json', json, '自動備份 ' + today + '（latest）');
   return total + ' 筆・backup/' + today + '.json';
+}
+
+/* ══════════ Notion 鏡像同步（單向 工作台 → Notion） ══════════ */
+const NOTION_VER = '2025-09-03';
+const NOTION_DS = {
+  td:       'f0b641f4-9c53-4831-ad03-866b67bf9246', // 待辦清單
+  ev:       '7cf96821-7efa-4c79-b079-1b517856098b', // 行事曆
+  bids:     'fb7081cb-11c8-45f5-a1a3-674574d52e85', // 投標案
+  projects: '7ccd4893-dc08-45ed-9619-f29f8c1eac49', // 在建工程
+  notes:    '20600505-22a1-4a2b-b95a-b2c59460cacb'  // 靈感筆記
+};
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+/* Notion REST；429 依 Retry-After 重試（最多 3 次） */
+async function nApi(env, path, method, body){
+  for (let i = 0; i < 3; i++){
+    const r = await fetch('https://api.notion.com/v1' + path, {
+      method: method || 'GET',
+      headers: {Authorization:'Bearer ' + env.NOTION_KEY, 'Notion-Version':NOTION_VER, 'Content-Type':'application/json'},
+      body: body ? JSON.stringify(body) : undefined
+    });
+    if (r.status === 429){ await sleep((+r.headers.get('Retry-After') || 2) * 1000); continue; }
+    const j = await r.json();
+    if (!r.ok) throw new Error('Notion ' + r.status + '：' + (j.message || '').slice(0,150));
+    return j;
+  }
+  throw new Error('Notion 429 連續三次，放棄');
+}
+/* 欄位值 → Notion property 物件（寫入用） */
+const cut = (s, n) => String(s == null ? '' : s).slice(0, n || 1900);
+const num = v => (v === null || v === undefined || v === '' || isNaN(+v)) ? null : +v;
+function nProp(t, v){
+  if (t === 'title')    return {title: v ? [{text:{content: cut(v)}}] : []};
+  if (t === 'rich')     return {rich_text: v ? [{text:{content: cut(v)}}] : []};
+  if (t === 'date')     return {date: v ? {start: v} : null};
+  if (t === 'select')   return {select: v ? {name: v} : null};
+  if (t === 'checkbox') return {checkbox: !!v};
+  if (t === 'number')   return {number: num(v)};
+}
+/* Notion 頁面 property → 可比對的正規值（讀出用，跟寫入端同一空間） */
+function nVal(t, p){
+  if (!p) return t === 'checkbox' ? false : null;
+  if (t === 'title')    return (p.title || []).map(x => x.plain_text).join('') || null;
+  if (t === 'rich')     return (p.rich_text || []).map(x => x.plain_text).join('') || null;
+  if (t === 'date')     return p.date && p.date.start ? p.date.start.slice(0,10) : null;
+  if (t === 'select')   return p.select ? p.select.name : null;
+  if (t === 'checkbox') return !!p.checkbox;
+  if (t === 'number')   return (p.number === undefined || p.number === null) ? null : p.number;
+}
+/* 寫入端的正規值（跟 nVal 同一空間才能比對「有沒有變」） */
+function dVal(t, v){
+  if (t === 'checkbox') return !!v;
+  if (t === 'number')   return num(v);
+  if (t === 'date')     return v ? String(v).slice(0,10) : null;
+  return v ? cut(v) : null; // title / rich / select
+}
+/* 同步一個資料庫：rows = [{wbid, del, fields:{欄名:[型別,值]}}] */
+async function nSyncDb(env, name, ds, rows){
+  // 1) 撈現有頁面，建 wbid → {id, page} 對照；重複 wbid 的多餘頁面直接封存
+  const existing = new Map(); let cursor = null, extra = 0;
+  do {
+    const q = await nApi(env, '/data_sources/' + ds + '/query', 'POST',
+      cursor ? {page_size:100, start_cursor:cursor} : {page_size:100});
+    for (const pg of (q.results || [])){
+      const id = nVal('rich', pg.properties && pg.properties.wbid);
+      if (!id) continue;
+      if (existing.has(id)){ await nApi(env, '/pages/' + pg.id, 'PATCH', {archived:true}); extra++; await sleep(250); }
+      else existing.set(id, pg);
+    }
+    cursor = q.has_more ? q.next_cursor : null;
+  } while (cursor);
+  // 2) 逐筆 upsert
+  let add = 0, upd = 0, del = 0, same = 0, err = 0; const errs = [];
+  for (const row of rows){
+    try{
+      const pg = existing.get(row.wbid);
+      if (row.del){
+        if (pg){ await nApi(env, '/pages/' + pg.id, 'PATCH', {archived:true}); del++; await sleep(250); }
+        continue; // 沒有對應頁就不用動
+      }
+      const changed = !pg || Object.keys(row.fields).some(k => {
+        const [t, v] = row.fields[k];
+        return JSON.stringify(dVal(t, v)) !== JSON.stringify(nVal(t, pg.properties && pg.properties[k]));
+      });
+      if (!changed){ same++; continue; }
+      const props = {};
+      for (const k in row.fields){ const [t, v] = row.fields[k]; props[k] = nProp(t, v); }
+      if (pg){ await nApi(env, '/pages/' + pg.id, 'PATCH', {properties: props}); upd++; }
+      else { await nApi(env, '/pages', 'POST', {parent:{type:'data_source_id', data_source_id: ds}, properties: props}); add++; }
+      await sleep(250);
+    }catch(e){ err++; if (errs.length < 3) errs.push(row.wbid + '：' + e.message); }
+  }
+  return name + '：新增' + add + ' 更新' + upd + ' 封存' + (del + extra) + ' 未變' + same +
+    (err ? ' ⚠失敗' + err + '（' + errs.join('；') + '）' : '');
+}
+async function notionSync(env){
+  if (!env.NOTION_KEY) return 'NOTION_KEY 未設定——請先在 Notion 建 internal integration、把鏡像頁分享給它，再把 token 存進 Cloudflare 環境變數';
+  const tok = await gToken(env);
+  const y = +tpe().slice(0,4);
+  const [iA, iB, iC, projects, bids, notes] = await Promise.all([
+    readColl(tok, 'items_' + (y-1)), readColl(tok, 'items_' + y), readColl(tok, 'items_' + (y+1)),
+    readColl(tok, 'projects'), readColl(tok, 'bids'), readColl(tok, 'notes')]);
+  const items = [...iA, ...iB, ...iC];
+  const SCOPE = {site:'在建', case:'投標', life:'個人'};
+  const STAGE = {prep:'領標備標', est:'估算中', sub:'已送標', open:'待開標', won:'得標', lost:'未得標'};
+  const STATUS = {active:'進行中', warranty:'保固中', done:'已結案'};
+  const L = [];
+  L.push(await nSyncDb(env, '待辦', NOTION_DS.td, items.filter(i => i.kind === 'td' && i.id).map(i => ({
+    wbid: i.id, del: !!i.del, fields: {
+      '事項': ['title', i.title], '到期': ['date', i.date], '分類': ['select', SCOPE[i.scope] || null],
+      '完成': ['checkbox', i.done], 'wbid': ['rich', i.id]}}))));
+  L.push(await nSyncDb(env, '行事曆', NOTION_DS.ev, items.filter(i => i.kind === 'ev' && i.id).map(i => ({
+    wbid: i.id, del: !!i.del, fields: {
+      '事項': ['title', (i.time ? i.time + ' ' : '') + (i.title || '')], '日期': ['date', i.date],
+      '分類': ['select', SCOPE[i.scope] || null], 'wbid': ['rich', i.id]}}))));
+  L.push(await nSyncDb(env, '投標', NOTION_DS.bids, bids.filter(b => b._doc).map(b => ({
+    wbid: b.id || b._doc, del: !!b.del, fields: {
+      '案名': ['title', b.name], '階段': ['select', STAGE[b.stage] || null], '業主': ['rich', b.owner],
+      '截標': ['date', b.dates && b.dates.close], '標價': ['number', b.amt],
+      '押標金已退': ['checkbox', b.depRet], 'wbid': ['rich', b.id || b._doc]}}))));
+  L.push(await nSyncDb(env, '在建', NOTION_DS.projects, projects.filter(p => p._doc).map(p => ({
+    wbid: p.id || p._doc, del: !!p.del, fields: {
+      '案名': ['title', p.name], '狀態': ['select', STATUS[p.status] || null], '進度': ['number', p.prog],
+      '合約金額': ['number', p.contract], '保固到期': ['date', p.wEnd], 'wbid': ['rich', p.id || p._doc]}}))));
+  L.push(await nSyncDb(env, '筆記', NOTION_DS.notes, notes.filter(n => n.id).map(n => ({
+    wbid: n.id, del: !!n.del, fields: {
+      '內容': ['title', n.txt], '標籤': ['rich', n.tag], '置頂': ['checkbox', n.pin], 'wbid': ['rich', n.id]}}))));
+  return 'Notion 鏡像同步完成（' + tpe() + '）\n' + L.join('\n');
 }
