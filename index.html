@@ -403,10 +403,13 @@
       <div class="card"><h3><svg class="ic"><use href="#i-lock"></use></svg>安全（PIN 鎖・僅此裝置）</h3><div class="bd">
         <div class="setrow">PIN 密碼
           <span class="iform" style="margin:0 0 0 auto;"><input type="password" id="pinSet" placeholder="4-8 碼，留空=關閉" style="max-width:150px;"><button class="btn" id="pinSave">設定</button></span>
-          <small>設定後開啟工作台需輸入 PIN（僅存在此裝置）</small></div>
-        <div class="setrow">財務頁額外上鎖
+          <small>PIN 僅存在此裝置。設定後配合下面兩個開關決定鎖哪裡。</small></div>
+        <div class="setrow">開啟工作台需要 PIN
+          <button class="btn" id="lockAppBtn" style="margin-left:auto;">開 ✔</button>
+          <small>關掉的話 PIN 就只用在財務看板（下面那個開關）。</small></div>
+        <div class="setrow">財務看板上鎖
           <button class="btn" id="lockMoneyBtn" style="margin-left:auto;">關</button>
-          <small>開啟後進「記帳理財」需再輸入一次 PIN</small></div>
+          <small>開啟後進「財務看板」需輸入 PIN（每次開啟 App 後第一次進入時驗一次）</small></div>
       </div></div>
       <div class="card"><h3><svg class="ic"><use href="#i-db"></use></svg>資料</h3><div class="bd">
         <div class="setrow" id="statRow">—</div>
@@ -623,8 +626,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 'use strict';
-/* ════════ 艋舺良的工作台 W0811-04（待確認固定項目允許金額 0＝不定期獎金型） ════════ */
-const VERSION = 'W0811-04';
+/* ════════ 艋舺良的工作台 W0811-05（全局鎖開關＋月曆改星期一開頭） ════════ */
+const VERSION = 'W0811-05';
 const GCAL_CLIENT_ID = '654856338073-ukdt5nvtc8riq2010lado0i0n5vuhcfl.apps.googleusercontent.com';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
@@ -657,7 +660,7 @@ function blank(){ return {
   trips: [],                       // {id,kind:'near'|'wish',name,start,end,year,budget,split,note,done,rv,mt,del}
   notes: [],                       // {id,txt,tag,pin,rv,mt,del}
   prefs: {netBase:0, goalMoney:0, countries:0, countriesTarget:50, weightTarget:0, mt:0},
-  settings: {skin:'A', fs:'m', scope:'all', order:DEF_ORDER.slice(), folded:{}, showMoney:false, pin:null, lockMoney:false},
+  settings: {skin:'A', fs:'m', scope:'all', order:DEF_ORDER.slice(), folded:{}, showMoney:false, pin:null, lockApp:true, lockMoney:false},
   ver: 1
 };}
 function load(){
@@ -671,6 +674,7 @@ function load(){
   if (!Array.isArray(d.prefs.taxP.brk) || !d.prefs.taxP.brk.length) d.prefs.taxP.brk = JSON.parse(JSON.stringify(TAXP_DEF.brk));
   d.settings.gcal = Object.assign({token:null, exp:0, cals:{}, writeOn:false, wId:null, cache:[]}, d.settings.gcal||{});
   if (!d.settings.finScope) d.settings.finScope = 'all';
+  if (typeof d.settings.lockApp === 'undefined') d.settings.lockApp = true;
   const o = (d.settings.order||[]).filter(k => DEF_ORDER.includes(k));
   DEF_ORDER.forEach(k => { if(!o.includes(k)) o.splice(DEF_ORDER.indexOf(k)===DEF_ORDER.length-1 ? o.length : Math.min(o.length, DEF_ORDER.indexOf(k)), 0, k); });
   d.settings.order = o;
@@ -941,10 +945,11 @@ function renderCards(){
 
 /* ── 月曆 ── */
 let calY = new Date().getFullYear(), calM = new Date().getMonth();
+const WDH = ['一','二','三','四','五','六','日'];   // 月曆表頭：每週從星期一開始
 function drawCal(tbl, y, m, mini){
-  const first = new Date(y, m, 1), off = first.getDay(), days = new Date(y, m+1, 0).getDate();
+  const first = new Date(y, m, 1), off = (first.getDay()+6)%7, days = new Date(y, m+1, 0).getDate();
   const t = todayStr(), clash = clashDates();
-  let html = '<tr>'+WD.map(w=>'<th>'+w+'</th>').join('')+'</tr><tr>';
+  let html = '<tr>'+WDH.map(w=>'<th>'+w+'</th>').join('')+'</tr><tr>';
   for (let i=0;i<off;i++) html += '<td class="dim"></td>';
   for (let d=1; d<=days; d++){
     const ds = y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
@@ -1640,7 +1645,7 @@ function renderHeat(){
   aliveTx().forEach(t => { if (t.date) counts[t.date] = (counts[t.date]||0)+1; });
   const end = new Date(); end.setHours(0,0,0,0);
   const start = new Date(end); start.setDate(start.getDate() - 364);
-  start.setDate(start.getDate() - start.getDay());
+  start.setDate(start.getDate() - ((start.getDay()+6)%7));   // 對齊星期一開頭
   let html = '';
   for (let d = new Date(start); d <= end; d.setDate(d.getDate()+1)){
     const c = counts[ymd(d)] || 0;
@@ -1690,7 +1695,7 @@ $('#noteCancel').onclick = noteReset;
 
 /* ════════ PIN 鎖 ════════ */
 function applyLock(){
-  if (D.settings.pin && !sessionStorage.getItem('wb_ok')) $('#lockMask').classList.add('on');
+  if (D.settings.pin && D.settings.lockApp && !sessionStorage.getItem('wb_ok')) $('#lockMask').classList.add('on');
 }
 $('#lockGo').onclick = () => {
   if ($('#lockPin').value === D.settings.pin){ sessionStorage.setItem('wb_ok','1'); $('#lockMask').classList.remove('on'); }
@@ -1708,8 +1713,13 @@ $('#lockMoneyBtn').onclick = () => {
   if (!D.settings.pin){ toast('先設定 PIN'); return; }
   D.settings.lockMoney = !D.settings.lockMoney; save(); renderStats2();
 };
+$('#lockAppBtn').onclick = () => {
+  if (!D.settings.pin){ toast('先設定 PIN'); return; }
+  D.settings.lockApp = !D.settings.lockApp; save(); renderStats2();
+};
 function renderStats2(){
   $('#lockMoneyBtn').textContent = D.settings.lockMoney ? '開 ✔' : '關';
+  $('#lockAppBtn').textContent = D.settings.lockApp ? '開 ✔' : '關';
 }
 
 /* ════════ Google 行事曆（GIS token client） ════════ */
