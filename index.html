@@ -89,6 +89,13 @@
   .card.afold h3{border-bottom:none; margin-bottom:-15px; color:var(--sub);}
   .card.afold h3 .astat{margin-left:auto; font-weight:400; font-size:.75rem; color:var(--sub);}
   .card.afold h3 .sp{margin-left:8px;}
+  .morelnk{color:var(--case); font-size:.82rem; padding:8px 0 2px; cursor:pointer; user-select:none;}
+  .tiles{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px;}
+  .tile{border:1px solid var(--line); background:var(--card); padding:9px 10px; cursor:pointer;}
+  .tile .tk{font-size:.72rem; color:var(--sub); display:flex; align-items:center; gap:5px; margin-bottom:3px;}
+  .tile .tk .ic{width:1em; height:1em;}
+  .tile b{font-size:.95rem;}
+  .tile small{display:block; color:var(--sub); font-size:.72rem; margin-top:1px;}
   [data-loan]>div:first-child{gap:8px;}
   [data-loan]>div:first-child>b{overflow-wrap:anywhere; min-width:0;}
   [data-loan]>div:first-child>span{flex:none; white-space:nowrap;}
@@ -237,11 +244,14 @@
     .main{padding:14px 14px 96px;}
     .hi{font-size:1.35rem;}
     .topctl{align-items:flex-start; width:100%; flex-direction:row; justify-content:space-between;}
-    .card{margin-bottom:12px;}
-    .card{padding:13px;}
-    .card h3{margin:-13px -13px 12px; padding:10px 13px; font-size:.88rem;}
-    .card.afold h3{margin-bottom:-13px;}
-    .main{padding-bottom:calc(96px + env(safe-area-inset-bottom));}
+    .card h3{margin:-11px -11px 9px; padding:8px 11px; font-size:.88rem;}
+    .card.afold h3{margin-bottom:-11px;}
+    .card{padding:11px; margin-bottom:8px;}
+    .card.folded h3{margin-bottom:-11px;}
+    .list li{padding:9px 0;}
+    .zone{padding:8px 8px 0; margin-bottom:10px;}
+    .zone .card:last-child{margin-bottom:8px;}
+    .main{padding:12px 12px calc(96px + env(safe-area-inset-bottom));}
     .fab{bottom:calc(88px + env(safe-area-inset-bottom));}
     .taxtbl{font-size:.82rem;}
     .taxtbl td{padding:6px 8px;}
@@ -250,7 +260,6 @@
     .card h3 .pn{display:none;}
     .acct{display:none;}
     .card.folded h3{margin-bottom:-13px;}
-    .list li{padding:14px 0;}
     .tabbar{display:flex; position:fixed; left:0; right:0; bottom:0; height:62px; border-top:1px solid var(--line); background:var(--card); z-index:30; padding-bottom:env(safe-area-inset-bottom);}
     .tabbar button{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; font-size:.72rem; color:var(--sub); border-top:2px solid transparent;}
     .tabbar button.on{color:var(--ink); font-weight:700; border-top-color:var(--ink);}
@@ -730,8 +739,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 'use strict';
-/* ════════ 艋舺良的工作台 W0811-17（首頁工作個人分區＋列內去籤去天氣去G＋空卡摺行沉底＋iOS 安全區） ════════ */
-const VERSION = 'W0811-17';
+/* ════════ 艋舺良的工作台 W0811-18（手機緊湊密度＋清單限3列＋摘要磚模板；今日焦點置頂跨區；切範圍整區隱藏） ════════ */
+const VERSION = 'W0811-18';
 const GCAL_CLIENT_ID = '654856338073-ukdt5nvtc8riq2010lado0i0n5vuhcfl.apps.googleusercontent.com';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
@@ -912,9 +921,9 @@ const CARDS = {
     const tds = alive().filter(i => i.kind==='td' && !i.done && i.date && dayDiff(i.date)<=0 && inScope(i));
     const soon = allEvents().filter(i => i.ro==='bid' && i.date && dayDiff(i.date)>0 && dayDiff(i.date)<=3 && inScope(i));
     const rows = [...tds, ...evs, ...soon];
-    el.innerHTML = rows.length ? '<ul class="list">'+rows.map(liHtml).join('')+'</ul>'
+    el.innerHTML = rows.length ? listCap('focus', rows.map(liHtml))
       : '<div class="empty">今天沒有到期事項，按「＋」記一筆</div>';
-    bindLis(el);
+    bindLis(el); bindMore(el);
   }},
   goals: {t:'長期目標', ic:'i-goal', render(el){
     if (D.settings.scope==='work'){ el.innerHTML='<div class="empty">（個人範圍內容）</div>'; return; }
@@ -953,18 +962,18 @@ const CARDS = {
     const t = todayStr();
     const evs = allEvents().filter(i => i.date && i.date>=t && dayDiff(i.date)<=14 && i.scope!=='life' && inScope(i))
       .sort((a,b)=> (a.date+(a.time||'')) < (b.date+(b.time||'')) ? -1:1).slice(0,6);
-    el.innerHTML = evs.length ? '<ul class="list">'+evs.map(liHtml).join('')+'</ul>'
+    el.innerHTML = evs.length ? listCap('schedW', evs.map(liHtml))
       : '<div class="empty">近兩週沒有工作行程</div>';
-    bindLis(el);
+    bindLis(el); bindMore(el);
   }},
   schedP: {t:'個人行程<span class="pn">（14 天內）</span>', ic:'i-sched', render(el){
     if (D.settings.scope==='work'){ el.innerHTML='<div class="empty">（個人範圍內容）</div>'; return; }
     const t = todayStr();
     const evs = allEvents().filter(i => i.date && i.date>=t && dayDiff(i.date)<=14 && i.scope==='life' && inScope(i))
       .sort((a,b)=> (a.date+(a.time||'')) < (b.date+(b.time||'')) ? -1:1).slice(0,6);
-    el.innerHTML = evs.length ? '<ul class="list">'+evs.map(liHtml).join('')+'</ul>'
+    el.innerHTML = evs.length ? listCap('schedP', evs.map(liHtml))
       : '<div class="empty">近兩週沒有個人行程</div>';
-    bindLis(el);
+    bindLis(el); bindMore(el);
   }},
   proj: {t:'在建工程', ic:'i-proj', render(el){
     if (D.settings.scope==='life'){ el.innerHTML='<div class="empty">（工作範圍內容）</div>'; return; }
@@ -999,9 +1008,9 @@ const CARDS = {
   todos: {t:'待辦清單', ic:'i-todo', render(el){
     const tds = alive().filter(i => i.kind==='td' && !i.done && inScope(i))
       .sort((a,b)=> (a.date||'9999') < (b.date||'9999') ? -1:1).slice(0,6);
-    el.innerHTML = tds.length ? '<ul class="list">'+tds.map(liHtml).join('')+'</ul>'
+    el.innerHTML = tds.length ? listCap('todos', tds.map(liHtml))
       : '<div class="empty">沒有未完成待辦 ✓</div>';
-    bindLis(el);
+    bindLis(el); bindMore(el);
   }},
   cal: {t:'本月行事曆', ic:'i-cal', render(el){
     el.innerHTML = '<table class="cal" id="calMini"></table>';
@@ -1020,6 +1029,17 @@ const SCOPE_NAME = {site:'在建', case:'投標', life:'個人'};
 function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 /* 顯示用：名稱裡的長帳號（括號＋4 位以上數字）包成 .acct——桌機小字、手機隱藏；資料本身不動 */
 function acctFmt(s){ return esc(s).replace(/([\(（][^\)）]*\d{4,}[^\)）]*[\)）])/g, '<span class="acct">$1</span>'); }
+/* V14（2）：清單卡手機限 3 列＋「還有 N 筆」；點開本次記住（不存檔） */
+const _moreOpen = new Set();
+function listCap(key, rows){
+  const mob = matchMedia('(max-width:760px)').matches;
+  if (!mob || _moreOpen.has(key) || rows.length <= 3) return '<ul class="list">'+rows.join('')+'</ul>';
+  return '<ul class="list">'+rows.slice(0,3).join('')+'</ul>'
+       + `<div class="morelnk" data-more="${key}">還有 ${rows.length-3} 筆 ▸</div>`;
+}
+function bindMore(el){
+  el.querySelectorAll('[data-more]').forEach(n => n.onclick = () => { _moreOpen.add(n.dataset.more); renderCards(); });
+}
 function liHtml(it){
   /* V13：列內不再放範圍籤（4A）、不再放 G 前綴與天氣（1）——分區／全站切換已表明歸屬 */
   const chk = it.kind==='td' ? `<span class="tdchk" data-chk="${it.id}">${it.done?'✓':''}</span>` : '';
@@ -1041,7 +1061,42 @@ function toggleDone(id){
 }
 
 /* V13（3A＋5A＋5C）：首頁分「工作／個人」兩區；空卡摺成一行並沉到區尾；月曆獨立在最下 */
-const CARD_ZONE = {focus:'w', schedW:'w', proj:'w', bidp:'w', todos:'w', schedP:'p', fin:'p', weight:'p', goals:'p', cal:'x'};
+const CARD_ZONE = {focus:'t', schedW:'w', proj:'w', bidp:'w', todos:'w', schedP:'p', fin:'p', weight:'p', goals:'p', cal:'x'};   /* t=置頂跨區 x=最下跨區 */
+/* V14（4）：入口型卡在手機縮成兩欄快覽磚 */
+const TILE_CARDS = {proj:1, bidp:1, fin:1, weight:1, goals:1};
+function tileHtml(key){
+  const esc1 = esc;
+  if (key==='proj'){
+    const ps = aliveP().filter(p => p.status==='active');
+    const top = ps[0];
+    return {tk:'在建工程', ic:'i-proj', b: top ? esc1(top.name)+' '+(top.prog||0)+'%' : '無在建',
+      s: ps.length ? ps.length+' 案進行中 ▸' : '到「在建」頁新增 ▸', go:'proj'};
+  }
+  if (key==='bidp'){
+    const bs = aliveB().filter(b => !['won','lost'].includes(b.stage));
+    const closes = bs.filter(b => b.dates && b.dates.close && dayDiff(b.dates.close)>=0).sort((a,b)=> a.dates.close < b.dates.close ? -1:1);
+    return {tk:'投標案', ic:'i-bid', b: bs.length ? bs.length+' 案進行中' : '無進行中',
+      s: closes.length ? esc1(closes[0].name)+' 截標 '+dayDiff(closes[0].dates.close)+' 天 ▸' : '進投標頁 ▸', go:'bid'};
+  }
+  if (key==='fin'){
+    const n = pendingRecurs().length;
+    return {tk:'記帳理財', ic:'i-fin', b: n ? n+' 筆待確認' : '本月無待確認', s:'進入財務看板 ▸', go:'fin'};
+  }
+  if (key==='weight'){
+    const ws = D.weights.filter(w => !w.del && w.kg).sort((a,b)=> a.date<b.date?-1:1);
+    const cur = ws[ws.length-1];
+    const bps = D.bp.filter(b => !b.del).sort((a,b)=> a.date<b.date?-1:1);
+    const bp = bps[bps.length-1];
+    return {tk:'健康管理', ic:'i-health', b:(cur?cur.kg+' kg':'—')+(bp?'・'+bp.sys+'/'+bp.dia:''),
+      s:'本週運動 '+exerciseWeekCount()+'/'+(D.prefs.health.exWeek||3)+' ▸', go:'health'};
+  }
+  if (key==='goals'){
+    const g1 = D.goals.find(g=>g.id==='g1'), g2 = D.goals.find(g=>g.id==='g2');
+    return {tk:'長期目標', ic:'i-goal', b: g1 ? esc1(g1.name)+' '+goalPct(g1)+'%' : '—',
+      s: g2 ? esc1(g2.name)+' 已踏 '+(D.prefs.countries||0)+'/'+(D.prefs.countriesTarget||50) : '', go:null};
+  }
+  return null;
+}
 const _emptyOpen = new Set();   // 空卡本次點開名單（不存檔）
 function renderCards(){
   const box = $('#cards'); box.innerHTML = '';
@@ -1061,12 +1116,19 @@ function renderCards(){
     return el;
   };
   const isEmptyCard = el => { const bd = el.querySelector('.bd'); const em = bd.querySelector('.empty'); return !!em && bd.children.length === 1; };
+  const mob = matchMedia('(max-width:760px)').matches;
+  /* 置頂跨區：今日焦點 */
+  D.settings.order.filter(k => CARD_ZONE[k]==='t' && CARDS[k]).forEach(k => { const el = mkCard(k); if (el) box.appendChild(el); });
   const zones = [ {z:'w', name:'工　作', cls:'zw'}, {z:'p', name:'個　人', cls:'zp'} ];
   zones.forEach(({z, name, cls}) => {
+    if (z==='w' && D.settings.scope==='life') return;   /* V14 附帶②：切範圍時另一區整殼隱藏 */
+    if (z==='p' && D.settings.scope==='work') return;
     const zone = document.createElement('div');
     zone.className = 'zone ' + cls;
     zone.innerHTML = `<div class="zt"><i></i>${name}</div>`;
-    const keys = D.settings.order.filter(k => CARD_ZONE[k]===z && CARDS[k]);
+    const allKeys = D.settings.order.filter(k => CARD_ZONE[k]===z && CARDS[k]);
+    const tileKeys = mob ? allKeys.filter(k => TILE_CARDS[k]) : [];
+    const keys = allKeys.filter(k => !tileKeys.includes(k));
     const els = keys.map(k => [k, mkCard(k)]).filter(x => x[1]);
     const full = els.filter(([k,el]) => !isEmptyCard(el));
     const emp  = els.filter(([k,el]) =>  isEmptyCard(el));   // 5C：空卡沉到區尾
@@ -1086,6 +1148,19 @@ function renderCards(){
       }
       zone.appendChild(el);
     });
+    if (tileKeys.length){
+      const grid = document.createElement('div');
+      grid.className = 'tiles';
+      tileKeys.forEach(k => {
+        const t = tileHtml(k); if (!t) return;
+        const d = document.createElement('div');
+        d.className = 'tile'; d.dataset.tile = k;
+        d.innerHTML = `<div class="tk"><svg class="ic"><use href="#${t.ic}"></use></svg>${t.tk}</div><b>${t.b}</b>${t.s?`<small>${t.s}</small>`:''}`;
+        if (t.go) d.onclick = () => go(t.go);
+        grid.appendChild(d);
+      });
+      zone.appendChild(grid);
+    }
     box.appendChild(zone);
   });
   /* 月曆：跨範圍，獨立收在最下 */
