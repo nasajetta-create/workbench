@@ -166,6 +166,14 @@
   .mbtns2{display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;}
   .mbtns2 .btn{flex:1; text-align:center; font-size:.88rem; padding:7px 4px;}
 
+  /* 報稅預估表格（平角、細框線，呼應薪資單） */
+  .taxtbl{width:100%; border-collapse:collapse; font-size:.88rem;}
+  .taxtbl td{border:1px solid var(--line); padding:6px 9px;}
+  .taxtbl td:last-child{text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap;}
+  .taxtbl tr.sec td{background:color-mix(in srgb, var(--ink) 5%, var(--card)); font-weight:700; font-size:.82rem;}
+  .taxtbl tr.tot td{font-weight:700; border-top:2px solid var(--ink);}
+  .taxtbl tr.sub td:first-child{padding-left:20px; color:color-mix(in srgb, var(--ink) 78%, var(--card));}
+
   /* ═══ 手機 ═══ */
   .tabbar{display:none;}
   @media (max-width:760px){
@@ -223,7 +231,7 @@
 <div class="app">
 
   <aside class="side">
-    <div class="head"><b>艋舺良的工作台</b><small>個人＋工程</small></div>
+    <div class="head"><b>艋舺良的工作台</b><small id="vtagHead">—</small></div>
     <ul class="nav" id="deskNav">
       <li data-page="home" class="on"><svg class="ic"><use href="#i-home"></use></svg>首頁</li>
       <li data-page="cal"><svg class="ic"><use href="#i-cal"></use></svg>行事曆</li>
@@ -355,6 +363,7 @@
 
     <!-- ═══ 設定 ═══ -->
     <section class="page" id="page-set">
+      <div style="font-size:.82rem; color:var(--sub); margin-bottom:10px;" id="vtagSet">—</div>
       <div class="card"><h3><svg class="ic"><use href="#i-page"></use></svg>頁面</h3><div class="bd">
         <div class="setrow" style="cursor:pointer;" onclick="go('todo')">待辦清單<span style="margin-left:auto; color:var(--sub);">▸</span></div>
         <div class="setrow" style="cursor:pointer;" onclick="go('fin')">財務看板<span style="margin-left:auto; color:var(--sub);">▸</span></div>
@@ -614,8 +623,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 'use strict';
-/* ════════ 艋舺良的工作台 W0811-02（財務看板＋應稅金額欄＋預扣稅參數＋待確認略過鈕） ════════ */
-const VERSION = 'W0811-02';
+/* ════════ 艋舺良的工作台 W0811-03（報稅預估改表格＋版次顯示在標題與更多頁頂端） ════════ */
+const VERSION = 'W0811-03';
 const GCAL_CLIENT_ID = '654856338073-ukdt5nvtc8riq2010lado0i0n5vuhcfl.apps.googleusercontent.com';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
@@ -1407,23 +1416,32 @@ function renderFinPage(){
     </div>`;
   }).join('') : '<div class="empty">沒有貸款——或按「＋貸款」把房貸車貸掛進來追蹤</div>';
   $('#loanBox').querySelectorAll('[data-loan]').forEach(n => n.onclick = () => openLoan(n.dataset.loan));
-  /* ── 明年報稅預估 ── */
+  /* ── 明年報稅預估（表格版） ── */
   const P = D.prefs.taxP, tc = taxCalc();
   const yy = new Date().getFullYear();
-  const kv = (k,v,hl) => `<div style="display:flex; justify-content:space-between; padding:3px 0; font-size:.88rem; ${hl?'border-top:1px solid var(--line); margin-top:4px; padding-top:7px; font-weight:700;':''}"><span>${k}</span><span>${v}</span></div>`;
+  const tr = (k,v,cls) => `<tr class="${cls||''}"><td>${k}</td><td>${v}</td></tr>`;
   $('#taxBox').innerHTML =
-    kv(`今年（${yy}）累計應稅所得`, `<span id="taxHead" style="cursor:pointer;">${money(tc.sal + tc.biz + tc.spouse)} ▾</span>`) +
-    kv(`－免稅額（${P.exemptN} 人）`, money(tc.exempt)) +
-    kv('－標準扣除額（夫妻）', money(P.stdDed)) +
-    kv('－薪資特別扣除額', `每人上限 ${money(P.salDedPer)}`) +
-    kv('課稅所得 × ' + (tc.rate||0) + '%', money(tc.netI)) +
-    kv('預估全年稅額', money(tc.tax)) +
-    (tc.withheld ? kv('－公司已預扣（每月 ' + money(D.prefs.taxP.withheldM) + '）', money(tc.withheld)) : '') +
+    `<table class="taxtbl">` +
+    tr(`所得（今年 ${yy} 累計）`, `<span id="taxHead" style="cursor:pointer;">參數 ▾</span>`, 'sec') +
+    tr('執行業務所得', money(tc.biz), 'sub') +
+    tr('薪資所得（應稅）', money(tc.sal), 'sub') +
+    (tc.spouse ? tr('配偶收入（約）', money(tc.spouse), 'sub') : '') +
+    tr('<b>所得合計</b>', `<b>${money(tc.sal + tc.biz + tc.spouse)}</b>`) +
+    tr('減除', '', 'sec') +
+    tr(`免稅額（${P.exemptN} 人）`, '−' + money(tc.exempt), 'sub') +
+    tr('標準扣除額（夫妻）', '−' + money(P.stdDed), 'sub') +
+    tr('薪資特別扣除額', `每人上限 ${money(P.salDedPer)}`, 'sub') +
+    tr('稅額試算', '', 'sec') +
+    tr('課稅所得', money(tc.netI), 'sub') +
+    tr('適用稅率', (tc.rate||0) + '%（累進差額 ' + money((P.brk.find(b=>b.r===tc.rate)||{d:0}).d) + '）', 'sub') +
+    tr('預估全年稅額', money(tc.tax), 'sub') +
+    (tc.withheld ? tr(`公司已預扣（${money(P.withheldM)}×12）`, '−' + money(tc.withheld), 'sub') : '') +
     (tc.due >= 0
-      ? kv('<b>明年 5 月預計要補</b>', `<b style="color:var(--urgent);">${money(tc.due)}</b>`, true)
-      : kv('<b>明年 5 月預計可退</b>', `<b style="color:var(--life);">${money(-tc.due)}</b>`, true)) +
-    kv('建議每月預留', money(Math.ceil(Math.max(0, tc.due)/12))) +
-    `<div style="font-size:.75rem; color:var(--sub); margin-top:6px;">以今年已入帳、有標稅務類別的收入估算（執行業務 ${money(tc.biz)}・薪資 ${money(tc.sal)}${tc.spouse?'・配偶 '+money(tc.spouse):''}）。粗估參考，實際以申報為準。</div>` +
+      ? tr('<b>明年 5 月預計要補</b>', `<b style="color:var(--urgent);">${money(tc.due)}</b>`, 'tot')
+      : tr('<b>明年 5 月預計可退</b>', `<b style="color:var(--life);">${money(-tc.due)}</b>`, 'tot')) +
+    tr('建議每月預留', money(Math.ceil(Math.max(0, tc.due)/12))) +
+    `</table>` +
+    `<div style="font-size:.75rem; color:var(--sub); margin-top:6px;">以今年已入帳、有標稅務類別的收入估算。粗估參考，實際以申報為準。</div>` +
     (taxOpen ? `<div style="border-top:1px dashed var(--line); margin-top:8px; padding-top:8px;">
       <div style="font-size:.82rem; font-weight:700; margin-bottom:6px;">稅務參數（115年度公告值，每年 12 月更新）</div>
       <div class="iform"><span style="font-size:.82rem; align-self:center;">免稅額/人</span><input type="number" id="tp_ex" value="${P.exemptPer}" style="max-width:110px;">
@@ -2305,7 +2323,10 @@ function renderAll(){
   if (pageNow==='note') renderNotePage();
   if (pageNow==='set'){ renderStats(); renderStats2(); renderGcal(); renderPush(); }
   const mode = fbUser ? '雲端同步中' : '本機模式';
-  $('#vtag1').textContent = VERSION + '・' + mode; $('#vtag2').textContent = VERSION + '・' + mode;
+  const vt = VERSION + '・' + mode;
+  $('#vtag1').textContent = vt; $('#vtag2').textContent = vt;
+  $('#vtagHead').textContent = vt;                 // 側欄標題正下方（桌機一眼可見）
+  $('#vtagSet').textContent = '艋舺良的工作台 ' + vt;   // 「更多」頁最上面（手機）
   applyAuthUI();
 }
 renderAll();
