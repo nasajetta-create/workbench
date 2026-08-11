@@ -76,6 +76,9 @@
   .card h3 .ic{color:var(--site); opacity:.9;}
   .card h3 .sp{margin-left:auto; display:flex; align-items:center; gap:8px; flex:none;}
   .card h3 .sp .btn{white-space:nowrap;}
+  .pn{display:inline-block;}
+  .acct{color:var(--sub); font-weight:400;}
+  .pair{white-space:nowrap; display:inline-block;}
   [data-loan]>div:first-child{gap:8px;}
   [data-loan]>div:first-child>b{overflow-wrap:anywhere; min-width:0;}
   [data-loan]>div:first-child>span{flex:none; white-space:nowrap;}
@@ -231,6 +234,8 @@
     .taxtbl td{padding:6px 8px;}
     .taxtbl td:first-child{min-width:10em;}
     .taxtbl td:last-child{width:auto; white-space:normal;}
+    .card h3 .pn{display:none;}
+    .acct{display:none;}
     .card.folded h3{margin-bottom:-13px;}
     .list li{padding:14px 0;}
     .tabbar{display:flex; position:fixed; left:0; right:0; bottom:0; height:62px; border-top:1px solid var(--line); background:var(--card); z-index:30; padding-bottom:env(safe-area-inset-bottom);}
@@ -338,7 +343,7 @@
         <div style="font-size:.75rem; color:var(--sub); margin-top:8px;">點日期新增行程・點色籤編輯</div>
       </div></div>
       <div class="card"><h3>當月清單</h3><div class="bd"><ul class="list" id="calList"></ul></div></div>
-      <div class="card"><h3>年度熱力圖（行程＋完成事項＋記帳密度，近 12 個月）</h3><div class="bd">
+      <div class="card"><h3>年度熱力圖<span class="pn">（行程＋完成事項＋記帳密度，近 12 個月）</span></h3><div class="bd">
         <div id="heatBox" style="display:grid; grid-template-rows:repeat(7,10px); grid-auto-flow:column; grid-auto-columns:10px; gap:2px; overflow-x:auto;"></div>
         <div style="font-size:.70rem; color:var(--sub); margin-top:6px;">顏色越深越忙・單一色相深淺</div>
       </div></div>
@@ -347,7 +352,7 @@
     <!-- ═══ 待辦 ═══ -->
     <section class="page" id="page-todo">
       <div class="card"><h3>待辦清單</h3><div class="bd"><ul class="list" id="todoAll"></ul></div></div>
-      <div class="card"><h3>已完成（近 30 天）</h3><div class="bd"><ul class="list" id="todoDone"></ul></div></div>
+      <div class="card"><h3>已完成<span class="pn">（近 30 天）</span></h3><div class="bd"><ul class="list" id="todoDone"></ul></div></div>
     </section>
 
     <!-- ═══ 在建工程 ═══ -->
@@ -366,9 +371,9 @@
         <button class="btn stat" id="bidEye"><svg class="ic"><use href="#i-eye"></use></svg> 金額</button>
         <button class="btn pri" id="bidAdd">＋ 新增投標案</button>
       </div>
-      <div class="card"><h3>投標看板（點卡片編輯・關鍵日期自動進行事曆）</h3><div class="bd"><div class="board" id="bidBoard"></div></div></div>
+      <div class="card"><h3>投標看板<span class="pn">（點卡片編輯・關鍵日期自動進行事曆）</span></h3><div class="bd"><div class="board" id="bidBoard"></div></div></div>
       <div style="display:flex; gap:12px; flex-wrap:wrap;">
-        <div class="card" style="flex:1; min-width:260px;"><h3>待追款（押標金・保固金）</h3><div class="bd" id="chaseBox"></div></div>
+        <div class="card" style="flex:1; min-width:260px;"><h3>待追款<span class="pn">（押標金・保固金）</span></h3><div class="bd" id="chaseBox"></div></div>
         <div class="card" style="flex:1; min-width:260px;"><h3>業主・協力名冊</h3><div class="bd" id="clientBox"></div></div>
       </div>
     </section>
@@ -386,12 +391,12 @@
         </div>
         <div style="display:flex; gap:12px; flex-wrap:wrap;">
           <div class="card" style="flex:1; min-width:260px;"><h3>淨資產・財務自由</h3><div class="bd" id="netBox"></div></div>
-          <div class="card" style="flex:1.2; min-width:300px;"><h3>月現金流（近六個月）</h3><div class="bd" id="cfBox"></div></div>
+          <div class="card" style="flex:1.2; min-width:300px;"><h3>月現金流<span class="pn">（近六個月）</span></h3><div class="bd" id="cfBox"></div></div>
         </div>
-        <div class="card"><h3><svg class="ic"><use href="#i-sched"></use></svg>固定收支（每月自動或待確認）<span class="sp"><button class="btn" style="padding:3px 12px; font-size:.82rem;" id="recurAdd">＋固定項目</button></span></h3><div class="bd" id="recurBox"></div></div>
+        <div class="card"><h3><svg class="ic"><use href="#i-sched"></use></svg>固定收支<span class="pn">（每月自動或待確認）</span><span class="sp"><button class="btn" style="padding:3px 12px; font-size:.82rem;" id="recurAdd">＋固定項目</button></span></h3><div class="bd" id="recurBox"></div></div>
         <div class="card"><h3><svg class="ic"><use href="#i-fin"></use></svg>還款計畫<span class="sp"><button class="btn" style="padding:3px 12px; font-size:.82rem;" id="loanAdd">＋貸款</button></span></h3><div class="bd" id="loanBox"></div></div>
-        <div class="card"><h3><svg class="ic"><use href="#i-bid"></use></svg>明年報稅預估（點金額列展開稅務參數）</h3><div class="bd" id="taxBox"></div></div>
-        <div class="card"><h3>本月收支（點項目編輯；請款「入帳」自動記收入）</h3><div class="bd" id="txBox"></div></div>
+        <div class="card"><h3><svg class="ic"><use href="#i-bid"></use></svg>明年報稅預估<span class="pn">（點金額列展開稅務參數）</span></h3><div class="bd" id="taxBox"></div></div>
+        <div class="card"><h3>本月收支<span class="pn">（點項目編輯；請款「入帳」自動記收入）</span></h3><div class="bd" id="txBox"></div></div>
       </div>
     </section>
 
@@ -402,13 +407,13 @@
       </div>
       <div id="healthLock" style="display:none;" class="card"><div class="empty"><svg class="ic"><use href="#i-lock"></use></svg> 健康頁已上鎖<div class="iform" style="justify-content:center;"><input type="password" id="healthPin" placeholder="輸入 PIN" style="max-width:140px;"><button class="btn pri" id="healthUnlock">解鎖</button></div></div></div>
       <div id="healthBody">
-        <div class="card"><h3><svg class="ic"><use href="#i-weight"></use></svg>體重・體組成（十年趨勢）</h3><div class="bd" id="whBox"></div></div>
+        <div class="card"><h3><svg class="ic"><use href="#i-weight"></use></svg>體重・體組成<span class="pn">（十年趨勢）</span></h3><div class="bd" id="whBox"></div></div>
         <div style="display:flex; gap:12px; flex-wrap:wrap;">
           <div class="card" style="flex:1; min-width:280px;"><h3><svg class="ic"><use href="#i-health"></use></svg>血壓</h3><div class="bd" id="bpBox"></div></div>
           <div class="card" style="flex:1; min-width:280px;"><h3><svg class="ic"><use href="#i-focus"></use></svg>運動</h3><div class="bd" id="exBox"></div></div>
         </div>
-        <div class="card"><h3><svg class="ic"><use href="#i-cal"></use></svg>回診・用藥（醫療日曆自動帶入）</h3><div class="bd" id="medBox"></div></div>
-        <div class="card" style="border-color:var(--urgent);"><h3 style="color:var(--urgent);"><svg class="ic"><use href="#i-warn"></use></svg>藥物過敏記錄（就醫時出示）</h3><div class="bd" id="algBox"></div></div>
+        <div class="card"><h3><svg class="ic"><use href="#i-cal"></use></svg>回診・用藥<span class="pn">（醫療日曆自動帶入）</span></h3><div class="bd" id="medBox"></div></div>
+        <div class="card" style="border-color:var(--urgent);"><h3 style="color:var(--urgent);"><svg class="ic"><use href="#i-warn"></use></svg>藥物過敏記錄<span class="pn">（就醫時出示）</span></h3><div class="bd" id="algBox"></div></div>
       </div>
     </section>
 
@@ -418,8 +423,8 @@
         <button class="btn pri" id="tripAdd">＋ 新增旅程</button>
       </div>
       <div style="display:flex; gap:12px; flex-wrap:wrap;">
-        <div class="card" style="flex:1.3; min-width:300px;"><h3>近期旅程（半年內・出發日自動進行事曆）</h3><div class="bd" id="tripNear"></div></div>
-        <div class="card" style="flex:1; min-width:280px;"><h3>長期清單・環遊世界（連動目標③）</h3><div class="bd" id="tripWish"></div></div>
+        <div class="card" style="flex:1.3; min-width:300px;"><h3>近期旅程<span class="pn">（半年內・出發日自動進行事曆）</span></h3><div class="bd" id="tripNear"></div></div>
+        <div class="card" style="flex:1; min-width:280px;"><h3>長期清單・環遊世界<span class="pn">（連動目標③）</span></h3><div class="bd" id="tripWish"></div></div>
       </div>
     </section>
 
@@ -430,7 +435,7 @@
         <div class="frow"><textarea id="noteTxt" placeholder="想到什麼記什麼——工法、點子、要問的事…" style="width:100%; border:1px solid var(--line); background:var(--page); color:var(--ink); padding:10px; font-family:inherit; font-size:.95rem; min-height:70px;"></textarea></div>
         <div class="iform"><input id="noteTag" placeholder="標籤（選填，例：工法）" style="max-width:180px;"><button class="btn pri" id="noteSave">儲存筆記</button><button class="btn" id="noteCancel" style="display:none;">取消編輯</button></div>
       </div></div>
-      <div class="card"><h3><svg class="ic"><use href="#i-note"></use></svg>筆記（<svg class="ic"><use href="#i-pin"></use></svg> 置頂・點內容編輯）</h3><div class="bd" id="noteList"></div></div>
+      <div class="card"><h3><svg class="ic"><use href="#i-note"></use></svg>筆記<span class="pn">（<svg class="ic"><use href="#i-pin"></use></svg> 置頂・點內容編輯）</span></h3><div class="bd" id="noteList"></div></div>
     </section>
 
     <!-- ═══ 設定 ═══ -->
@@ -473,7 +478,7 @@
       </div></div>
       <div class="card"><h3><svg class="ic"><use href="#i-gcal"></use></svg>Google 行事曆</h3><div class="bd" id="gcalBox">—</div></div>
       <div class="card"><h3><svg class="ic"><use href="#i-bell"></use></svg>每朝推播</h3><div class="bd" id="pushBox">—</div></div>
-      <div class="card"><h3><svg class="ic"><use href="#i-lock"></use></svg>安全（PIN 鎖・僅此裝置）</h3><div class="bd">
+      <div class="card"><h3><svg class="ic"><use href="#i-lock"></use></svg>安全<span class="pn">（PIN 鎖・僅此裝置）</span></h3><div class="bd">
         <div class="setrow">PIN 密碼
           <span class="iform" style="margin:0 0 0 auto;"><input type="password" id="pinSet" placeholder="4-8 碼，留空=關閉" style="max-width:150px;"><button class="btn" id="pinSave">設定</button></span>
           <small>PIN 僅存在此裝置。設定後配合下面兩個開關決定鎖哪裡。</small></div>
@@ -712,8 +717,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 'use strict';
-/* ════════ 艋舺良的工作台 W0811-15（手機財務看板擠壓修正：卡頭鈕不縮＋報稅表金額欄貼齊內容＋貸款列 nowrap；G95 配方） ════════ */
-const VERSION = 'W0811-15';
+/* ════════ 艋舺良的工作台 W0811-16（卡頭括號註記手機隱藏＋帳號顯示拆分＋體組成快覽不拆字） ════════ */
+const VERSION = 'W0811-16';
 const GCAL_CLIENT_ID = '654856338073-ukdt5nvtc8riq2010lado0i0n5vuhcfl.apps.googleusercontent.com';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
@@ -921,7 +926,7 @@ const CARDS = {
       `</div><div style="text-align:center; padding-top:10px;"><button class="btn" id="healthEnter">進入健康管理 ▸</button></div>`;
     el.querySelector('#healthEnter').onclick = () => go('health');
   }},
-  sched: {t:'近期行程（14 天內）', ic:'i-sched', render(el){
+  sched: {t:'近期行程<span class="pn">（14 天內）</span>', ic:'i-sched', render(el){
     const t = todayStr();
     const evs = allEvents().filter(i => i.date && i.date>=t && dayDiff(i.date)<=14 && inScope(i))
       .sort((a,b)=> (a.date+(a.time||'')) < (b.date+(b.time||'')) ? -1:1).slice(0,6);
@@ -981,6 +986,8 @@ const CARDS = {
 };
 const SCOPE_NAME = {site:'在建', case:'投標', life:'個人'};
 function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+/* 顯示用：名稱裡的長帳號（括號＋4 位以上數字）包成 .acct——桌機小字、手機隱藏；資料本身不動 */
+function acctFmt(s){ return esc(s).replace(/([\(（][^\)）]*\d{4,}[^\)）]*[\)）])/g, '<span class="acct">$1</span>'); }
 function liHtml(it){
   const chk = it.kind==='td' ? `<span class="tdchk" data-chk="${it.id}">${it.done?'✓':''}</span>` : '';
   let due = '', wx = '';
@@ -1122,7 +1129,7 @@ function renderProjPage(){
       </div>
     </div>
     <div class="card" style="flex:1.2; min-width:270px;">
-      <h3>請款期數（點狀態切換：待請→可請→已請→入帳）</h3>
+      <h3>請款期數<span class="pn">（點狀態切換：待請→可請→已請→入帳）</span></h3>
       <div class="bd">
         <ul class="list" id="billList">${(p.billing||[]).map((b,i) => `
           <li><span>第${i+1}期・${b.pct||0}%</span>
@@ -1499,6 +1506,8 @@ function renderFinPage(){
   const ls = aliveL().filter(l => inFinScope(l));
   $('#loanBox').innerHTML = ls.length ? ls.map(l => {
     const paid = +l.paid||0, total = +l.total||0, monthly = +l.monthly||0, rate = +l.rate||0;
+    const nsp = String(l.name||'').match(/^(.*?)([\(（][^\)）]*\d{4,}[^\)）]*[\)）])(.*)$/);
+    const nMain = nsp ? (nsp[1] + nsp[3]).trim() : l.name, nAcct = nsp ? nsp[2] : '';
     const paidAmt = paidAmtOf(l);
     const principal = (+l.remain||0) + paidAmt;             // 總借款額 = 剩餘 + 已還
     const pct = principal > 0 ? Math.round(paidAmt / principal * 100) : 0;
@@ -1516,8 +1525,9 @@ function renderFinPage(){
     }
     return `<div style="padding:8px 0; border-bottom:1px dashed var(--line);">
       <div data-loan="${l.id}" style="cursor:pointer;">
-      <div style="display:flex; justify-content:space-between; font-size:.95rem;"><b>${esc(l.name)}<small style="color:var(--sub); font-weight:400;">・每月${l.day}日</small></b>
+      <div style="display:flex; justify-content:space-between; font-size:.95rem;"><b>${esc(nMain)}<small style="color:var(--sub); font-weight:400;">・每月${l.day}日</small></b>
         <span>剩 <b>${money(l.remain)}</b></span></div>
+      ${nAcct ? `<div class="acct" style="font-size:.75rem;">${esc(nAcct)}</div>` : ''}
       <div style="display:flex; justify-content:space-between; font-size:.78rem; color:var(--sub); margin-top:2px;">
         <span>已還 <b style="color:var(--life);">${money(paidAmt)}</b>／總額 ${money(principal)}</span><span>${pct}%</span></div>
       <div class="bar"><i style="width:${pct}%; background:var(--case);"></i></div>
@@ -1592,7 +1602,7 @@ function renderFinPage(){
   const pName = id => { const p = D.projects.find(x=>x.id===id); return p ? '・'+p.name : ''; };
   $('#txBox').innerHTML = list.length ? '<ul class="list">' + list.map(t =>
     `<li data-tx="${t.id}"><span class="tag ${t.scope||'life'}">${SCOPE_NAME[t.scope]||'個人'}</span>
-     <span class="ttl">${esc(t.t)}<small style="color:var(--sub);">${pName(t.proj)}${t.recur?'・固定':''}${t.loan?'・還款':''}</small></span>
+     <span class="ttl">${acctFmt(t.t)}<small style="color:var(--sub);">${pName(t.proj)}${t.recur?'・固定':''}${t.loan?'・還款':''}</small></span>
      <span class="due" style="color:${t.dir==='in'?'var(--life)':'var(--ink)'};">${t.dir==='in'?'+':'−'}${money(t.amt)}</span></li>`).join('') + '</ul>'
     : '<div class="empty">本月還沒有記帳，按「＋ 記一筆」</div>';
   $('#txBox').querySelectorAll('[data-tx]').forEach(li => li.onclick = () => openTx(li.dataset.tx));
@@ -1739,7 +1749,7 @@ function renderHealthPage(){
     `<div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; flex-wrap:wrap; gap:8px;">
       ${chip([['all','全部'],['1y','1年'],['90d','90天']], whRange, 'whr')}
       <span style="display:flex; gap:8px; font-size:.82rem; color:var(--sub);">
-        ${cur&&cur.fat!=null?`體脂 <b>${cur.fat}%</b>`:''} ${cur&&cur.muscle!=null?`肌肉 <b>${cur.muscle}%</b>`:''} ${cur&&cur.visceral!=null?`內臟 <b>${cur.visceral}</b>`:''} ${cur&&cur.bmr!=null?`基代 <b>${cur.bmr}</b>`:''}
+        ${cur&&cur.fat!=null?`<span class="pair">體脂 <b>${cur.fat}%</b></span>`:''} ${cur&&cur.muscle!=null?`<span class="pair">肌肉 <b>${cur.muscle}%</b></span>`:''} ${cur&&cur.visceral!=null?`<span class="pair">內臟 <b>${cur.visceral}</b></span>`:''} ${cur&&cur.bmr!=null?`<span class="pair">基代 <b>${cur.bmr}</b></span>`:''}
       </span>
     </div>
     <div class="iform"><input type="number" id="whTgt" placeholder="目標 kg" value="${tgt||''}" style="max-width:100px;"><button class="btn" id="whTgtSet">設目標</button><span style="font-size:.75rem; color:var(--sub); align-self:center;">共 ${aliveW().length} 筆・最早 ${all[0]?all[0].date:'—'}</span></div>`;
