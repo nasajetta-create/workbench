@@ -563,6 +563,8 @@
     <div class="frow" id="rTaxRow" style="display:none;"><label>稅務類別</label><div class="chips" id="rTax">
       <button data-v="biz">執行業務</button><button data-v="sal">薪資</button><button data-v="none">免稅</button>
     </div></div>
+    <div class="frow" id="rTaxAmtRow" style="display:none;"><label>應稅金額（選填）——實領和應稅不同時填，例：實領含免稅加班費，報稅累計用這個數；改金額入帳時會按比例換算</label>
+      <input type="number" id="r_taxamt" placeholder="留空＝同金額"></div>
     <div class="frow"><label><input type="checkbox" id="r_on" style="width:auto;" checked> 啟用中（取消勾選＝暫停，不刪紀錄）</label></div>
     <div class="mbtns">
       <button class="btn del" id="rDel" style="display:none;">刪除</button>
@@ -612,8 +614,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 'use strict';
-/* ════════ 艋舺良的工作台 W0811-01（財務看板：獨立分頁＋PIN＋固定收支＋還款計畫＋報稅預估） ════════ */
-const VERSION = 'W0811-01';
+/* ════════ 艋舺良的工作台 W0811-02（財務看板＋應稅金額欄＋預扣稅參數＋待確認略過鈕） ════════ */
+const VERSION = 'W0811-02';
 const GCAL_CLIENT_ID = '654856338073-ukdt5nvtc8riq2010lado0i0n5vuhcfl.apps.googleusercontent.com';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
@@ -631,7 +633,7 @@ const KEY = 'wb_data_v1';
 let mem = null; // localStorage 不可用時退回記憶體
 const DEF_ORDER = ['focus','goals','sched','todos','proj','bidp','fin','weight','cal'];
 /* 115年度（2026 所得、2027/5 申報）公告值——僅作預設，設定後存 prefs.taxP 可編輯 */
-const TAXP_DEF = {exemptPer:101000, exemptN:2, stdDed:272000, salDedPer:227000, bizCost:0, spouseInc:0,
+const TAXP_DEF = {exemptPer:101000, exemptN:2, stdDed:272000, salDedPer:227000, bizCost:0, spouseInc:0, withheldM:0,
   brk:[{up:610000,r:5,d:0},{up:1380000,r:12,d:42700},{up:2770000,r:20,d:153100},{up:5190000,r:30,d:430100},{up:0,r:40,d:949100}]};
 function blank(){ return {
   items: [],                       // {id,kind:'ev'|'td',scope,title,date,time,done,rv,mt,del}
@@ -1270,7 +1272,8 @@ function processRecurs(){
       const due = dueOf(mm, r.day);
       if (due <= t && bookTx('rc_' + r.id + '_' + mm.replace('-',''),
         {t:r.name, amt:+r.amt||0, dir:r.dir, scope:r.scope||'life', proj:null,
-         tax:r.dir==='in' ? (r.tax||'biz') : null, recur:r.id, date:due})) n++;
+         tax:r.dir==='in' ? (r.tax||'biz') : null, taxAmt:(r.dir==='in' && r.taxAmt) ? +r.taxAmt : null,
+         recur:r.id, date:due})) n++;
     });
   });
   aliveL().forEach(l => {
@@ -1298,7 +1301,8 @@ function txSumF(mm, dir){ return aliveTx().filter(t => inFinScope(t) && t.dir===
 function taxCalc(){
   const P = D.prefs.taxP, y = String(new Date().getFullYear());
   const inc = aliveTx().filter(t => t.dir==='in' && t.date && t.date.startsWith(y));
-  const sum = f => inc.filter(f).reduce((s,t)=>s+(+t.amt||0),0);
+  const amtOf = t => (t.taxAmt != null && +t.taxAmt > 0) ? +t.taxAmt : (+t.amt||0);   // 有應稅金額用應稅金額
+  const sum = f => inc.filter(f).reduce((s,t)=>s+amtOf(t),0);
   const sal = sum(t => t.tax==='sal');
   const biz = sum(t => t.tax==='biz' || !t.tax);          // 沒標的當執行業務（保守）
   const spouse = +P.spouseInc||0;
@@ -1309,7 +1313,8 @@ function taxCalc(){
   const netI = Math.max(0, salNet + spNet + bizNet - exempt - (+P.stdDed||0));
   let tax = 0, rate = 0;
   for (const b of P.brk){ if (!b.up || netI <= b.up){ tax = Math.max(0, Math.round(netI * b.r / 100 - b.d)); rate = b.r; break; } }
-  return {sal, biz, spouse, exempt, netI, tax, rate};
+  const withheld = Math.round((+P.withheldM||0) * 12);
+  return {sal, biz, spouse, exempt, netI, tax, rate, withheld, due: tax - withheld};
 }
 let taxOpen = false;
 function renderFinPage(){
@@ -1358,6 +1363,7 @@ function renderFinPage(){
       <span style="flex:1;">${p.due.slice(5).replace('-','/')} 到期：<b>${esc(p.r.name)}</b>（${p.r.dir==='in'?'收入':'支出'}）</span>
       <input type="number" value="${p.r.amt||''}" data-pamt="${p.r.id}_${p.mm}" style="width:110px; padding:5px 8px; font-size:.88rem;">
       <button class="btn pri" style="padding:5px 14px; font-size:.85rem;" data-pgo="${p.r.id}" data-pmm="${p.mm}" data-pdue="${p.due}">入帳</button>
+      <button class="btn" style="padding:5px 10px; font-size:.85rem; color:var(--sub);" data-pskip="${p.r.id}" data-pmm="${p.mm}" data-pdue="${p.due}">略過</button>
     </div>`).join('') +
     (rs.length ? '<ul class="list">' + rs.map(r =>
       `<li data-recur="${r.id}" style="${r.on?'':'opacity:.45;'}"><span class="tag ${r.scope==='site'?'site':'life'}">${r.scope==='site'?'工程':'個人'}</span>
@@ -1369,9 +1375,19 @@ function renderFinPage(){
     const r = D.recurs.find(x => x.id === b.dataset.pgo); if (!r) return;
     const amt = +($('#recurBox').querySelector(`[data-pamt="${r.id}_${b.dataset.pmm}"]`).value) || 0;
     if (!amt){ toast('金額不能是 0'); return; }
+    const ta = (r.dir==='in' && r.taxAmt && r.amt) ? Math.round(amt * (+r.taxAmt) / (+r.amt)) : null;
     if (bookTx('rc_' + r.id + '_' + b.dataset.pmm.replace('-',''),
-      {t:r.name, amt, dir:r.dir, scope:r.scope||'life', proj:null, tax:r.dir==='in'?(r.tax||'biz'):null, recur:r.id, date:b.dataset.pdue})){
+      {t:r.name, amt, dir:r.dir, scope:r.scope||'life', proj:null, tax:r.dir==='in'?(r.tax||'biz'):null, taxAmt:ta, recur:r.id, date:b.dataset.pdue})){
       save(); renderFinPage(); toast('已入帳 ✓');
+    }
+  });
+  /* 略過＝用墓碑佔住該期的確定性 id，這個月不再提醒、也不進流水（獎金沒發的月份用這個） */
+  $('#recurBox').querySelectorAll('[data-pskip]').forEach(b => b.onclick = e => {
+    e.stopPropagation();
+    const r = D.recurs.find(x => x.id === b.dataset.pskip); if (!r) return;
+    if (bookTx('rc_' + r.id + '_' + b.dataset.pmm.replace('-',''),
+      {t:r.name + '（略過）', amt:0, dir:r.dir, scope:r.scope||'life', proj:null, tax:null, recur:r.id, date:b.dataset.pdue, del:true})){
+      save(); renderFinPage(); toast('這個月略過');
     }
   });
   $('#recurBox').querySelectorAll('[data-recur]').forEach(li => li.onclick = () => openRecur(li.dataset.recur));
@@ -1401,8 +1417,12 @@ function renderFinPage(){
     kv('－標準扣除額（夫妻）', money(P.stdDed)) +
     kv('－薪資特別扣除額', `每人上限 ${money(P.salDedPer)}`) +
     kv('課稅所得 × ' + (tc.rate||0) + '%', money(tc.netI)) +
-    kv('<b>預估明年 5 月應繳</b>', `<b style="color:var(--urgent);">${money(tc.tax)}</b>`, true) +
-    kv('建議每月預留', money(Math.ceil(tc.tax/12))) +
+    kv('預估全年稅額', money(tc.tax)) +
+    (tc.withheld ? kv('－公司已預扣（每月 ' + money(D.prefs.taxP.withheldM) + '）', money(tc.withheld)) : '') +
+    (tc.due >= 0
+      ? kv('<b>明年 5 月預計要補</b>', `<b style="color:var(--urgent);">${money(tc.due)}</b>`, true)
+      : kv('<b>明年 5 月預計可退</b>', `<b style="color:var(--life);">${money(-tc.due)}</b>`, true)) +
+    kv('建議每月預留', money(Math.ceil(Math.max(0, tc.due)/12))) +
     `<div style="font-size:.75rem; color:var(--sub); margin-top:6px;">以今年已入帳、有標稅務類別的收入估算（執行業務 ${money(tc.biz)}・薪資 ${money(tc.sal)}${tc.spouse?'・配偶 '+money(tc.spouse):''}）。粗估參考，實際以申報為準。</div>` +
     (taxOpen ? `<div style="border-top:1px dashed var(--line); margin-top:8px; padding-top:8px;">
       <div style="font-size:.82rem; font-weight:700; margin-bottom:6px;">稅務參數（115年度公告值，每年 12 月更新）</div>
@@ -1412,6 +1432,7 @@ function renderFinPage(){
         <span style="font-size:.82rem; align-self:center;">薪資扣除/人</span><input type="number" id="tp_sal" value="${P.salDedPer}" style="max-width:110px;"></div>
       <div class="iform"><span style="font-size:.82rem; align-self:center;">執行業務費用率%</span><input type="number" id="tp_bc" value="${P.bizCost||0}" style="max-width:70px;">
         <span style="font-size:.82rem; align-self:center;">配偶年收入(約)</span><input type="number" id="tp_sp" value="${P.spouseInc||0}" style="max-width:110px;"></div>
+      <div class="iform"><span style="font-size:.82rem; align-self:center;">每月預扣稅（薪資單「所得稅」欄）</span><input type="number" id="tp_wh" value="${P.withheldM||0}" style="max-width:90px;"></div>
       <div class="iform"><button class="btn pri" id="tpSave">儲存參數</button></div>
     </div>` : '');
   $('#taxHead').onclick = () => { taxOpen = !taxOpen; renderFinPage(); };
@@ -1420,6 +1441,7 @@ function renderFinPage(){
       P.exemptPer = +$('#tp_ex').value||0; P.exemptN = +$('#tp_exn').value||1;
       P.stdDed = +$('#tp_std').value||0; P.salDedPer = +$('#tp_sal').value||0;
       P.bizCost = Math.max(0, Math.min(100, +$('#tp_bc').value||0)); P.spouseInc = +$('#tp_sp').value||0;
+      P.withheldM = +$('#tp_wh').value||0;
       D.prefs.mt = now(); save(); fbPushPrefs(); taxOpen = false; renderFinPage(); toast('稅務參數已更新');
     };
   }
@@ -1454,6 +1476,7 @@ function syncRecurModal(){
   $$('#rMode button').forEach(b => b.classList.toggle('on', b.dataset.v===rMode));
   $$('#rTax button').forEach(b => b.classList.toggle('on', b.dataset.v===rTax));
   $('#rTaxRow').style.display = rDir==='in' ? '' : 'none';
+  $('#rTaxAmtRow').style.display = rDir==='in' ? '' : 'none';
 }
 function openRecur(id){
   rEditing = id ? D.recurs.find(x => x.id===id) : null;
@@ -1461,6 +1484,7 @@ function openRecur(id){
   rDir = r.dir||'out'; rScope = r.scope||'life'; rMode = r.mode||'auto'; rTax = r.tax||'biz';
   $('#rTitle').firstChild.textContent = rEditing ? '編輯固定項目 ' : '新增固定項目 ';
   $('#r_name').value = r.name||''; $('#r_amt').value = r.amt||''; $('#r_day').value = r.day||'';
+  $('#r_taxamt').value = r.taxAmt||'';
   $('#r_on').checked = rEditing ? !!r.on : true;
   $('#rDel').style.display = rEditing ? '' : 'none';
   syncRecurModal(); $('#rmask').classList.add('on');
@@ -1476,7 +1500,8 @@ $('#rSave').onclick = () => {
   const name = $('#r_name').value.trim(); if (!name){ toast('名稱不能空白'); return; }
   const amt = +$('#r_amt').value||0, day = Math.max(1, Math.min(31, +$('#r_day').value||1));
   if (!amt){ toast('金額不能是 0'); return; }
-  const v = {name, amt, day, dir:rDir, scope:rScope, mode:rMode, tax:rDir==='in'?rTax:null, on:$('#r_on').checked};
+  const v = {name, amt, day, dir:rDir, scope:rScope, mode:rMode, tax:rDir==='in'?rTax:null,
+    taxAmt:rDir==='in' ? (+$('#r_taxamt').value||null) : null, on:$('#r_on').checked};
   let r = rEditing;
   if (r){ Object.assign(r, v, {rv:r.rv+1, mt:now()}); }
   else { r = Object.assign({id:uid(), start:mmNow(), rv:1, mt:now(), del:false}, v); D.recurs.push(r); }
