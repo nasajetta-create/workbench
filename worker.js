@@ -1,5 +1,6 @@
-/* 艋舺良的工作台 — 每朝簡報＋自動備份＋Notion 鏡像 Worker（WK0811-02）
+/* 艋舺良的工作台 — 每朝簡報＋自動備份＋Notion 鏡像 Worker（WK0811-03）
  * WK0811-02 變更：自動備份補上 W0811 新增的 recurs（固定收支）、loans（貸款）集合。
+ * WK0811-03 變更：自動備份補上健康管理的 bp（血壓）、allergy（藥物過敏）集合。
  * cron: "0 23 * * *" = 台北 07:00 每朝簡報（Web Push 直接推到工作台 App）
  *       "0 19 * * *" = 台北 03:00 自動備份（GitHub 私有 repo）
  *       "0 15 * * *" = 台北 23:00 Notion 鏡像同步（單向 工作台 → Notion）
@@ -246,7 +247,7 @@ async function backup(env){
   const tok = await gToken(env);
   const today = tpe(), y = +today.slice(0,4);
   const data = {};
-  const colls = ['projects','bids','clients','trips','weights','notes','meta','recurs','loans',
+  const colls = ['projects','bids','clients','trips','weights','notes','meta','recurs','loans','bp','allergy',
     'items_'+(y-1), 'items_'+y, 'items_'+(y+1), 'txs_'+(y-1), 'txs_'+y, 'txs_'+(y+1)];
   let total = 0;
   for (const c of colls){

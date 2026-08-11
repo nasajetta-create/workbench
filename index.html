@@ -204,6 +204,7 @@
   <symbol id="i-set" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.2 5.2l2.1 2.1M16.7 16.7l2.1 2.1M18.8 5.2l-2.1 2.1M7.3 16.7l-2.1 2.1"/></symbol>
   <symbol id="i-focus" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5.5l3.5 2"/></symbol>
   <symbol id="i-weight" viewBox="0 0 24 24"><path d="M4 20V9M9.5 20V4M15 20v-8M20.5 20V6"/></symbol>
+  <symbol id="i-health" viewBox="0 0 24 24"><path d="M12 20.5S3.5 15 3.5 9.5a4.5 4.5 0 0 1 8.5-2 4.5 4.5 0 0 1 8.5 2C20.5 15 12 20.5 12 20.5z"/><path d="M4 11.5h4.5l1.5-2.5 2 4.5 1.5-2h6"/></symbol>
   <symbol id="i-sched" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16"/><path d="M8 3v4M16 3v4M7 13h4M7 17h8"/></symbol>
   <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="19" cy="12" r="1.4"/></symbol>
   <symbol id="i-bell" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0-6 6c0 4-2 5-2 7h16c0-2-2-3-2-7a6 6 0 0 0-6-6z"/><path d="M10 20a2 2 0 0 0 4 0"/></symbol>
@@ -239,6 +240,7 @@
       <li data-page="bid"><svg class="ic"><use href="#i-bid"></use></svg>投標案</li>
       <li data-page="todo"><svg class="ic"><use href="#i-todo"></use></svg>待辦清單</li>
       <li data-page="fin"><svg class="ic"><use href="#i-fin"></use></svg>財務看板</li>
+      <li data-page="health"><svg class="ic"><use href="#i-health"></use></svg>健康管理</li>
       <li data-page="home" data-anchor="goals"><svg class="ic"><use href="#i-goal"></use></svg>長期目標</li>
       <li data-page="trip"><svg class="ic"><use href="#i-trip"></use></svg>旅遊規劃</li>
       <li data-page="note"><svg class="ic"><use href="#i-note"></use></svg>靈感筆記</li>
@@ -340,6 +342,23 @@
       </div>
     </section>
 
+    <!-- ═══ 健康管理（V10：51-57） ═══ -->
+    <section class="page" id="page-health">
+      <div class="pagehead"><h2>健康管理</h2>
+        <button class="btn pri" id="whAdd">＋ 記體重</button>
+      </div>
+      <div id="healthLock" style="display:none;" class="card"><div class="empty"><svg class="ic"><use href="#i-lock"></use></svg> 健康頁已上鎖<div class="iform" style="justify-content:center;"><input type="password" id="healthPin" placeholder="輸入 PIN" style="max-width:140px;"><button class="btn pri" id="healthUnlock">解鎖</button></div></div></div>
+      <div id="healthBody">
+        <div class="card"><h3><svg class="ic"><use href="#i-weight"></use></svg>體重・體組成（十年趨勢）</h3><div class="bd" id="whBox"></div></div>
+        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+          <div class="card" style="flex:1; min-width:280px;"><h3><svg class="ic"><use href="#i-health"></use></svg>血壓</h3><div class="bd" id="bpBox"></div></div>
+          <div class="card" style="flex:1; min-width:280px;"><h3><svg class="ic"><use href="#i-focus"></use></svg>運動</h3><div class="bd" id="exBox"></div></div>
+        </div>
+        <div class="card"><h3><svg class="ic"><use href="#i-cal"></use></svg>回診・用藥（醫療日曆自動帶入）</h3><div class="bd" id="medBox"></div></div>
+        <div class="card" style="border-color:var(--urgent);"><h3 style="color:var(--urgent);"><svg class="ic"><use href="#i-warn"></use></svg>藥物過敏記錄（就醫時出示）</h3><div class="bd" id="algBox"></div></div>
+      </div>
+    </section>
+
     <!-- ═══ 旅遊規劃 ═══ -->
     <section class="page" id="page-trip">
       <div class="pagehead"><h2>旅遊規劃</h2>
@@ -367,6 +386,7 @@
       <div class="card"><h3><svg class="ic"><use href="#i-page"></use></svg>頁面</h3><div class="bd">
         <div class="setrow" style="cursor:pointer;" onclick="go('todo')">待辦清單<span style="margin-left:auto; color:var(--sub);">▸</span></div>
         <div class="setrow" style="cursor:pointer;" onclick="go('fin')">財務看板<span style="margin-left:auto; color:var(--sub);">▸</span></div>
+        <div class="setrow" style="cursor:pointer;" onclick="go('health')">健康管理<span style="margin-left:auto; color:var(--sub);">▸</span></div>
         <div class="setrow" style="cursor:pointer;" onclick="go('trip')">旅遊規劃<span style="margin-left:auto; color:var(--sub);">▸</span></div>
         <div class="setrow" style="cursor:pointer;" onclick="go('note')">靈感筆記<span style="margin-left:auto; color:var(--sub);">▸</span></div>
       </div></div>
@@ -410,6 +430,9 @@
         <div class="setrow">財務看板上鎖
           <button class="btn" id="lockMoneyBtn" style="margin-left:auto;">關</button>
           <small>開啟後進「財務看板」需輸入 PIN（每次開啟 App 後第一次進入時驗一次）</small></div>
+        <div class="setrow">健康頁上鎖
+          <button class="btn" id="lockHealthBtn" style="margin-left:auto;">關</button>
+          <small>開啟後進「健康管理」需輸入 PIN</small></div>
       </div></div>
       <div class="card"><h3><svg class="ic"><use href="#i-db"></use></svg>資料</h3><div class="bd">
         <div class="setrow" id="statRow">—</div>
@@ -452,7 +475,13 @@
         <div class="chips" id="mTax"><button data-v="biz">執行業務</button><button data-v="sal">薪資</button><button data-v="none">免稅</button></div>
       </div>
     </div>
-    <div class="frow" id="mWtRow" style="display:none;"><label>體重 (kg)</label><input type="number" step="0.1" id="mKg" placeholder="72.5"></div>
+    <div class="frow" id="mWtRow" style="display:none;"><label>體重 (kg)</label><input type="number" step="0.1" id="mKg" placeholder="72.5">
+      <div style="display:flex; gap:6px; margin-top:6px;">
+        <div style="flex:1;"><label style="font-size:.70rem;">體脂%（選填）</label><input type="number" step="0.1" id="mFat"></div>
+        <div style="flex:1;"><label style="font-size:.70rem;">肌肉%（選填）</label><input type="number" step="0.1" id="mMuscle"></div>
+        <div style="flex:1;"><label style="font-size:.70rem;">內臟脂肪（選填）</label><input type="number" step="0.5" id="mVisceral"></div>
+      </div>
+    </div>
     <div class="frow" style="display:flex; gap:8px;">
       <div style="flex:1.4;"><label id="mDateLb">日期</label><input type="date" id="mDate"></div>
       <div style="flex:1;" id="mTimeCol"><label>時間（選填）</label><input type="time" id="mTime"></div>
@@ -626,8 +655,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 'use strict';
-/* ════════ 艋舺良的工作台 W0811-06（日期帶星期 8/11(二)＋月曆 Google 事件用日曆原色） ════════ */
-const VERSION = 'W0811-06';
+/* ════════ 艋舺良的工作台 W0811-07（健康管理 51-57：體組成十年趨勢＋血壓＋運動＋回診用藥＋藥物過敏） ════════ */
+const VERSION = 'W0811-07';
 const GCAL_CLIENT_ID = '654856338073-ukdt5nvtc8riq2010lado0i0n5vuhcfl.apps.googleusercontent.com';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
@@ -653,6 +682,8 @@ function blank(){ return {
   projects: [],                    // {id,name,contract,budget,prog,status,wEnd,ret,retOk,g95,billing:[],expenses:[],rv,mt,del}
   bids: [],                        // {id,name,owner,amt,stage,dates:{},dep,depPaid,depRet,items,rv,mt,del}
   clients: [],                     // {id,name,note,rv,mt,del}
+  bp: [],                          // {id,sys,dia,pulse,date,ampm,rv,mt,del}
+  allergy: [],                     // {id,name,note,rv,mt,del}
   txs: [],                         // {id,t,amt,dir:'in'|'out',scope,proj,date,tax,recur,loan,rv,mt,del}
   recurs: [],                      // {id,name,amt,dir,scope,day,mode:'auto'|'conf',tax,on,start:'YYYY-MM',rv,mt,del}
   loans: [],                       // {id,name,remain,monthly,day,paid,total,scope,start:'YYYY-MM',rv,mt,del}
@@ -668,13 +699,16 @@ function load(){
   try{ const r = localStorage.getItem(KEY); if(r) d = JSON.parse(r); }
   catch(e){ /* 私隱模式或預覽環境 */ }
   d = d || mem || blank();
-  ['projects','bids','clients','txs','weights','trips','notes','recurs','loans'].forEach(k => { if(!Array.isArray(d[k])) d[k] = []; });
+  ['projects','bids','clients','txs','weights','trips','notes','recurs','loans','bp','allergy'].forEach(k => { if(!Array.isArray(d[k])) d[k] = []; });
+  d.prefs = d.prefs || {};
+  d.prefs.health = Object.assign({bpSys:130, bpDia:80, exWeek:3}, (d.prefs||{}).health||{});
   d.prefs = Object.assign({netBase:0, goalMoney:0, countries:0, countriesTarget:50, weightTarget:0, mt:0}, d.prefs||{});
   d.prefs.taxP = Object.assign(JSON.parse(JSON.stringify(TAXP_DEF)), d.prefs.taxP||{});
   if (!Array.isArray(d.prefs.taxP.brk) || !d.prefs.taxP.brk.length) d.prefs.taxP.brk = JSON.parse(JSON.stringify(TAXP_DEF.brk));
   d.settings.gcal = Object.assign({token:null, exp:0, cals:{}, writeOn:false, wId:null, cache:[]}, d.settings.gcal||{});
   if (!d.settings.finScope) d.settings.finScope = 'all';
   if (typeof d.settings.lockApp === 'undefined') d.settings.lockApp = true;
+  if (typeof d.settings.lockHealth === 'undefined') d.settings.lockHealth = false;
   const o = (d.settings.order||[]).filter(k => DEF_ORDER.includes(k));
   DEF_ORDER.forEach(k => { if(!o.includes(k)) o.splice(DEF_ORDER.indexOf(k)===DEF_ORDER.length-1 ? o.length : Math.min(o.length, DEF_ORDER.indexOf(k)), 0, k); });
   d.settings.order = o;
@@ -810,31 +844,25 @@ const CARDS = {
     }).join('') + '</div>';
     el.querySelectorAll('[data-g]').forEach(n => n.onclick = () => openGoal(n.dataset.g));
   }},
-  weight: {t:'體重', ic:'i-weight', render(el){
+  weight: {t:'健康管理', ic:'i-health', render(el){
+    /* 【51】三格快覽＋入口 */
     if (D.settings.scope==='work'){ el.innerHTML='<div class="empty">（個人範圍內容）</div>'; return; }
-    const ws = D.weights.filter(w => !w.del).sort((a,b)=> a.date<b.date?-1:1);
-    if (!ws.length){ el.innerHTML = '<div class="empty">按「＋」→「體重」記第一筆</div>'; return; }
+    const ws = D.weights.filter(w => !w.del && w.kg).sort((a,b)=> a.date<b.date?-1:1);
     const cur = ws[ws.length-1];
     const cut = ymd(new Date(Date.now()-30*86400000));
     const m30 = ws.filter(w => w.date >= cut);
-    const d30 = m30.length>1 ? (cur.kg - m30[0].kg) : 0;
-    const tgt = +D.prefs.weightTarget || 0;
-    let svg = '';
-    if (m30.length > 1){
-      const min = Math.min(...m30.map(w=>w.kg)), max = Math.max(...m30.map(w=>w.kg)), rng = (max-min)||1;
-      const pts = m30.map((w,i) => `${(i/(m30.length-1)*200).toFixed(1)},${(40-((w.kg-min)/rng*34)+3).toFixed(1)}`).join(' ');
-      svg = `<svg viewBox="0 0 200 46" style="width:100%; height:46px; margin-top:6px;"><polyline points="${pts}" fill="none" stroke="var(--life)" stroke-width="2"/></svg>`;
-    }
-    el.innerHTML = `<div style="display:flex; align-items:baseline; gap:10px; cursor:pointer;" id="wtQuick">
-      <span style="font-size:1.4rem; font-weight:800;">${cur.kg}</span>
-      <span style="font-size:.82rem; color:var(--sub);">kg${tgt?`・目標 ${tgt}（差 ${(cur.kg-tgt).toFixed(1)}）`:''}・30天 ${d30>0?'+':''}${d30.toFixed(1)}</span>
-    </div>${svg}
-    <div class="iform"><input type="number" id="wtTgt" placeholder="目標 kg" value="${tgt||''}" style="max-width:100px;"><button class="btn" id="wtTgtSet">設目標</button></div>`;
-    el.querySelector('#wtQuick').onclick = () => openAdd('wt');
-    el.querySelector('#wtTgtSet').onclick = () => {
-      D.prefs.weightTarget = +el.querySelector('#wtTgt').value || 0; D.prefs.mt = now();
-      save(); fbPushPrefs(); renderAll();
-    };
+    const d30 = (cur && m30.length>1) ? (cur.kg - m30[0].kg) : 0;
+    const bps = D.bp.filter(b => !b.del).sort((a,b)=> a.date<b.date?-1:1);
+    const bpCur = bps[bps.length-1];
+    const exN = exerciseWeekCount();
+    const tile = (k,v,s) => `<div style="flex:1; border:1px solid var(--line); padding:6px; text-align:center;">
+      <div style="font-size:.70rem; color:var(--sub);">${k}</div><div style="font-weight:800;">${v}</div><div style="font-size:.70rem; color:var(--sub);">${s}</div></div>`;
+    el.innerHTML = `<div style="display:flex; gap:8px;">` +
+      tile('體重', cur ? cur.kg + '<small> kg</small>' : '—', cur && m30.length>1 ? `30天 ${d30>0?'+':''}${d30.toFixed(1)}` : '') +
+      tile('血壓(最近)', bpCur ? bpCur.sys+'/'+bpCur.dia : '—', bpCur ? mdw(bpCur.date) : '') +
+      tile('本週運動', exN + '<small> 次</small>', '目標 ' + (D.prefs.health.exWeek||3)) +
+      `</div><div style="text-align:center; padding-top:10px;"><button class="btn" id="healthEnter">進入健康管理 ▸</button></div>`;
+    el.querySelector('#healthEnter').onclick = () => go('health');
   }},
   sched: {t:'近期行程（14 天內）', ic:'i-sched', render(el){
     const t = todayStr();
@@ -1575,6 +1603,137 @@ $('#lDel').onclick = () => {
   }
 };
 
+/* ════════ 健康管理頁（V10：51-57） ════════ */
+const aliveW = () => D.weights.filter(w => !w.del);
+const aliveBP = () => D.bp.filter(b => !b.del);
+function weekMonday(){ const d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate() - ((d.getDay()+6)%7)); return ymd(d); }
+function exerciseWeekCount(){
+  const mon = weekMonday(), sun = ymd(new Date(new Date(weekMonday()+'T00:00:00').getTime()+6*86400000));
+  return allEvents().filter(e => e.date && e.date >= mon && e.date <= sun && /運動|健身/.test(e.title)).length;
+}
+const WH_METRICS = {kg:{lb:'體重', unit:'kg'}, fat:{lb:'體脂%', unit:'%'}, muscle:{lb:'肌肉%', unit:'%'}, visceral:{lb:'內臟', unit:''}, bmi:{lb:'BMI', unit:''}};
+let whMetric = 'kg', whRange = 'all';
+function renderHealthPage(){
+  const locked = D.settings.pin && D.settings.lockHealth && !sessionStorage.getItem('wb_health_ok');
+  $('#healthLock').style.display = locked ? '' : 'none';
+  $('#healthBody').style.display = locked ? 'none' : '';
+  if (locked) return;
+  /* ── 【53】體重・體組成 ── */
+  let ws = aliveW().filter(w => w[whMetric] != null && w.date).sort((a,b)=> a.date<b.date?-1:1);
+  if (whRange === '1y'){ const c = ymd(new Date(Date.now()-365*86400000)); ws = ws.filter(w => w.date >= c); }
+  if (whRange === '90d'){ const c = ymd(new Date(Date.now()-90*86400000)); ws = ws.filter(w => w.date >= c); }
+  const all = aliveW().filter(w=>w.kg).sort((a,b)=> a.date<b.date?-1:1);
+  const cur = all[all.length-1];
+  const tgt = +D.prefs.weightTarget || 0;
+  let chart = '<div class="empty">還沒有紀錄——按「＋ 記體重」</div>';
+  if (ws.length > 1){
+    const vals = ws.map(w => +w[whMetric]);
+    let mn = Math.min(...vals), mx = Math.max(...vals);
+    if (whMetric==='kg' && tgt > 0){ mn = Math.min(mn, tgt); mx = Math.max(mx, tgt); }
+    const rng = (mx - mn) || 1;
+    const X = i => (i/(ws.length-1)*400).toFixed(1);
+    const Y = v => (72 - ((v-mn)/rng*62) + 4).toFixed(1);
+    const pts = ws.map((w,i) => X(i)+','+Y(+w[whMetric])).join(' ');
+    chart = `<svg viewBox="0 0 400 80" preserveAspectRatio="none" style="width:100%; height:110px; display:block;">
+      ${whMetric==='kg' && tgt>0 ? `<line x1="0" y1="${Y(tgt)}" x2="400" y2="${Y(tgt)}" stroke="var(--urgent)" stroke-width="1" stroke-dasharray="5 4"/>` : ''}
+      <polyline points="${pts}" fill="none" stroke="var(--life)" stroke-width="1.6"/></svg>
+      <div style="display:flex; justify-content:space-between; font-size:.70rem; color:var(--sub);"><span>${mdw(ws[0].date)} ${ws[0].date.slice(0,4)}</span><span>高 ${mx}・低 ${mn}${whMetric==='kg'&&tgt>0?`・<span style="color:var(--urgent);">目標線 ${tgt}</span>`:''}</span><span>${mdw(ws[ws.length-1].date)}</span></div>`;
+  }
+  const chip = (arr, cur, dataKey) => `<span class="scope" style="font-size:.82rem;">` +
+    arr.map(([v,lb]) => `<button data-${dataKey}="${v}" class="${v===cur?'on':''}" style="padding:4px 10px;">${lb}</button>`).join('') + `</span>`;
+  $('#whBox').innerHTML =
+    `<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+      <b style="font-size:1.05rem;">${cur ? cur.kg + ' kg' : '—'}<small style="color:var(--sub); font-weight:400;">${tgt?`・目標 ${tgt}（差 ${cur?(cur.kg-tgt).toFixed(1):'—'}）`:''}</small></b>
+      ${chip(Object.entries(WH_METRICS).map(([k,v])=>[k,v.lb]), whMetric, 'whm')}
+    </div>` + chart +
+    `<div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; flex-wrap:wrap; gap:8px;">
+      ${chip([['all','全部'],['1y','1年'],['90d','90天']], whRange, 'whr')}
+      <span style="display:flex; gap:8px; font-size:.82rem; color:var(--sub);">
+        ${cur&&cur.fat!=null?`體脂 <b>${cur.fat}%</b>`:''} ${cur&&cur.muscle!=null?`肌肉 <b>${cur.muscle}%</b>`:''} ${cur&&cur.visceral!=null?`內臟 <b>${cur.visceral}</b>`:''} ${cur&&cur.bmr!=null?`基代 <b>${cur.bmr}</b>`:''}
+      </span>
+    </div>
+    <div class="iform"><input type="number" id="whTgt" placeholder="目標 kg" value="${tgt||''}" style="max-width:100px;"><button class="btn" id="whTgtSet">設目標</button><span style="font-size:.75rem; color:var(--sub); align-self:center;">共 ${aliveW().length} 筆・最早 ${all[0]?all[0].date:'—'}</span></div>`;
+  $('#whBox').querySelectorAll('[data-whm]').forEach(b => b.onclick = () => { whMetric = b.dataset.whm; renderHealthPage(); });
+  $('#whBox').querySelectorAll('[data-whr]').forEach(b => b.onclick = () => { whRange = b.dataset.whr; renderHealthPage(); });
+  $('#whTgtSet').onclick = () => { D.prefs.weightTarget = +$('#whTgt').value||0; D.prefs.mt = now(); save(); fbPushPrefs(); renderHealthPage(); };
+  /* ── 【54】血壓 ── */
+  const H = D.prefs.health;
+  const bps = aliveBP().sort((a,b)=> (a.date+(a.ampm||'')) < (b.date+(b.ampm||'')) ? -1 : 1);
+  const bcur = bps[bps.length-1];
+  const c7 = ymd(new Date(Date.now()-7*86400000));
+  const b7 = bps.filter(b => b.date >= c7);
+  const avg = k => b7.length ? Math.round(b7.reduce((s,b)=>s+(+b[k]||0),0)/b7.length) : null;
+  const a7s = avg('sys'), a7d = avg('dia');
+  const hot = (s,d) => (s >= H.bpSys || d >= H.bpDia);
+  $('#bpBox').innerHTML =
+    `<div class="cols" style="display:flex; gap:8px;">
+      <div style="flex:1; border:1px solid var(--line); padding:6px; text-align:center;"><div style="font-size:.70rem; color:var(--sub);">最近</div><b style="${bcur&&hot(bcur.sys,bcur.dia)?'color:var(--urgent);':''}">${bcur?bcur.sys+'/'+bcur.dia:'—'}</b><div style="font-size:.70rem; color:var(--sub);">${bcur?mdw(bcur.date)+(bcur.ampm==='am'?' 早':' 晚'):''}</div></div>
+      <div style="flex:1; border:1px solid var(--line); padding:6px; text-align:center;"><div style="font-size:.70rem; color:var(--sub);">7日平均</div><b style="${a7s&&hot(a7s,a7d)?'color:var(--urgent);':''}">${a7s?a7s+'/'+a7d:'—'}</b><div style="font-size:.70rem; color:var(--sub);">${a7s&&hot(a7s,a7d)?'超標（'+H.bpSys+'/'+H.bpDia+'）':'標準 '+H.bpSys+'/'+H.bpDia}</div></div>
+      <div style="flex:1; border:1px solid var(--line); padding:6px; text-align:center;"><div style="font-size:.70rem; color:var(--sub);">脈搏</div><b>${bcur&&bcur.pulse?bcur.pulse:'—'}</b><div style="font-size:.70rem; color:var(--sub);">${b7.length} 筆/7日</div></div>
+    </div>
+    <div class="iform"><input type="number" id="bpSys" placeholder="收縮" style="max-width:76px;"><input type="number" id="bpDia" placeholder="舒張" style="max-width:76px;"><input type="number" id="bpPulse" placeholder="脈搏" style="max-width:70px;"><button class="btn pri" id="bpSave">記錄</button></div>` +
+    (bps.length ? `<ul class="list">` + bps.slice(-4).reverse().map(b =>
+      `<li><span>${mdw(b.date)} ${b.ampm==='am'?'早':'晚'}</span><span class="due" style="${hot(b.sys,b.dia)?'color:var(--urgent); font-weight:700;':''}">${b.sys}/${b.dia}${b.pulse?'・'+b.pulse:''}</span><button class="btn" style="padding:0 8px; font-size:.75rem;" data-bpdel="${b.id}">✕</button></li>`).join('') + `</ul>` : '');
+  $('#bpSave').onclick = () => {
+    const sys = +$('#bpSys').value, dia = +$('#bpDia').value, pulse = +$('#bpPulse').value || null;
+    if (!sys || !dia){ toast('收縮壓和舒張壓都要填'); return; }
+    const b = {id:uid(), sys, dia, pulse, date:todayStr(), ampm: new Date().getHours() < 12 ? 'am' : 'pm', rv:1, mt:now(), del:false};
+    D.bp.push(b); save(); fbPushDoc('bp', b); renderHealthPage(); toast('血壓已記錄 ✓');
+  };
+  $('#bpBox').querySelectorAll('[data-bpdel]').forEach(x => x.onclick = () => {
+    const b = D.bp.find(v => v.id === x.dataset.bpdel);
+    if (b && confirm('刪除這筆血壓？')){ b.del = true; b.rv++; b.mt = now(); save(); fbPushDoc('bp', b); renderHealthPage(); }
+  });
+  /* ── 【55】運動 ── */
+  const exN = exerciseWeekCount();
+  const mon = weekMonday();
+  const exList = allEvents().filter(e => e.date && e.date >= mon && /運動|健身/.test(e.title))
+    .sort((a,b)=> (a.date+(a.time||'')) < (b.date+(b.time||'')) ? -1:1).slice(0,6);
+  $('#exBox').innerHTML =
+    `<div style="display:flex; align-items:baseline; gap:8px;"><b style="font-size:1.3rem; ${exN>=(H.exWeek||3)?'color:var(--life);':''}">${exN}</b>
+     <span style="font-size:.82rem; color:var(--sub);">／本週目標 <input type="number" id="exTgt" value="${H.exWeek||3}" style="width:44px; padding:2px 4px; display:inline-block;"> 次</span></div>
+    <div class="bar"><i style="width:${Math.min(100, Math.round(exN/(H.exWeek||3)*100))}%; background:var(--life);"></i></div>` +
+    (exList.length ? '<ul class="list">' + exList.map(e => `<li style="cursor:default;"><span class="ttl">${esc(e.title)}</span><span class="due">${mdw(e.date)}${e.time?' '+e.time:''}</span></li>`).join('') + '</ul>' : '<div class="empty">本週還沒動——日曆標題含「運動/健身」會自動計入</div>') +
+    `<div class="iform"><input id="exTxt" placeholder="補記一筆（例：跑步 5K）"><button class="btn" id="exAdd">＋補記</button></div>`;
+  $('#exTgt').onchange = e => { D.prefs.health.exWeek = Math.max(1, +e.target.value||3); D.prefs.mt = now(); save(); fbPushPrefs(); renderHealthPage(); };
+  $('#exAdd').onclick = () => {
+    const t = $('#exTxt').value.trim(); if (!t){ toast('寫一下做了什麼'); return; }
+    const it = {id:uid(), kind:'ev', scope:'life', title:'運動 ' + t, date:todayStr(), time:null, done:false, rv:1, mt:now(), del:false};
+    D.items.push(it); save(); fbPushItem(it); renderHealthPage(); toast('已補記 ✓');
+  };
+  /* ── 【56】回診・用藥 ── */
+  const t0 = todayStr();
+  const meds = allEvents().filter(e => e.date && e.date >= t0 &&
+      ((e.cal||'').includes('醫療') || /回診|門診|領藥|拿藥|醫院|診所|慢箋/.test(e.title)))
+    .sort((a,b)=> a.date < b.date ? -1:1).slice(0,6);
+  $('#medBox').innerHTML = (meds.length ? '<ul class="list">' + meds.map(e => {
+      const n = dayDiff(e.date);
+      return `<li style="cursor:default;"><span class="ttl">${esc(e.title)}</span><span class="due ${n<=3?'soon':''}">${mdw(e.date)}${e.time?' '+e.time:''}・${n===0?'今天':'剩 '+n+' 天'}</span></li>`;
+    }).join('') + '</ul>' : '<div class="empty">近期沒有回診／領藥行程（「醫療」日曆的事件會自動出現）</div>') +
+    `<div style="font-size:.75rem; color:var(--sub); margin-top:6px;">要固定提醒（例：每月慢箋）→ 按「＋」建行程，或在財務看板固定收支的做法一樣掛月提醒。</div>`;
+  /* ── 【57】藥物過敏 ── */
+  const algs = D.allergy.filter(a => !a.del);
+  $('#algBox').innerHTML = (algs.length ? '<ul class="list">' + algs.map(a =>
+      `<li style="cursor:default;"><b style="color:var(--urgent);">${esc(a.name)}</b><span class="ttl" style="color:var(--sub);">${esc(a.note||'')}</span><button class="btn" style="padding:0 8px; font-size:.75rem;" data-algdel="${a.id}">✕</button></li>`).join('') + '</ul>'
+    : '<div class="empty">尚無記錄——把過敏藥物記在這裡，就醫時直接出示</div>') +
+    `<div class="iform"><input id="algName" placeholder="藥名（例：Penicillin）" style="max-width:180px;"><input id="algNote" placeholder="反應（例：蕁麻疹）"><button class="btn pri" id="algAdd">＋加入</button></div>`;
+  $('#algAdd').onclick = () => {
+    const name = $('#algName').value.trim(); if (!name){ toast('填藥名'); return; }
+    const a = {id:uid(), name, note:$('#algNote').value.trim()||null, rv:1, mt:now(), del:false};
+    D.allergy.push(a); save(); fbPushDoc('allergy', a); renderHealthPage(); toast('已加入');
+  };
+  $('#algBox').querySelectorAll('[data-algdel]').forEach(x => x.onclick = () => {
+    const a = D.allergy.find(v => v.id === x.dataset.algdel);
+    if (a && confirm('移除「'+a.name+'」？')){ a.del = true; a.rv++; a.mt = now(); save(); fbPushDoc('allergy', a); renderHealthPage(); }
+  });
+}
+$('#whAdd').onclick = () => openAdd('wt');
+$('#healthUnlock').onclick = () => {
+  if ($('#healthPin').value === D.settings.pin){ sessionStorage.setItem('wb_health_ok','1'); $('#healthPin').value=''; renderHealthPage(); }
+  else toast('PIN 不對');
+};
+$('#healthPin') && $('#healthPin').addEventListener('keydown', e => { if (e.key==='Enter') $('#healthUnlock').click(); });
+
 /* ════════ 旅遊規劃頁 ════════ */
 function renderTripPage(){
   const near = D.trips.filter(t => !t.del && t.kind==='near').sort((a,b)=> (a.start||'9999') < (b.start||'9999') ? -1:1);
@@ -1721,9 +1880,14 @@ $('#lockAppBtn').onclick = () => {
   if (!D.settings.pin){ toast('先設定 PIN'); return; }
   D.settings.lockApp = !D.settings.lockApp; save(); renderStats2();
 };
+$('#lockHealthBtn').onclick = () => {
+  if (!D.settings.pin){ toast('先設定 PIN'); return; }
+  D.settings.lockHealth = !D.settings.lockHealth; save(); renderStats2();
+};
 function renderStats2(){
   $('#lockMoneyBtn').textContent = D.settings.lockMoney ? '開 ✔' : '關';
   $('#lockAppBtn').textContent = D.settings.lockApp ? '開 ✔' : '關';
+  $('#lockHealthBtn').textContent = D.settings.lockHealth ? '開 ✔' : '關';
 }
 
 /* ════════ Google 行事曆（GIS token client） ════════ */
@@ -1782,7 +1946,7 @@ async function gSync(){
         const date = s.date || (s.dateTime ? s.dateTime.slice(0,10) : null);
         if (!date) return;
         out.push({id:'g_'+ev.id, kind:'ev', scope:cfg.scope||'life', title:'Ⓖ '+(ev.summary||'（無標題）'),
-          date, time: s.dateTime ? s.dateTime.slice(11,16) : null, link: ev.htmlLink||null, color: cfg.color||null});
+          date, time: s.dateTime ? s.dateTime.slice(11,16) : null, link: ev.htmlLink||null, color: cfg.color||null, cal: c.summary||null});
       });
     }catch(e){ console.warn('gcal', e); }
   }
@@ -1967,6 +2131,7 @@ function openAdd(kind, date){
   $('#mTitle').firstChild.textContent = '快速記錄 ';
   $('#mText').value = ''; $('#mDate').value = date || todayStr(); $('#mTime').value = '';
   $('#mAmt').value = ''; $('#mKg').value = '';
+  $('#mFat').value = ''; $('#mMuscle').value = ''; $('#mVisceral').value = '';
   $('#mDel').style.display = 'none';
   syncModal(); $('#mask').classList.add('on');
   setTimeout(()=>{ (mKind==='wt' ? $('#mKg') : mKind==='tx' ? $('#mAmt') : $('#mText')).focus(); }, 50);
@@ -2017,9 +2182,13 @@ $('#mSave').onclick = () => {
   if (mKind === 'wt'){
     const kg = +$('#mKg').value;
     if (!kg || !date){ toast('填體重和日期'); return; }
+    const extra = {};
+    if ($('#mFat').value) extra.fat = +$('#mFat').value;
+    if ($('#mMuscle').value) extra.muscle = +$('#mMuscle').value;
+    if ($('#mVisceral').value) extra.visceral = +$('#mVisceral').value;
     const ex = D.weights.find(w => !w.del && w.date === date);
-    if (ex){ ex.kg = kg; ex.rv++; ex.mt = now(); fbPushDoc('weights', ex); }
-    else { const w = {id:uid(), kg, date, rv:1, mt:now(), del:false}; D.weights.push(w); fbPushDoc('weights', w); }
+    if (ex){ Object.assign(ex, extra, {kg, rv:ex.rv+1, mt:now()}); fbPushDoc('weights', ex); }
+    else { const w = Object.assign({id:uid(), kg, date, rv:1, mt:now(), del:false}, extra); D.weights.push(w); fbPushDoc('weights', w); }
     save(); $('#mask').classList.remove('on'); renderAll(); toast('已記錄 ✓'); return;
   }
   const title = $('#mText').value.trim();
@@ -2231,6 +2400,8 @@ function fbPushAll(){
   D.notes.forEach(n => fbPushDoc('notes', n));
   D.recurs.forEach(r => fbPushDoc('recurs', r));
   D.loans.forEach(l => fbPushDoc('loans', l));
+  D.bp.forEach(b => fbPushDoc('bp', b));
+  D.allergy.forEach(a => fbPushDoc('allergy', a));
 }
 function mergeArr(arr, inc){
   const ex = arr.find(x => x.id === inc.id);
@@ -2261,7 +2432,7 @@ function fbStart(){
     }, e => console.warn('snap', e));
     fbSubs.push(un);
   });
-  const collMap = {projects:'projects', bids:'bids', clients:'clients', weights:'weights', trips:'trips', notes:'notes', recurs:'recurs', loans:'loans'};
+  const collMap = {projects:'projects', bids:'bids', clients:'clients', weights:'weights', trips:'trips', notes:'notes', recurs:'recurs', loans:'loans', bp:'bp', allergy:'allergy'};
   const y0 = new Date().getFullYear();
   ['txs_'+(y0-1), 'txs_'+y0, 'txs_'+(y0+1)].forEach(c => collMap[c] = 'txs');
   Object.keys(collMap).forEach(coll => {
@@ -2336,6 +2507,7 @@ function renderAll(){
   if (pageNow==='proj') renderProjPage();
   if (pageNow==='bid') renderBidPage();
   if (pageNow==='fin') renderFinPage();
+  if (pageNow==='health') renderHealthPage();
   if (pageNow==='trip') renderTripPage();
   if (pageNow==='note') renderNotePage();
   if (pageNow==='set'){ renderStats(); renderStats2(); renderGcal(); renderPush(); }
