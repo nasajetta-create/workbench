@@ -625,7 +625,7 @@
     </div>
     <div class="frow" style="display:flex; gap:8px;">
       <div style="flex:1;"><label>已還期數</label><input type="number" id="l_paid" placeholder="0"></div>
-      <div style="flex:1;"><label>總期數</label><input type="number" id="l_total" placeholder="240"></div>
+      <div style="flex:1;"><label>總期數（親友借貸可不填）</label><input type="number" id="l_total" placeholder="無期限"></div>
     </div>
     <div class="frow"><label>分類</label><div class="chips" id="lScope">
       <button data-v="site" style="color:var(--site);">工程</button>
@@ -655,8 +655,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 'use strict';
-/* ════════ 艋舺良的工作台 W0811-09（月曆 Google 事件文字改黑色） ════════ */
-const VERSION = 'W0811-09';
+/* ════════ 艋舺良的工作台 W0811-10（還款卡顯示已還累計/總額；總期數改選填＝無期限親友借貸） ════════ */
+const VERSION = 'W0811-10';
 const GCAL_CLIENT_ID = '654856338073-ukdt5nvtc8riq2010lado0i0n5vuhcfl.apps.googleusercontent.com';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
@@ -1440,16 +1440,25 @@ function renderFinPage(){
   /* ── 還款計畫 ── */
   const ls = aliveL().filter(l => inFinScope(l));
   $('#loanBox').innerHTML = ls.length ? ls.map(l => {
-    const total = Math.max(1, +l.total||1), paid = Math.min(total, +l.paid||0);
-    const pct = Math.round(paid / total * 100);
-    const left = total - paid;
-    const endD = new Date(); endD.setMonth(endD.getMonth() + left);
-    const endTxt = endD.getFullYear() + '-' + String(endD.getMonth()+1).padStart(2,'0');
+    const paid = +l.paid||0, total = +l.total||0;
+    const paidAmt = paid * (+l.monthly||0);                 // 已還累計（月付固定）
+    const principal = (+l.remain||0) + paidAmt;             // 總借款額 = 剩餘 + 已還
+    const pct = principal > 0 ? Math.round(paidAmt / principal * 100) : 0;
+    let tail;
+    if (total > 0){
+      const left = Math.max(0, total - paid);
+      const endD = new Date(); endD.setMonth(endD.getMonth() + left);
+      tail = `第 ${paid}／${total} 期・` + (left>0 ? '預計 '+endD.getFullYear()+'-'+String(endD.getMonth()+1).padStart(2,'0')+' 還完' : '已還完 🎉');
+    } else {
+      tail = (+l.remain||0) > 0 ? '無期限（親友借貸）' : '已還完 🎉';
+    }
     return `<div data-loan="${l.id}" style="cursor:pointer; padding:8px 0; border-bottom:1px dashed var(--line);">
       <div style="display:flex; justify-content:space-between; font-size:.95rem;"><b>${esc(l.name)}<small style="color:var(--sub); font-weight:400;">・每月${l.day}日</small></b>
-        <span>剩 ${money(l.remain)}</span></div>
+        <span>剩 <b>${money(l.remain)}</b></span></div>
+      <div style="display:flex; justify-content:space-between; font-size:.78rem; color:var(--sub); margin-top:2px;">
+        <span>已還 <b style="color:var(--life);">${money(paidAmt)}</b>／總額 ${money(principal)}</span><span>${pct}%</span></div>
       <div class="bar"><i style="width:${pct}%; background:var(--case);"></i></div>
-      <div style="font-size:.75rem; color:var(--sub); margin-top:3px;">第 ${paid}／${total} 期・月付 ${money(l.monthly)}・${left>0?'預計 '+endTxt+' 還完':'已還完 🎉'}</div>
+      <div style="font-size:.75rem; color:var(--sub); margin-top:3px;">月還 ${money(l.monthly)}・${tail}</div>
     </div>`;
   }).join('') : '<div class="empty">沒有貸款——或按「＋貸款」把房貸車貸掛進來追蹤</div>';
   $('#loanBox').querySelectorAll('[data-loan]').forEach(n => n.onclick = () => openLoan(n.dataset.loan));
@@ -1590,7 +1599,7 @@ $('#lSave').onclick = () => {
   const name = $('#l_name').value.trim(); if (!name){ toast('名稱不能空白'); return; }
   const v = {name, remain:+$('#l_remain').value||0, monthly:+$('#l_monthly').value||0,
     day:Math.max(1, Math.min(31, +$('#l_day').value||1)), paid:+$('#l_paid').value||0, total:+$('#l_total').value||0, scope:lScope};
-  if (!v.monthly || !v.total){ toast('月付金和總期數都要填'); return; }
+  if (!v.monthly){ toast('月付金要填'); return; }
   let l = lEditing;
   if (l){ Object.assign(l, v, {rv:l.rv+1, mt:now()}); }
   else { l = Object.assign({id:uid(), start:mmNow(), rv:1, mt:now(), del:false}, v); D.loans.push(l); }
