@@ -62,6 +62,8 @@
 
   /* U 摘要：合併成一條，三欄 */
   .strip.us > div{padding:10px 11px;}
+  .us > div{cursor:pointer;}
+  .us .ush{font-size:.7rem; color:var(--case); margin-top:7px;}
   .us .un{font-family:var(--serif); font-size:1.35rem; font-weight:700; line-height:1;}
   .us .ut{font-family:var(--serif); font-size:.9rem; font-weight:700; margin-top:2px;}
   .us .ug{display:inline-block; padding:0 7px; font-size:.7rem; border:1px solid; line-height:1.6; margin-top:5px;}
@@ -176,12 +178,12 @@
 
   <h2>轉盤<em>三組已存好</em><button class="sh" data-sh="uall">分享</button></h2>
   <div class="strip c3 us">
-    <div class="u1"><div class="un">U1</div><div class="ut">日常人像</div><span class="ug">標準</span>
-      <div class="nt">偏暖偏粉</div></div>
-    <div class="u2"><div class="un">U2</div><div class="ut">日系透亮</div><span class="ug">底片</span>
-      <div class="nt">微冷帶青</div></div>
-    <div class="u3"><div class="un">U3</div><div class="ut">濃郁風景</div><span class="ug">正片</span>
-      <div class="nt">大幅偏冷</div></div>
+    <div class="u1" data-sh="u1" role="button" tabindex="0"><div class="un">U1</div><div class="ut">日常人像</div><span class="ug">標準</span>
+      <div class="nt">偏暖偏粉</div><div class="ush">分享 ▸</div></div>
+    <div class="u2" data-sh="u2" role="button" tabindex="0"><div class="un">U2</div><div class="ut">日系透亮</div><span class="ug">底片</span>
+      <div class="nt">微冷帶青</div><div class="ush">分享 ▸</div></div>
+    <div class="u3" data-sh="u3" role="button" tabindex="0"><div class="un">U3</div><div class="ut">濃郁風景</div><span class="ug">正片</span>
+      <div class="nt">大幅偏冷</div><div class="ush">分享 ▸</div></div>
   </div>
   <div class="tbl"><table>
     <thead><tr><th>參數</th>
