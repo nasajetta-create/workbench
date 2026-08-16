@@ -458,7 +458,7 @@ function g95AddDate(r, dmap){
 }
 /* ── WoW（與 G95 _ulqWoW 同邏輯）：list = [{r,done}] ── */
 function g95WoW(list, dmap, base){
-  let fixed=0, added=0, pendNow=0, pendPrev=0, exPrev=0, doneNow=0, donePrev=0, noDate=0, exNow=0;
+  let fixed=0, added=0, pendNow=0, pendPrev=0, exPrev=0, doneNow=0, donePrev=0, noDate=0, exNow=0, anom=0;
   for (const it of list){
     const r = it.r, dn = it.done, dd = r.actualDone || '';
     let ad = ''; try{ ad = g95AddDate(r, dmap); }catch(e){}
@@ -468,10 +468,11 @@ function g95WoW(list, dmap, base){
     if (exP){ exPrev++; if (dnP) donePrev++; else pendPrev++; }
     if (dn && dd && dd > base) fixed++;
     if (ad && ad > base) added++;
+    if (dn && dd && dd <= base && ad && ad > base) anom++;   // 完成日早於產生日（V0813-06 已知異常類·自檢/舊資料）
   }
   const rN = exNow ? Math.round(doneNow * 100 / exNow) : 0;
   const rP = exPrev ? Math.round(donePrev * 100 / exPrev) : 0;
-  return {fixed, added, pendPrev, pendNow, ratePrev:rP, rateNow:rN, diff:rN-rP, doneNow, donePrev, noDate, ok:(doneNow === donePrev + fixed + noDate)};
+  return {fixed, added, pendPrev, pendNow, ratePrev:rP, rateNow:rN, diff:rN-rP, doneNow, donePrev, noDate, anom, ok:(doneNow === donePrev + fixed + noDate + anom)};
 }
 const g95Pct = w => `${w.ratePrev}%→${w.rateNow}%（${w.diff>=0?'+':''}${w.diff}）`;
 /* ── Email（Resend；未設 RESEND_KEY 就跳過） ── */
@@ -508,7 +509,8 @@ async function g95Report(env){
     const ls = list.filter(it => set.has(g95UnitOf(it.r)));
     return {d, n: set.size, w: g95WoW(ls, dmap, base)};
   });
-  const warn = (overall.ok && vend.every(v => v.w.ok)) ? '' : '\n⚠ 對帳異常（doneNow≠donePrev+修掉+缺日期），數字僅供參考，請回報維護者';
+  const warn = (overall.ok && vend.every(v => v.w.ok)) ? '' : '\n⚠ 對帳異常（doneNow≠donePrev+修掉+缺日期+早於產生），數字僅供參考，請回報維護者';
+  const anomNote = overall.anom ? `\n（註：${overall.anom} 筆完成日早於產生日的舊資料已計入完成數·V0813-06 同類異常）` : '';
   // ── LINE 貼上用純文字 ──
   const T = [];
   T.push(`G95 修繕進度報告 ${+today.slice(5,7)}/${+today.slice(8,10)}（${wd}）·資料時點 ${snapDate}`);
@@ -520,7 +522,7 @@ async function g95Report(env){
   T.push('■ 廠商（還欠多→少·前10）：');
   vend.slice(0,10).forEach(v => T.push(`  ${v.name}｜欠 ${v.pend}｜修 ${v.w.fixed} 新 ${v.w.added}｜${g95Pct(v.w)}`));
   if (vend.length > 10) T.push(`  …另 ${vend.length-10} 家（合計欠 ${vend.slice(10).reduce((a,v)=>a+v.pend,0)}）——完整見 Email`);
-  const lineTxt = T.join('\n') + warn;
+  const lineTxt = T.join('\n') + anomNote + warn;
   // ── Email HTML（全部廠商）──
   const td = 'border:1px solid #cdd5df;padding:5px 9px;font-size:13px';
   const th = td + ';background:#EAF1FB;font-weight:700';
