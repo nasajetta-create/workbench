@@ -15,7 +15,7 @@
  *   重複 wbid 的多餘頁面自動封存。方向鐵律：單向 工作台→Notion，Notion 端手改會被覆蓋。
  */
 /* WK0816-01 變更：新增 G95 缺失修繕進度分析報告（週一三五 台北 07:30）。
- *   cron: "30 23 * * 0,2,4"（UTC 日二四 23:30 ＝ 台北 一三五 07:30·要在儀表板另外加一條）
+ *   cron: "30 23 * * SUN,TUE,THU"（UTC 日二四 23:30 ＝ 台北 一三五 07:30；🔴 CF 星期欄不吃 0·用英文名）
  *   資料源＝g95-work 每日還原點 snaps/{日期}（單一 gzip 文件·今天沒有往前找 3 天）。
  *   送達＝①工作台 Web Push（既有管線）②Email（Resend·RESEND_KEY 未設就跳過）③GitHub 存 md（workbench-backup/g95report/）。
  *   前置＝g95-work IAM 把本服務帳戶加「Cloud Datastore 檢視者」（唯讀）。測試：/g95report?key=TEST_KEY
@@ -31,7 +31,7 @@ export default {
     if (event.cron === '0 23 * * *') await brief(env);
     else if (event.cron === '0 19 * * *') await backup(env);
     else if (event.cron === '0 15 * * *') await notionSync(env);
-    else if (event.cron === '30 23 * * 0,2,4') await g95Report(env);
+    else if (/^30 23 /.test(event.cron)) await g95Report(env);   // 台北一三五 07:30（儀表板存的是 SUN,TUE,THU 寫法·用前綴比對最穩）
   },
   async fetch(req, env){
     const url = new URL(req.url);
