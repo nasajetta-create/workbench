@@ -1,4 +1,4 @@
-/* 艋舺良的工作台 — 每朝簡報＋自動備份＋Notion 鏡像＋G95 報告 Worker（WK0817-02）
+/* 艋舺良的工作台 — 每朝簡報＋自動備份＋Notion 鏡像＋G95 報告 Worker（WK0817-03）
  * WK0811-02 變更：自動備份補上 W0811 新增的 recurs（固定收支）、loans（貸款）集合。
  * WK0811-03 變更：自動備份補上健康管理的 bp（血壓）、allergy（藥物過敏）集合。
  * cron: "0 23 * * *" = 台北 07:00 每朝簡報（Web Push 直接推到工作台 App）
@@ -515,13 +515,33 @@ async function g95Report(env){
   const list = rows.map(r => ({r, done:(r.compId != null)})).concat(comp.map(r => ({r, done:true})));
   const dmap = g95DateMap(S);
   const overall = g95WoW(list, dmap, base);
-  // 各廠商（還欠多 → 少）
-  const vm = new Map();
-  for (const it of list){ const v = String(it.r.vendor || '').trim() || '（未填廠商）'; if (!vm.has(v)) vm.set(v, []); vm.get(v).push(it); }
-  const vend = [...vm.entries()].map(([name, ls]) => ({name, pend: ls.filter(x => !x.done).length, w: g95WoW(ls, dmap, base)}))
-    .filter(v => v.pend > 0 || v.w.fixed > 0 || v.w.added > 0)
-    .sort((a, b) => b.pend - a.pend);
-  // 複驗批（兩邊都去掉 地/業 字首與尾碼 F 再比對）
+  // ── 分區（WK0817-03·判準＝G95 分區欄位 r.zone·單一事實來源見《報告分區改版_規格_0817》）──
+  const zName = {}; (S.zones || []).forEach(z => { if (z && (z.id || z.key)) zName[z.id || z.key] = String(z.name || '').trim(); });
+  const zGrpOf = n => !n ? '未分類' : (/室內|店鋪/.test(n) ? '室內' : (/公設|地下室/.test(n) ? '公設' : '其他'));
+  const grpMap = new Map([['室內',[]],['公設',[]],['其他',[]],['未分類',[]]]);
+  const subMap = new Map();
+  for (const it of list){
+    const n = zName[it.r.zone] || '';
+    const g = zGrpOf(n); grpMap.get(g).push(it);
+    const sub = n || '未分類';
+    if (!subMap.has(sub)) subMap.set(sub, {g, ls: []});
+    subMap.get(sub).ls.push(it);
+  }
+  const gW = {}; for (const [g, ls] of grpMap) gW[g] = g95WoW(ls, dmap, base);
+  const IW = gW['室內'], PW = gW['公設'];
+  const gOrder = ['室內','公設','其他','未分類'];
+  const subs = [...subMap.entries()].map(([name, o]) => ({name, g: o.g, w: g95WoW(o.ls, dmap, base)}))
+    .filter(s => s.w.pendNow > 0 || s.w.fixed > 0 || s.w.added > 0)
+    .sort((a, b) => gOrder.indexOf(a.g) - gOrder.indexOf(b.g) || b.w.pendNow - a.w.pendNow);
+  const zSum = gOrder.reduce((a, g) => a + gW[g].pendNow, 0);
+  const zWarn = (zSum === overall.pendNow) ? '' : `\n⚠ 分區對帳異常（分區合計 ${zSum} ≠ 總體 ${overall.pendNow}），請回報維護者`;
+  // ── 廠商（還欠多 → 少·可依範圍算）──
+  const vendOf = ls => { const m = new Map();
+    for (const it of ls){ const v = String(it.r.vendor || '').trim() || '（未填廠商）'; if (!m.has(v)) m.set(v, []); m.get(v).push(it); }
+    return [...m.entries()].map(([name, l]) => ({name, pend: l.filter(x => !x.done).length, w: g95WoW(l, dmap, base)}))
+      .filter(v => v.pend > 0 || v.w.fixed > 0 || v.w.added > 0).sort((a, b) => b.pend - a.pend); };
+  const vend = vendOf(list), vendIn = vendOf(grpMap.get('室內')), vendPub = vendOf(grpMap.get('公設'));
+  // ── 複驗批（兩邊都去掉 地/業 字首與尾碼 F 再比對；批＝戶＝室內）──
   const norm = k => String(k || '').replace(/^(地|業)/,'').replace(/F$/i,'');
   const uf = S.reCheckUF || {}; const byD = new Map();
   Object.keys(uf).forEach(k => { const d = uf[k]; if (!d) return; if (!byD.has(d)) byD.set(d, new Set()); byD.get(d).add(norm(k)); });
@@ -531,10 +551,13 @@ async function g95Report(env){
   });
   const warn = (overall.ok && vend.every(v => v.w.ok)) ? '' : '\n⚠ 對帳異常（doneNow≠donePrev+修掉+缺日期+早於產生），數字僅供參考，請回報維護者';
   const anomNote = overall.anom ? `\n（註：${overall.anom} 筆完成日早於產生日的舊資料已計入完成數·V0813-06 同類異常）` : '';
-  // ── LINE 貼上用純文字 ──
+  // ── LINE 貼上用純文字（室內第一行·分區小計）──
   const T = [];
   T.push(`G95 修繕進度報告 ${+today.slice(5,7)}/${+today.slice(8,10)}（${wd}）·資料時點 ${snapDate}`);
+  T.push(`■ 室內：未完成 ${IW.pendNow}（上週 ${IW.pendPrev}）｜近7天 修掉 ${IW.fixed}·新增 ${IW.added}｜完成率 ${g95Pct(IW)}`);
   T.push(`■ 總體：未完成 ${overall.pendNow}（上週 ${overall.pendPrev}）｜近7天 修掉 ${overall.fixed}·新增 ${overall.added}｜完成率 ${g95Pct(overall)}`);
+  T.push('■ 分區：');
+  subs.forEach(s => T.push(`  ${s.name}｜欠 ${s.w.pendNow}｜修 ${s.w.fixed} 新 ${s.w.added}｜${g95Pct(s.w)}`));
   if (zones.length){
     T.push('■ 複驗批：');
     zones.forEach(z => T.push(`  複驗 ${z.d.slice(5).replace('-','/')}·${z.n}戶｜修 ${z.w.fixed} 新 ${z.w.added}｜未完成 ${z.w.pendPrev}→${z.w.pendNow}`));
@@ -542,33 +565,74 @@ async function g95Report(env){
   T.push('■ 廠商（還欠多→少·前10）：');
   vend.slice(0,10).forEach(v => T.push(`  ${v.name}｜欠 ${v.pend}｜修 ${v.w.fixed} 新 ${v.w.added}｜${g95Pct(v.w)}`));
   if (vend.length > 10) T.push(`  …另 ${vend.length-10} 家（合計欠 ${vend.slice(10).reduce((a,v)=>a+v.pend,0)}）——完整見 Email`);
-  const lineTxt = T.join('\n') + anomNote + warn;
-  // ── Email HTML（全部廠商）──
+  const lineTxt = T.join('\n') + anomNote + warn + zWarn;
+  // ── HTML 零件 ──
   const td = 'border:1px solid #cdd5df;padding:5px 9px;font-size:13px';
   const th = td + ';background:#EAF1FB;font-weight:700';
-  const rowsH = vend.map((v,i) => `<tr${v.w.diff<0?' style="background:#FCF0F0"':''}><td style="${td}">${i+1}</td><td style="${td}">${v.name}</td><td style="${td};text-align:right"><b>${v.pend}</b></td><td style="${td};text-align:right">${v.w.fixed}</td><td style="${td};text-align:right">${v.w.added}</td><td style="${td}">${g95Pct(v.w)}</td></tr>`).join('');
-  const zonesH = zones.map(z => `<tr><td style="${td}">複驗 ${z.d.slice(5).replace('-','/')}</td><td style="${td};text-align:right">${z.n}</td><td style="${td};text-align:right">${z.w.fixed}</td><td style="${td};text-align:right">${z.w.added}</td><td style="${td}">${z.w.pendPrev}→${z.w.pendNow}</td><td style="${td}">${g95Pct(z.w)}</td></tr>`).join('');
-  const html = `<div style="font-family:'Microsoft JhengHei',sans-serif;max-width:720px">
-<h2 style="margin:0 0 4px">G95 缺失修繕進度分析報告</h2>
-<div style="color:#666;font-size:13px;margin-bottom:12px">${today}（${wd}）·資料時點 ${snapDate} 快照·滾動 7 天窗（基準 ${base}）${warn?'<b style="color:#B3261E">'+warn+'</b>':''}</div>
-<div style="border:1px solid #A9CBE8;background:#EAF4FC;padding:10px 14px;font-size:15px;margin-bottom:14px">
-未完成 <b style="font-size:22px;color:#B3261E">${overall.pendNow}</b> 筆（上週 ${overall.pendPrev}）　近 7 天修掉 <b>${overall.fixed}</b>·新增 <b>${overall.added}</b>　完成率 <b>${g95Pct(overall)}</b></div>
-${zones.length?`<h3 style="margin:12px 0 6px;font-size:15px">複驗批進度</h3><table style="border-collapse:collapse"><tr><th style="${th}">批</th><th style="${th}">戶</th><th style="${th}">修掉</th><th style="${th}">新增</th><th style="${th}">未完成</th><th style="${th}">完成率</th></tr>${zonesH}</table>`:''}
-<h3 style="margin:14px 0 6px;font-size:15px">各廠商（還欠多→少·紅底＝完成率倒退）</h3>
-<table style="border-collapse:collapse"><tr><th style="${th}">#</th><th style="${th}">廠商</th><th style="${th}">還欠</th><th style="${th}">修掉</th><th style="${th}">新增</th><th style="${th}">完成率</th></tr>${rowsH}</table>
-<h3 style="margin:16px 0 6px;font-size:15px">LINE 貼上用</h3>
-<pre style="background:#F6F5F2;border:1px solid #d8d5cd;padding:10px;font-size:12px;white-space:pre-wrap">${lineTxt}</pre>
-<div style="color:#999;font-size:11px;margin-top:10px">口徑＝G95 畫面同一把尺（未完成 compId==null·完成率狀態算·滾動 7 天）·<a href="${G95_URL}">開啟 G95</a></div></div>`;
+  const sumTd = td + ';background:#F0F4EA;font-weight:700';
+  const pct = w => g95Pct(w);
+  const heroH = (label, w, subLine) => `<div style="border:1px solid #A9CBE8;background:#EAF4FC;padding:10px 14px;font-size:15px;margin-bottom:6px">
+${label}未完成 <b style="font-size:22px;color:#B3261E">${w.pendNow}</b> 筆（上週 ${w.pendPrev}）　近 7 天修掉 <b>${w.fixed}</b>·新增 <b>${w.added}</b>　完成率 <b>${pct(w)}</b>
+<div style="font-size:13px;color:#555;margin-top:4px">${subLine}</div></div>`;
+  const allSub = `全工地：未完成 ${overall.pendNow}（上週 ${overall.pendPrev}）·修掉 ${overall.fixed}·新增 ${overall.added}·完成率 ${pct(overall)}`;
+  const zTr = (name, w, sum, indent) => `<tr><td style="${sum?sumTd:td}${indent?';padding-left:26px':''}">${name}</td><td style="${sum?sumTd:td};text-align:right">${sum?'<b>'+w.pendNow+'</b>':w.pendNow}</td><td style="${sum?sumTd:td};text-align:right">${w.fixed}</td><td style="${sum?sumTd:td};text-align:right">${w.added}</td><td style="${sum?sumTd:(w.diff<0?td+';background:#FCF0F0':td)}">${pct(w)}</td></tr>`;
+  let zTbl = `<h3 style="margin:12px 0 6px;font-size:15px">分區小計</h3><table style="border-collapse:collapse"><tr><th style="${th}">分區</th><th style="${th}">還欠</th><th style="${th}">修掉</th><th style="${th}">新增</th><th style="${th}">完成率</th></tr>`;
+  zTbl += zTr('室內小計', IW, true, false);
+  subs.filter(s => s.g === '室內').forEach(s => zTbl += zTr(s.name, s.w, false, true));
+  zTbl += zTr('公設小計', PW, true, false);
+  subs.filter(s => s.g === '公設').forEach(s => zTbl += zTr(s.name, s.w, false, true));
+  if (gW['其他'].pendNow > 0 || gW['其他'].fixed > 0){ zTbl += zTr('其他小計', gW['其他'], true, false); subs.filter(s => s.g === '其他').forEach(s => zTbl += zTr(s.name, s.w, false, true)); }
+  if (gW['未分類'].pendNow > 0 || gW['未分類'].fixed > 0) zTbl += zTr('⚠未分類（缺分區·請回 G95 補）', gW['未分類'], true, false);
+  zTbl += '</table>';
+  const vTbl = (arr, title) => `<h3 style="margin:14px 0 6px;font-size:15px">${title}（還欠多→少·紅底＝完成率倒退）</h3>
+<table style="border-collapse:collapse"><tr><th style="${th}">#</th><th style="${th}">廠商</th><th style="${th}">還欠</th><th style="${th}">修掉</th><th style="${th}">新增</th><th style="${th}">完成率</th></tr>${arr.map((v,i) => `<tr${v.w.diff<0?' style="background:#FCF0F0"':''}><td style="${td}">${i+1}</td><td style="${td}">${v.name}</td><td style="${td};text-align:right"><b>${v.pend}</b></td><td style="${td};text-align:right">${v.w.fixed}</td><td style="${td};text-align:right">${v.w.added}</td><td style="${td}">${pct(v.w)}</td></tr>`).join('')}</table>`;
+  const zonesH = zones.map(z => `<tr><td style="${td}">複驗 ${z.d.slice(5).replace('-','/')}</td><td style="${td};text-align:right">${z.n}</td><td style="${td};text-align:right">${z.w.fixed}</td><td style="${td};text-align:right">${z.w.added}</td><td style="${td}">${z.w.pendPrev}→${z.w.pendNow}</td><td style="${td}">${pct(z.w)}</td></tr>`).join('');
+  const batchTbl = zones.length ? `<h3 style="margin:12px 0 6px;font-size:15px">複驗批進度</h3><table style="border-collapse:collapse"><tr><th style="${th}">批</th><th style="${th}">戶</th><th style="${th}">修掉</th><th style="${th}">新增</th><th style="${th}">未完成</th><th style="${th}">完成率</th></tr>${zonesH}</table>` : '';
+  const headH = `<h2 style="margin:0 0 4px">G95 缺失修繕進度分析報告</h2>
+<div style="color:#666;font-size:13px;margin-bottom:12px">${today}（${wd}）·資料時點 ${snapDate} 快照·滾動 7 天窗（基準 ${base}）${(warn||zWarn)?'<b style="color:#B3261E">'+warn+zWarn+'</b>':''}</div>`;
+  const lineBox = `<h3 style="margin:16px 0 6px;font-size:15px">LINE 貼上用</h3>
+<pre style="background:#F6F5F2;border:1px solid #d8d5cd;padding:10px;font-size:12px;white-space:pre-wrap">${lineTxt}</pre>`;
+  const footH = `<div style="color:#999;font-size:11px;margin-top:10px">口徑＝G95 畫面同一把尺（未完成＝未銷案·完成率用狀態算·滾動 7 天）·分區判準＝G95 分區欄位·<a href="${G95_URL}">開啟 G95</a></div>`;
+  // ── Email（靜態＝室內優先＋分區表＋全部廠商）──
+  const html = `<div style="font-family:'Microsoft JhengHei',sans-serif;max-width:720px">${headH}${heroH('室內', IW, allSub)}${zTbl}${batchTbl}${vTbl(vend, '各廠商（全工地）')}${lineBox}${footH}</div>`;
+  // ── /g95view 報告頁（可切換 全部｜室內｜公設·預設室內）──
+  const pubNote = `<div style="border:1px solid #d8d5cd;background:#F6F5F2;padding:12px;font-size:13px;color:#666;margin:12px 0">公設沒有複驗批</div>`;
+  const viewBody = `<div style="font-family:'Microsoft JhengHei',sans-serif;max-width:760px">${headH}
+<div style="margin:4px 0 12px"><button class="scb" data-sc="in" style="padding:7px 22px;font-size:14px;border:1px solid #9aa7b8;background:#fff;cursor:pointer">室內</button><button class="scb" data-sc="all" style="padding:7px 22px;font-size:14px;border:1px solid #9aa7b8;background:#fff;cursor:pointer">全部</button><button class="scb" data-sc="pub" style="padding:7px 22px;font-size:14px;border:1px solid #9aa7b8;background:#fff;cursor:pointer">公設</button></div>
+<div class="sc sc-in">${heroH('室內', IW, allSub)}</div>
+<div class="sc sc-all">${heroH('全工地', overall, `室內：未完成 ${IW.pendNow}·修掉 ${IW.fixed}·${pct(IW)}　公設：未完成 ${PW.pendNow}·修掉 ${PW.fixed}·${pct(PW)}`)}</div>
+<div class="sc sc-pub">${heroH('公設', PW, allSub)}</div>
+${zTbl}
+<div class="sc sc-in sc-all">${batchTbl}</div>
+<div class="sc sc-pub">${pubNote}</div>
+<div class="sc sc-in">${vTbl(vendIn, '各廠商（室內）')}</div>
+<div class="sc sc-all">${vTbl(vend, '各廠商（全工地）')}</div>
+<div class="sc sc-pub">${vTbl(vendPub, '各廠商（公設）')}</div>
+${lineBox}${footH}</div>
+<script>
+(function(){
+  function setSc(sc){
+    document.querySelectorAll('.sc').forEach(function(el){ el.style.display = el.classList.contains('sc-'+sc) ? '' : 'none'; });
+    document.querySelectorAll('.scb').forEach(function(b){ var on = b.getAttribute('data-sc')===sc;
+      b.style.background = on ? '#1c3f77' : '#fff'; b.style.color = on ? '#fff' : '#222'; b.style.fontWeight = on ? '700' : '400'; });
+    try{ localStorage.setItem('g95view_sc', sc); }catch(e){}
+  }
+  document.querySelectorAll('.scb').forEach(function(b){ b.addEventListener('click', function(){ setSc(b.getAttribute('data-sc')); }); });
+  var sc = 'in'; try{ sc = localStorage.getItem('g95view_sc') || 'in'; }catch(e){}
+  if (['in','all','pub'].indexOf(sc) < 0) sc = 'in';
+  setSc(sc);
+})();
+</script>`;
   // ── 送達 ──
   const log = [];
-  log.push(await g95Mail(env, `G95 修繕進度 ${today}：未完成 ${overall.pendNow}·修掉 ${overall.fixed}（${overall.diff>=0?'+':''}${overall.diff}）`, html));
+  log.push(await g95Mail(env, `G95 修繕進度 ${today}：室內未完成 ${IW.pendNow}·修掉 ${IW.fixed}（${IW.diff>=0?'+':''}${IW.diff}）`, html));
   try{ await ghPut(env, 'g95report/latest.html',
-    `<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>G95 修繕進度報告 ${today}</title></head><body style="margin:12px;background:#fff">${html}</body></html>`,
+    `<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>G95 修繕進度報告 ${today}</title></head><body style="margin:12px;background:#fff">${viewBody}</body></html>`,
     'G95 報告頁 ' + today); log.push('報告頁：/g95view 已更新'); }
   catch(e){ log.push('報告頁：' + e.message); }
   log.push('推播：' + await pushAll(env, tok, 'G95 修繕進度報告',
-    `未完成 ${overall.pendNow}（上週 ${overall.pendPrev}）·近7天修掉 ${overall.fixed}·完成率 ${g95Pct(overall)}\n點開通知看完整報告（Email 亦有）`,
-    APP_URL + 'g95view.html#k=' + env.TEST_KEY));   // WK0817-02：iOS PWA 只能可靠開自己網域→走工作台跳轉頁再轉 /g95view
+    `室內未完成 ${IW.pendNow}（上週 ${IW.pendPrev}）·修掉 ${IW.fixed}·完成率 ${pct(IW)}\n全工地 ${overall.pendNow}·點開看完整報告`,
+    APP_URL + 'g95view.html#k=' + env.TEST_KEY));
   try{ await ghPut(env, 'g95report/' + today + '.md', lineTxt, 'G95 報告 ' + today); log.push('GitHub：已存 g95report/' + today + '.md'); }
   catch(e){ log.push('GitHub：' + e.message); }
   return log.join('\n') + '\n\n' + lineTxt;
