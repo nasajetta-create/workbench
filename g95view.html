@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>G95 修繕進度報告</title></head>
+<body style="font-family:sans-serif;padding:24px;color:#333">開啟報告中…
+<script>
+/* 工作台網域內的跳轉頁：iOS PWA 通知只能可靠開自己網域的頁，這頁再帶金鑰跳去 Worker 報告頁。
+   金鑰由推播內容經 #hash 帶入，本檔不含任何祕密。 */
+var k = (location.hash.match(/k=([0-9a-z]+)/i) || [])[1];
+if (k) location.replace('https://still-fire-e099.nasa-jetta.workers.dev/g95view?key=' + k);
+else document.body.textContent = '缺少金鑰：請從推播通知開啟本頁，或從 Email 看報告。';
+</script>
+</body></html>

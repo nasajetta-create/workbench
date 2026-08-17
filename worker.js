@@ -1,4 +1,4 @@
-/* 艋舺良的工作台 — 每朝簡報＋自動備份＋Notion 鏡像＋G95 報告 Worker（WK0817-01）
+/* 艋舺良的工作台 — 每朝簡報＋自動備份＋Notion 鏡像＋G95 報告 Worker（WK0817-02）
  * WK0811-02 變更：自動備份補上 W0811 新增的 recurs（固定收支）、loans（貸款）集合。
  * WK0811-03 變更：自動備份補上健康管理的 bp（血壓）、allergy（藥物過敏）集合。
  * cron: "0 23 * * *" = 台北 07:00 每朝簡報（Web Push 直接推到工作台 App）
@@ -568,7 +568,7 @@ ${zones.length?`<h3 style="margin:12px 0 6px;font-size:15px">複驗批進度</h3
   catch(e){ log.push('報告頁：' + e.message); }
   log.push('推播：' + await pushAll(env, tok, 'G95 修繕進度報告',
     `未完成 ${overall.pendNow}（上週 ${overall.pendPrev}）·近7天修掉 ${overall.fixed}·完成率 ${g95Pct(overall)}\n點開通知看完整報告（Email 亦有）`,
-    SELF_URL + '/g95view?key=' + env.TEST_KEY));
+    APP_URL + 'g95view.html#k=' + env.TEST_KEY));   // WK0817-02：iOS PWA 只能可靠開自己網域→走工作台跳轉頁再轉 /g95view
   try{ await ghPut(env, 'g95report/' + today + '.md', lineTxt, 'G95 報告 ' + today); log.push('GitHub：已存 g95report/' + today + '.md'); }
   catch(e){ log.push('GitHub：' + e.message); }
   return log.join('\n') + '\n\n' + lineTxt;

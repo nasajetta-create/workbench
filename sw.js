@@ -1,5 +1,5 @@
 /* 艋舺良的工作台 service worker（強制自動更新版，沿用旅遊分帳做法） */
-const CACHE = 'wb-v27';
+const CACHE = 'wb-v28';
 const CORE = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
@@ -48,8 +48,11 @@ self.addEventListener('push', e => {
 self.addEventListener('notificationclick', e => {
   e.notification.close();
   const target = (e.notification.data && e.notification.data.url) || './';
+  // wb-v28：通知若指定了特定頁（例如 G95 報告頁 g95view.html），一律直接開目標頁；
+  // 只有指向 App 本身的通知（每朝簡報）才聚焦既有視窗——否則 iPhone PWA 永遠算「開著」，報告頁永遠開不了
+  const isApp = target === './' || (target.indexOf('/workbench') > -1 && target.indexOf('g95view') === -1);
   e.waitUntil(clients.matchAll({type:'window', includeUncontrolled:true}).then(list => {
-    for (const c of list){ if (c.url.indexOf('/workbench') > -1 && 'focus' in c) return c.focus(); }
+    if (isApp){ for (const c of list){ if (c.url.indexOf('/workbench') > -1 && 'focus' in c) return c.focus(); } }
     return clients.openWindow(target);
   }));
 });
