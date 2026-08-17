@@ -1,4 +1,4 @@
-/* 艋舺良的工作台 — 每朝簡報＋自動備份＋Notion 鏡像＋G95 報告 Worker（WK0816-01）
+/* 艋舺良的工作台 — 每朝簡報＋自動備份＋Notion 鏡像＋G95 報告 Worker（WK0817-01）
  * WK0811-02 變更：自動備份補上 W0811 新增的 recurs（固定收支）、loans（貸款）集合。
  * WK0811-03 變更：自動備份補上健康管理的 bp（血壓）、allergy（藥物過敏）集合。
  * cron: "0 23 * * *" = 台北 07:00 每朝簡報（Web Push 直接推到工作台 App）
@@ -21,6 +21,10 @@
  *   前置＝g95-work IAM 把本服務帳戶加「Cloud Datastore 檢視者」（唯讀）。測試：/g95report?key=TEST_KEY
  */
 const PROJECT = 'mengjia-workbench';
+/* WK0817-01 變更：G95 報告加「報告網頁」/g95view——點推播直接開最新一期完整報告（內容＝Email 同一份）。
+ *   報告 HTML 另存 workbench-backup/g95report/latest.html（ghPut 覆寫）；/g95view 用 ghGet 讀出直接回傳。
+ *   pushAll 第 5 參數支援自訂點擊網址（sw.js 原本就會開 payload.url；工作台 App 開著時仍會聚焦 App＝已知小限制）。
+ *   （WK0816-01b/01c：cron 前綴比對＋恆等式異常桶·詳接手筆記；0817 補存 cron＝儀表板存排程要重整驗證） */
 const BACKUP_REPO = 'nasajetta-create/workbench-backup';
 const VAPID_PUB = 'BLm3fcUuRX5DSQqziOWr7F_2N4hgZN9sL2gF5dsGqiXw-bTa6A4dU2lUyChiKbvMb9RZkvUVSuFnrWwF4KuytO0';
 const VAPID_SUB = 'mailto:nasa.jetta@gmail.com';
@@ -42,7 +46,12 @@ export default {
       if (url.pathname === '/ping'){ return new Response(await ping(env)); }
       if (url.pathname === '/notion'){ return new Response(await notionSync(env)); }
       if (url.pathname === '/g95report'){ return new Response(await g95Report(env)); }
-      return new Response('ok（/brief、/backup、/ping、/notion 或 /g95report）');
+      if (url.pathname === '/g95view'){
+        const page = await ghGet(env, 'g95report/latest.html');
+        return new Response(page || '報告尚未產生：等下一次排程發送，或先呼叫 /g95report 產生一份。',
+          {status: page ? 200 : 404, headers: {'Content-Type': 'text/html; charset=utf-8'}});
+      }
+      return new Response('ok（/brief、/backup、/ping、/notion、/g95report 或 /g95view）');
     }catch(e){ return new Response('錯誤：' + e.message, {status:500}); }
   }
 };
@@ -152,10 +161,10 @@ async function vapidAuth(env, endpoint){
   return 'vapid t=' + data + '.' + b64url(sig) + ', k=' + VAPID_PUB;
 }
 /* 推給所有已訂閱的裝置；失效的訂閱（404/410）自動從 Firestore 清掉 */
-async function pushAll(env, tok, title, body){
+async function pushAll(env, tok, title, body, url){
   const subs = (await readColl(tok, 'pushsubs')).filter(s => !s.del && s.endpoint && s.p256dh && s.auth);
   if (!subs.length) return '沒有已訂閱的裝置——請先在工作台「設定」裡開啟每朝推播';
-  const payload = JSON.stringify({title, body, url: APP_URL});
+  const payload = JSON.stringify({title, body, url: url || APP_URL});
   const log = [];
   for (const s of subs){
     const tag = (s.name || s._doc || '裝置').slice(0, 12);
@@ -250,6 +259,16 @@ async function ghPut(env, path, content, message){
   if (sha) body.sha = sha;
   const r = await fetch(url, {method:'PUT', headers:hdr, body: JSON.stringify(body)});
   if (!r.ok) throw new Error('GitHub 寫入失敗 ' + r.status + '：' + (await r.text()).slice(0,200));
+}
+async function ghGet(env, path){   // WK0817-01：讀 BACKUP_REPO 的檔案（UTF-8 文字），沒有回 null
+  const r = await fetch(`https://api.github.com/repos/${BACKUP_REPO}/contents/${path}`,
+    {headers:{Authorization:'Bearer ' + env.GH_TOKEN, 'User-Agent':'wb-backup', Accept:'application/vnd.github+json'}});
+  if (!r.ok) return null;
+  const j = await r.json();
+  const bin = atob(String(j.content || '').replace(/\n/g,''));
+  const u8 = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+  return new TextDecoder().decode(u8);
 }
 async function backup(env){
   const tok = await gToken(env);
@@ -401,6 +420,7 @@ async function notionSync(env){
  *    恆等式自檢：doneNow ＝ donePrev＋近7天修掉＋完成缺日期，不成立會在報告裡標「⚠對帳異常」 */
 const G95_FS = 'https://firestore.googleapis.com/v1/projects/g95-work/databases/(default)/documents';
 const G95_URL = 'https://nasajetta-create.github.io/G95/';
+const SELF_URL = 'https://still-fire-e099.nasa-jetta.workers.dev';
 function addDaysISO(iso, n){ const d = new Date(iso + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0,10); }
 async function g95Doc(tok, path){
   const r = await fetch(G95_FS + '/' + path, {headers:{Authorization:'Bearer ' + tok}});
@@ -542,8 +562,13 @@ ${zones.length?`<h3 style="margin:12px 0 6px;font-size:15px">複驗批進度</h3
   // ── 送達 ──
   const log = [];
   log.push(await g95Mail(env, `G95 修繕進度 ${today}：未完成 ${overall.pendNow}·修掉 ${overall.fixed}（${overall.diff>=0?'+':''}${overall.diff}）`, html));
+  try{ await ghPut(env, 'g95report/latest.html',
+    `<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>G95 修繕進度報告 ${today}</title></head><body style="margin:12px;background:#fff">${html}</body></html>`,
+    'G95 報告頁 ' + today); log.push('報告頁：/g95view 已更新'); }
+  catch(e){ log.push('報告頁：' + e.message); }
   log.push('推播：' + await pushAll(env, tok, 'G95 修繕進度報告',
-    `未完成 ${overall.pendNow}（上週 ${overall.pendPrev}）·近7天修掉 ${overall.fixed}·完成率 ${g95Pct(overall)}\n完整報告看 Email`));
+    `未完成 ${overall.pendNow}（上週 ${overall.pendPrev}）·近7天修掉 ${overall.fixed}·完成率 ${g95Pct(overall)}\n點開通知看完整報告（Email 亦有）`,
+    SELF_URL + '/g95view?key=' + env.TEST_KEY));
   try{ await ghPut(env, 'g95report/' + today + '.md', lineTxt, 'G95 報告 ' + today); log.push('GitHub：已存 g95report/' + today + '.md'); }
   catch(e){ log.push('GitHub：' + e.message); }
   return log.join('\n') + '\n\n' + lineTxt;
