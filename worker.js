@@ -1,4 +1,4 @@
-/* 艋舺良的工作台 — 每朝簡報＋自動備份＋Notion 鏡像＋G95 報告 Worker（WK0817-03b）
+/* 艋舺良的工作台 — 每朝簡報＋自動備份＋Notion 鏡像＋G95 報告 Worker（WK0817-03c）
  * WK0811-02 變更：自動備份補上 W0811 新增的 recurs（固定收支）、loans（貸款）集合。
  * WK0811-03 變更：自動備份補上健康管理的 bp（血壓）、allergy（藥物過敏）集合。
  * cron: "0 23 * * *" = 台北 07:00 每朝簡報（Web Push 直接推到工作台 App）
@@ -49,7 +49,7 @@ export default {
       if (url.pathname === '/g95zdebug'){   // WK0817-03b 偵錯用：看快照資料形狀·不寄信不推播
         const tok = await gToken(env); const {S, snapDate} = await g95Snap(tok);
         const rows = (S.rows || []); const z0 = (S.zones || [])[0] || null;
-        const zn = {}; (S.zones || []).forEach(z => { if (z && (z.id || z.key)) zn[z.id || z.key] = String(z.name || '').trim(); });
+        const zn = {}; (S.zones || []).forEach(z => { if (z && (z.id || z.key)) zn[z.id || z.key] = String(z.name || z.label || '').trim(); });
         const hit = rows.filter(r => r && zn[r.zone]).length;
         return new Response(JSON.stringify({snapDate, zonesLen:(S.zones || []).length, zone0:z0, row0zone:rows[0] && rows[0].zone, znKeys:Object.keys(zn), hit, rowsLen:rows.length}, null, 1).slice(0, 3000), {headers:{'Content-Type':'application/json; charset=utf-8'}});
       }
@@ -536,7 +536,7 @@ async function g95Report(env){
       if (M && Array.isArray(M.zones) && M.zones.length) S.zones = M.zones;
     }catch(e){}
   }
-  const zName = {}; (S.zones || []).forEach(z => { if (z && (z.id || z.key)) zName[z.id || z.key] = String(z.name || '').trim(); });
+  const zName = {}; (S.zones || []).forEach(z => { if (z && (z.id || z.key)) zName[z.id || z.key] = String(z.name || z.label || '').trim(); });
   const zGrpOf = n => !n ? '未分類' : (/室內|店鋪/.test(n) ? '室內' : (/公設|地下室/.test(n) ? '公設' : '其他'));
   const grpMap = new Map([['室內',[]],['公設',[]],['其他',[]],['未分類',[]]]);
   const subMap = new Map();
