@@ -46,6 +46,13 @@ export default {
       if (url.pathname === '/ping'){ return new Response(await ping(env)); }
       if (url.pathname === '/notion'){ return new Response(await notionSync(env)); }
       if (url.pathname === '/g95report'){ return new Response(await g95Report(env)); }
+      if (url.pathname === '/g95zdebug'){   // WK0817-03b 偵錯用：看快照資料形狀·不寄信不推播
+        const tok = await gToken(env); const {S, snapDate} = await g95Snap(tok);
+        const rows = (S.rows || []); const z0 = (S.zones || [])[0] || null;
+        const zn = {}; (S.zones || []).forEach(z => { if (z && (z.id || z.key)) zn[z.id || z.key] = String(z.name || '').trim(); });
+        const hit = rows.filter(r => r && zn[r.zone]).length;
+        return new Response(JSON.stringify({snapDate, zonesLen:(S.zones || []).length, zone0:z0, row0zone:rows[0] && rows[0].zone, znKeys:Object.keys(zn), hit, rowsLen:rows.length}, null, 1).slice(0, 3000), {headers:{'Content-Type':'application/json; charset=utf-8'}});
+      }
       if (url.pathname === '/g95view'){
         const page = await ghGet(env, 'g95report/latest.html');
         return new Response(page || '報告尚未產生：等下一次排程發送，或先呼叫 /g95report 產生一份。',
@@ -638,7 +645,7 @@ ${lineBox}${footH}</div>
 </script>`;
   // ── 送達 ──
   const log = [];
-  log.push('分區偵錯：zones=' + ((S.zones || []).length) + '·rows帶zone=' + rows.filter(r => r && r.zone).length + '/' + rows.length + '·comp帶zone=' + comp.filter(r => r && r.zone).length + '/' + comp.length);
+  log.push('分區偵錯：zones=' + ((S.zones || []).length) + '·rows帶zone=' + rows.filter(r => r && r.zone).length + '/' + rows.length + '·comp帶zone=' + comp.filter(r => r && r.zone).length + '/' + comp.length + '｜zone0=' + JSON.stringify((S.zones || [])[0] || null).slice(0, 120) + '｜row0.zone=' + JSON.stringify(rows[0] && rows[0].zone) + '｜zName鍵=' + Object.keys(zName).slice(0, 5).join(','));
   log.push(await g95Mail(env, `G95 修繕進度 ${today}：室內未完成 ${IW.pendNow}·修掉 ${IW.fixed}（${IW.diff>=0?'+':''}${IW.diff}）`, html));
   try{ await ghPut(env, 'g95report/latest.html',
     `<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>G95 修繕進度報告 ${today}</title></head><body style="margin:12px;background:#fff">${viewBody}</body></html>`,
