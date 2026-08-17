@@ -1,4 +1,4 @@
-/* 艋舺良的工作台 — 每朝簡報＋自動備份＋Notion 鏡像＋G95 報告 Worker（WK0817-03）
+/* 艋舺良的工作台 — 每朝簡報＋自動備份＋Notion 鏡像＋G95 報告 Worker（WK0817-03b）
  * WK0811-02 變更：自動備份補上 W0811 新增的 recurs（固定收支）、loans（貸款）集合。
  * WK0811-03 變更：自動備份補上健康管理的 bp（血壓）、allergy（藥物過敏）集合。
  * cron: "0 23 * * *" = 台北 07:00 每朝簡報（Web Push 直接推到工作台 App）
@@ -430,6 +430,10 @@ async function g95Doc(tok, path){
   return dec(j.fields || {});
 }
 /* 每日還原點：今天沒有就往前找（最多 3 天）；支援 _p1/_p2 分片 */
+async function g95Gz(z){   // WK0817-03b：base64+gzip 解回文字（snap 與 meta 共用）
+  const bytes = Uint8Array.from(atob(String(z)), c => c.charCodeAt(0));
+  return await new Response(new Response(bytes).body.pipeThrough(new DecompressionStream('gzip'))).text();
+}
 async function g95Snap(tok){
   for (let back = 0; back <= 3; back++){
     const ds = addDaysISO(tpe(), -back);
@@ -438,8 +442,7 @@ async function g95Snap(tok){
     let z = d.z || '';
     if (d.parts > 1){ z = ''; for (let i = 1; i <= d.parts; i++){ const p = await g95Doc(tok, 'projects/main/snaps/' + ds + '_p' + i); z += (p && p.z) || ''; } }
     if (!z) continue;
-    const bytes = Uint8Array.from(atob(z), c => c.charCodeAt(0));
-    const txt = await new Response(new Response(bytes).body.pipeThrough(new DecompressionStream('gzip'))).text();
+    const txt = await g95Gz(z);
     return {S: JSON.parse(txt), snapDate: ds, by: d.by || ''};
   }
   throw new Error('找不到近 3 天的每日還原點（snaps）——G95 當天要有人開過才會建快照');
@@ -516,6 +519,16 @@ async function g95Report(env){
   const dmap = g95DateMap(S);
   const overall = g95WoW(list, dmap, base);
   // ── 分區（WK0817-03·判準＝G95 分區欄位 r.zone·單一事實來源見《報告分區改版_規格_0817》）──
+  // WK0817-03b：每日快照不帶 S.zones（0817 真資料實測全掉未分類）→ 退路＝讀雲端 meta 原始文件取分區定義
+  if (!Array.isArray(S.zones) || !S.zones.length){
+    try{
+      const md = await g95Doc(tok, 'projects/main/_fields/meta');
+      let M = null;
+      if (md && md.z) M = JSON.parse(await g95Gz(md.z));
+      else if (md && md.d) M = JSON.parse(md.d);
+      if (M && Array.isArray(M.zones) && M.zones.length) S.zones = M.zones;
+    }catch(e){}
+  }
   const zName = {}; (S.zones || []).forEach(z => { if (z && (z.id || z.key)) zName[z.id || z.key] = String(z.name || '').trim(); });
   const zGrpOf = n => !n ? '未分類' : (/室內|店鋪/.test(n) ? '室內' : (/公設|地下室/.test(n) ? '公設' : '其他'));
   const grpMap = new Map([['室內',[]],['公設',[]],['其他',[]],['未分類',[]]]);
@@ -625,6 +638,7 @@ ${lineBox}${footH}</div>
 </script>`;
   // ── 送達 ──
   const log = [];
+  log.push('分區偵錯：zones=' + ((S.zones || []).length) + '·rows帶zone=' + rows.filter(r => r && r.zone).length + '/' + rows.length + '·comp帶zone=' + comp.filter(r => r && r.zone).length + '/' + comp.length);
   log.push(await g95Mail(env, `G95 修繕進度 ${today}：室內未完成 ${IW.pendNow}·修掉 ${IW.fixed}（${IW.diff>=0?'+':''}${IW.diff}）`, html));
   try{ await ghPut(env, 'g95report/latest.html',
     `<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>G95 修繕進度報告 ${today}</title></head><body style="margin:12px;background:#fff">${viewBody}</body></html>`,
