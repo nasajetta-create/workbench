@@ -231,6 +231,17 @@
   .taxtbl td:last-child{width:7.5em; text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap;}
   .taxtbl tr.sec td{background:var(--tint2); font-weight:700; font-size:.80rem; letter-spacing:.05em;}
   .taxtbl tr.tot td{font-weight:700; border-top:2px solid var(--ink); background:var(--tint);}
+  /* W0928：體重多指標目標表（單一外框＋內部細線）與描邊色籤 */
+  .whtbl{width:100%; border-collapse:collapse; table-layout:fixed; border:1px solid var(--line); font-size:.82rem; margin-top:10px;}
+  .whtbl th{font-weight:600; font-size:.75rem; color:var(--sub); padding:5px 4px; border-bottom:1px solid var(--hair); border-right:1px solid var(--hair); text-align:center;}
+  .whtbl td{padding:4px; border-right:1px solid var(--hair); text-align:center;}
+  .whtbl th:last-child, .whtbl td:last-child{border-right:none;}
+  .whtbl td{padding:0;}
+  .whtbl input{padding:7px 4px; font-size:.88rem; text-align:center; border:none; background:transparent; min-width:0;}
+  .ltag{display:inline-block; padding:0 .35rem; font-size:.70rem; font-weight:600; white-space:nowrap; vertical-align:middle; line-height:1.5;
+    color:var(--life); background:color-mix(in srgb, var(--life) 10%, var(--card)); border:1px solid color-mix(in srgb, var(--life) 38%, var(--card));}
+  .ltag.away{color:var(--soon); background:color-mix(in srgb, var(--soon) 10%, var(--card)); border-color:color-mix(in srgb, var(--soon) 38%, var(--card));}
+  .whbtn{padding:1px 8px; font-size:.75rem;}
   .taxtbl tr.sub td:first-child{padding-left:22px; color:var(--sub);}
 
   /* ═══ 手機 ═══ */
@@ -739,8 +750,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 'use strict';
-/* ════════ 艋舺良的工作台 W0811-18（手機緊湊密度＋清單限3列＋摘要磚模板；今日焦點置頂跨區；切範圍整區隱藏） ════════ */
-const VERSION = 'W0811-18';
+/* ════════ 艋舺良的工作台 W0928-01（體重多指標目標值＋達標預估） ════════ */
+const VERSION = 'W0928-01';
 const GCAL_CLIENT_ID = '654856338073-ukdt5nvtc8riq2010lado0i0n5vuhcfl.apps.googleusercontent.com';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
@@ -774,7 +785,7 @@ function blank(){ return {
   weights: [],                     // {id,kg,date,rv,mt,del}
   trips: [],                       // {id,kind:'near'|'wish',name,start,end,year,budget,split,note,done,rv,mt,del}
   notes: [],                       // {id,txt,tag,pin,rv,mt,del}
-  prefs: {netBase:0, goalMoney:0, countries:0, countriesTarget:50, weightTarget:0, mt:0},
+  prefs: {netBase:0, goalMoney:0, countries:0, countriesTarget:50, weightTarget:0, whTargets:{fat:0, muscle:0, visceral:0, bmi:0}, whStart:{}, mt:0},
   settings: {skin:'A', fs:'m', scope:'all', order:DEF_ORDER.slice(), folded:{}, showMoney:false, pin:null, lockApp:true, lockMoney:false},
   ver: 1
 };}
@@ -786,7 +797,9 @@ function load(){
   ['projects','bids','clients','txs','weights','trips','notes','recurs','loans','bp','allergy'].forEach(k => { if(!Array.isArray(d[k])) d[k] = []; });
   d.prefs = d.prefs || {};
   d.prefs.health = Object.assign({bpSys:130, bpDia:80, exWeek:3}, (d.prefs||{}).health||{});
-  d.prefs = Object.assign({netBase:0, goalMoney:0, countries:0, countriesTarget:50, weightTarget:0, mt:0}, d.prefs||{});
+  d.prefs = Object.assign({netBase:0, goalMoney:0, countries:0, countriesTarget:50, weightTarget:0, whTargets:{fat:0, muscle:0, visceral:0, bmi:0}, whStart:{}, mt:0}, d.prefs||{});
+  d.prefs.whTargets = Object.assign({fat:0, muscle:0, visceral:0, bmi:0}, (d.prefs.whTargets && typeof d.prefs.whTargets==='object') ? d.prefs.whTargets : {});   /* W0928：巢狀物件另補 default */
+  if (!d.prefs.whStart || typeof d.prefs.whStart !== 'object') d.prefs.whStart = {};
   d.prefs.taxP = Object.assign(JSON.parse(JSON.stringify(TAXP_DEF)), d.prefs.taxP||{});
   if (!Array.isArray(d.prefs.taxP.brk) || !d.prefs.taxP.brk.length) d.prefs.taxP.brk = JSON.parse(JSON.stringify(TAXP_DEF.brk));
   d.settings.gcal = Object.assign({token:null, exp:0, cals:{}, writeOn:false, wId:null, cache:[]}, d.settings.gcal||{});
@@ -951,7 +964,7 @@ const CARDS = {
     const tile = (k,v,s) => `<div style="flex:1; border:1px solid var(--line); padding:6px; text-align:center;">
       <div style="font-size:.70rem; color:var(--sub);">${k}</div><div style="font-weight:800;">${v}</div><div style="font-size:.70rem; color:var(--sub);">${s}</div></div>`;
     el.innerHTML = `<div style="display:flex; gap:8px;">` +
-      tile('體重', cur ? cur.kg + '<small> kg</small>' : '—', cur && m30.length>1 ? `30天 ${d30>0?'+':''}${d30.toFixed(1)}` : '') +
+      tile('體重', cur ? whFmt(cur.kg) + '<small> kg</small>' : '—', whHomeTxt() || (cur && m30.length>1 ? `30天 ${d30>0?'+':''}${d30.toFixed(1)}` : '')) +
       tile('血壓(最近)', bpCur ? bpCur.sys+'/'+bpCur.dia : '—', bpCur ? mdw(bpCur.date) : '') +
       tile('本週運動', exN + '<small> 次</small>', '目標 ' + (D.prefs.health.exWeek||3)) +
       `</div><div style="text-align:center; padding-top:10px;"><button class="btn" id="healthEnter">進入健康管理 ▸</button></div>`;
@@ -1087,8 +1100,9 @@ function tileHtml(key){
     const cur = ws[ws.length-1];
     const bps = D.bp.filter(b => !b.del).sort((a,b)=> a.date<b.date?-1:1);
     const bp = bps[bps.length-1];
-    return {tk:'健康管理', ic:'i-health', b:(cur?cur.kg+' kg':'—')+(bp?'・'+bp.sys+'/'+bp.dia:''),
-      s:'本週運動 '+exerciseWeekCount()+'/'+(D.prefs.health.exWeek||3)+' ▸', go:'health'};
+    const wt = whHomeTxt();   /* W0928：有 kg 目標時改顯示目標差距 */
+    return {tk:'健康管理', ic:'i-health', b:(cur?whFmt(cur.kg)+' kg':'—')+(bp?'・'+bp.sys+'/'+bp.dia:''),
+      s:(wt || '本週運動 '+exerciseWeekCount()+'/'+(D.prefs.health.exWeek||3))+' ▸', go:'health'};
   }
   if (key==='goals'){
     const g1 = D.goals.find(g=>g.id==='g1'), g2 = D.goals.find(g=>g.id==='g2');
@@ -1853,49 +1867,167 @@ function exerciseWeekCount(){
 }
 const WH_METRICS = {kg:{lb:'體重', unit:'kg'}, fat:{lb:'體脂%', unit:'%'}, muscle:{lb:'肌肉%', unit:'%'}, visceral:{lb:'內臟', unit:''}, bmi:{lb:'BMI', unit:''}};
 let whMetric = 'kg', whRange = 'all';
+/* ── W0928：多指標目標值＋達標預估 helpers ── */
+const whBetterUp = m => m === 'muscle';                       // 肌肉越高越好，其餘越低越好
+const whFmt = v => String(+(+v).toFixed(1));                  // 顯示一律 1 位小數內，去浮點尾巴
+function whTgtOf(m){ return m === 'kg' ? (+D.prefs.weightTarget || 0) : (+((D.prefs.whTargets||{})[m]) || 0); }
+const whHas = v => v != null && v !== '' && !isNaN(+v);
+function whSeries(m){ return aliveW().filter(w => w.date && whHas(w[m])).sort((a,b)=> a.date<b.date?-1:a.date>b.date?1:0); }
+function whAvail(){ return Object.keys(WH_METRICS).filter(m => m === 'kg' || aliveW().some(w => whHas(w[m]))); }
+function whLatest(m){ const s = whSeries(m); return s.length ? s[s.length-1] : null; }
+const whHit = (m, v, t) => t > 0 && (whBetterUp(m) ? +v >= t : +v <= t);
+/* 近 30 天線性迴歸斜率（每日變化）；至少 2 筆且跨 ≥7 天，否則 null */
+function whSlope(m){
+  const cut = ymd(new Date(Date.now()-30*86400000));
+  const s = whSeries(m).filter(w => w.date >= cut);
+  if (s.length < 2) return null;
+  const xs = s.map(w => Date.parse(w.date+'T00:00:00')/86400000), ys = s.map(w => +w[m]);
+  if (xs[xs.length-1] - xs[0] < 7) return null;
+  const n = xs.length, mx = xs.reduce((a,b)=>a+b,0)/n, my = ys.reduce((a,b)=>a+b,0)/n;
+  let sxy = 0, sxx = 0;
+  xs.forEach((x,i) => { sxy += (x-mx)*(ys[i]-my); sxx += (x-mx)*(x-mx); });
+  return sxx ? sxy/sxx : null;
+}
+/* 綜合狀態：{cur,tgt,hit,dir:'near'|'away'|null,slope,eta,pct} */
+function whStat(m){
+  const last = whLatest(m), t = whTgtOf(m);
+  const r = {cur: last ? +last[m] : null, tgt: t, hit:false, dir:null, slope:null, eta:null, pct:null};
+  if (!last || !t) return r;
+  r.hit = whHit(m, r.cur, t);
+  r.slope = whSlope(m);
+  if (!r.hit && r.slope != null){
+    const toward = (t - r.cur) * r.slope;
+    if (Math.abs(r.slope) < 1e-4 || toward === 0) r.dir = 'flat';
+    else if (toward > 0){
+      r.dir = 'near';
+      const days = (t - r.cur) / r.slope;
+      if (days > 3650) r.eta = '照目前速度需 10 年以上';
+      else { const d = new Date(Date.now() + days*86400000); r.eta = `照目前速度約 ${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')} 達標`; }
+    } else r.dir = 'away';
+  }
+  const st = (D.prefs.whStart||{})[m];
+  if (!r.hit && st && whHas(st.v) && +st.v !== t){
+    r.pct = Math.round(Math.max(0, Math.min(100, (+st.v - r.cur) / (+st.v - t) * 100)));
+  }
+  return r;
+}
+function whTag(st){
+  if (st.hit) return '<span class="ltag">已達標</span>';
+  if (st.dir === 'near') return '<span class="ltag">接近中</span>';
+  if (st.dir === 'away') return '<span class="ltag away">遠離中</span>';
+  return '';
+}
+/* 首頁體重格：有 kg 目標 → 「目標 72・差 6.2」＋方向籤；已達標 → 「已達標」；無目標回傳空字串 */
+function whHomeTxt(){
+  const st = whStat('kg');
+  if (!st.tgt || st.cur == null) return '';
+  if (st.hit) return '<span class="ltag">已達標</span>';
+  return `目標 ${whFmt(st.tgt)}・差 ${whFmt(Math.abs(st.cur - st.tgt))}` + (st.dir==='near'||st.dir==='away' ? ' ' + whTag(st) : '');
+}
 function renderHealthPage(){
   const locked = D.settings.pin && D.settings.lockHealth && !sessionStorage.getItem('wb_health_ok');
   $('#healthLock').style.display = locked ? '' : 'none';
   $('#healthBody').style.display = locked ? 'none' : '';
   if (locked) return;
-  /* ── 【53】體重・體組成 ── */
-  let ws = aliveW().filter(w => w[whMetric] != null && w.date).sort((a,b)=> a.date<b.date?-1:1);
+  /* ── 【53】體重・體組成（W0928：多指標目標＋達標預估） ── */
+  const avail = whAvail();
+  if (!avail.includes(whMetric)) whMetric = 'kg';
+  /* 舊資料已有目標但沒有起點 → 以目前最新值補記起點（進度從今天起算） */
+  { if (!D.prefs.whStart || typeof D.prefs.whStart !== 'object') D.prefs.whStart = {};
+    let seeded = false;
+    avail.forEach(m => { if (whTgtOf(m) && !D.prefs.whStart[m]){ const l = whLatest(m); if (l && !whHit(m, +l[m], whTgtOf(m))){ D.prefs.whStart[m] = {v:+l[m], date:l.date}; seeded = true; } } });
+    if (seeded){ D.prefs.mt = now(); save(); fbPushPrefs(); } }
+  const MU = WH_METRICS[whMetric];
+  let ws = whSeries(whMetric);
   if (whRange === '1y'){ const c = ymd(new Date(Date.now()-365*86400000)); ws = ws.filter(w => w.date >= c); }
   if (whRange === '90d'){ const c = ymd(new Date(Date.now()-90*86400000)); ws = ws.filter(w => w.date >= c); }
-  const all = aliveW().filter(w=>w.kg).sort((a,b)=> a.date<b.date?-1:1);
+  const all = whSeries('kg');
   const cur = all[all.length-1];
-  const tgt = +D.prefs.weightTarget || 0;
+  const tgt = whTgtOf(whMetric);
+  const st = whStat(whMetric);
   let chart = '<div class="empty">還沒有紀錄——按「＋ 記體重」</div>';
   if (ws.length > 1){
     const vals = ws.map(w => +w[whMetric]);
     let mn = Math.min(...vals), mx = Math.max(...vals);
-    if (whMetric==='kg' && tgt > 0){ mn = Math.min(mn, tgt); mx = Math.max(mx, tgt); }
+    const hi = mx, lo = mn;
+    if (tgt > 0){ mn = Math.min(mn, tgt); mx = Math.max(mx, tgt); }
     const rng = (mx - mn) || 1;
     const X = i => (i/(ws.length-1)*400).toFixed(1);
     const Y = v => (72 - ((v-mn)/rng*62) + 4).toFixed(1);
     const pts = ws.map((w,i) => X(i)+','+Y(+w[whMetric])).join(' ');
     chart = `<svg viewBox="0 0 400 80" preserveAspectRatio="none" style="width:100%; height:110px; display:block;">
-      ${whMetric==='kg' && tgt>0 ? `<line x1="0" y1="${Y(tgt)}" x2="400" y2="${Y(tgt)}" stroke="var(--urgent)" stroke-width="1" stroke-dasharray="5 4"/>` : ''}
+      ${tgt>0 ? `<line x1="0" y1="${Y(tgt)}" x2="400" y2="${Y(tgt)}" stroke="var(--urgent)" stroke-width="1" stroke-dasharray="5 4"/>` : ''}
       <polyline points="${pts}" fill="none" stroke="var(--life)" stroke-width="1.6"/></svg>
-      <div style="display:flex; justify-content:space-between; font-size:.70rem; color:var(--sub);"><span>${mdw(ws[0].date)} ${ws[0].date.slice(0,4)}</span><span>高 ${mx}・低 ${mn}${whMetric==='kg'&&tgt>0?`・<span style="color:var(--urgent);">目標線 ${tgt}</span>`:''}</span><span>${mdw(ws[ws.length-1].date)}</span></div>`;
+      <div style="display:flex; justify-content:space-between; font-size:.70rem; color:var(--sub);"><span>${mdw(ws[0].date)} ${ws[0].date.slice(0,4)}</span><span>高 ${whFmt(hi)}・低 ${whFmt(lo)}${tgt>0?`・<span style="color:var(--urgent);">目標線 ${whFmt(tgt)}</span>`:''}</span><span>${mdw(ws[ws.length-1].date)}</span></div>`;
   }
   const chip = (arr, cur, dataKey) => `<span class="scope" style="font-size:.82rem;">` +
     arr.map(([v,lb]) => `<button data-${dataKey}="${v}" class="${v===cur?'on':''}" style="padding:4px 10px;">${lb}</button>`).join('') + `</span>`;
+  /* 第 2 項：所選指標最新值＋目標（差）＋改目標；第 7/8 項：預估達標日・進度 */
+  const unitTxt = MU.unit ? (MU.unit==='%' ? '%' : ' ' + MU.unit) : '';
+  const head = st.cur != null ? whFmt(st.cur) + unitTxt : '—';
+  const tgtTxt = tgt ? (st.hit ? `・目標 ${whFmt(tgt)}` : `・目標 ${whFmt(tgt)}（差 ${st.cur!=null ? whFmt(Math.abs(st.cur - tgt)) : '—'}）`) : '';
+  const line2 = [];
+  if (tgt && !st.hit && st.cur != null){
+    if (st.dir === 'near' && st.eta) line2.push(st.eta);
+    else if (st.dir === 'away' || st.dir === 'flat') line2.push('近 30 天趨勢與目標相反');
+  }
+  if (tgt && st.pct != null) line2.push(`已完成 ${st.hit ? 100 : st.pct}%`);
+  /* 第 5 項：體組成小字＋目標灰字＋已達標籤 */
+  const comp = (m, lb, unit) => {
+    const s2 = whStat(m); if (s2.cur == null) return '';
+    const t2 = whTgtOf(m);
+    return `<span class="pair">${lb} <b>${whFmt(s2.cur)}${unit}</b>${t2 ? `<span style="color:var(--sub); opacity:.8;">／${whFmt(t2)}</span>` : ''}${s2.hit ? ' <span class="ltag">已達標</span>' : ''}</span>`;
+  };
+  const bmrTxt = cur && whHas(cur.bmr) ? `<span class="pair">基代 <b>${whFmt(cur.bmr)}</b></span>` : '';
+  /* 第 6、10 項：目標表（只列有資料的指標） */
+  const tblHead = avail.map(m => `<th>${WH_METRICS[m].lb}</th>`).join('');
+  const tblRow = avail.map(m => { const t3 = whTgtOf(m); return `<td><input type="number" step="0.1" inputmode="decimal" data-whtgt="${m}" value="${t3 ? whFmt(t3) : ''}" placeholder="不設" aria-label="${WH_METRICS[m].lb} 目標"></td>`; }).join('');
   $('#whBox').innerHTML =
     `<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-      <b style="font-size:1.05rem;">${cur ? cur.kg + ' kg' : '—'}<small style="color:var(--sub); font-weight:400;">${tgt?`・目標 ${tgt}（差 ${cur?(cur.kg-tgt).toFixed(1):'—'}）`:''}</small></b>
-      ${chip(Object.entries(WH_METRICS).map(([k,v])=>[k,v.lb]), whMetric, 'whm')}
+      <div>
+        <div style="display:flex; align-items:center; flex-wrap:wrap; gap:6px;">
+          <b style="font-size:1.05rem;">${head}<small style="color:var(--sub); font-weight:400;">${tgtTxt}</small></b>
+          ${whTag(st)}
+          <button class="btn whbtn" id="whTgtGo">改目標</button>
+        </div>
+        ${line2.length ? `<div style="font-size:.75rem; color:var(--sub); margin-top:2px;">${line2.join('・')}</div>` : ''}
+      </div>
+      ${chip(avail.map(k=>[k, WH_METRICS[k].lb]), whMetric, 'whm')}
     </div>` + chart +
     `<div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; flex-wrap:wrap; gap:8px;">
       ${chip([['all','全部'],['1y','1年'],['90d','90天']], whRange, 'whr')}
-      <span style="display:flex; gap:8px; font-size:.82rem; color:var(--sub);">
-        ${cur&&cur.fat!=null?`<span class="pair">體脂 <b>${cur.fat}%</b></span>`:''} ${cur&&cur.muscle!=null?`<span class="pair">肌肉 <b>${cur.muscle}%</b></span>`:''} ${cur&&cur.visceral!=null?`<span class="pair">內臟 <b>${cur.visceral}</b></span>`:''} ${cur&&cur.bmr!=null?`<span class="pair">基代 <b>${cur.bmr}</b></span>`:''}
+      <span style="display:flex; flex-wrap:wrap; gap:8px; font-size:.82rem; color:var(--sub);">
+        ${comp('fat','體脂','%')} ${comp('muscle','肌肉','%')} ${comp('visceral','內臟','')} ${bmrTxt}
       </span>
     </div>
-    <div class="iform"><input type="number" id="whTgt" placeholder="目標 kg" value="${tgt||''}" style="max-width:100px;"><button class="btn" id="whTgtSet">設目標</button><span style="font-size:.75rem; color:var(--sub); align-self:center;">共 ${aliveW().length} 筆・最早 ${all[0]?all[0].date:'—'}</span></div>`;
+    <div style="overflow-x:auto;"><table class="whtbl" id="whTbl"><thead><tr>${tblHead}</tr></thead><tbody><tr>${tblRow}</tr></tbody></table></div>
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:8px; flex-wrap:wrap;">
+      <span style="font-size:.75rem; color:var(--sub);">目標空白＝不設・共 ${aliveW().length} 筆・最早 ${all[0]?all[0].date:'—'}</span>
+      <button class="btn" id="whTgtSave" style="margin-left:auto;">儲存目標</button>
+    </div>`;
   $('#whBox').querySelectorAll('[data-whm]').forEach(b => b.onclick = () => { whMetric = b.dataset.whm; renderHealthPage(); });
   $('#whBox').querySelectorAll('[data-whr]').forEach(b => b.onclick = () => { whRange = b.dataset.whr; renderHealthPage(); });
-  $('#whTgtSet').onclick = () => { D.prefs.weightTarget = +$('#whTgt').value||0; D.prefs.mt = now(); save(); fbPushPrefs(); renderHealthPage(); };
+  $('#whTgtGo').onclick = () => {
+    const ip = $('#whBox').querySelector(`[data-whtgt="${whMetric}"]`);
+    if (ip){ ip.scrollIntoView({behavior:'smooth', block:'center'}); ip.focus({preventScroll:true}); }
+  };
+  $('#whTgtSave').onclick = () => {
+    if (!D.prefs.whTargets || typeof D.prefs.whTargets !== 'object') D.prefs.whTargets = {fat:0, muscle:0, visceral:0, bmi:0};
+    if (!D.prefs.whStart || typeof D.prefs.whStart !== 'object') D.prefs.whStart = {};
+    let n = 0;
+    $('#whBox').querySelectorAll('[data-whtgt]').forEach(ip => {
+      const m = ip.dataset.whtgt;
+      const v = ip.value.trim() === '' ? 0 : Math.max(0, Math.round((+ip.value||0)*10)/10);
+      if (v === whTgtOf(m)) return;
+      if (m === 'kg') D.prefs.weightTarget = v; else D.prefs.whTargets[m] = v;
+      const last = whLatest(m);
+      if (v && last) D.prefs.whStart[m] = {v:+last[m], date:last.date};
+      else delete D.prefs.whStart[m];
+      n++;
+    });
+    if (!n){ toast('目標沒有變更'); return; }
+    D.prefs.mt = now(); save(); fbPushPrefs(); renderHealthPage(); toast('目標已儲存');
+  };
   /* ── 【54】血壓 ── */
   const H = D.prefs.health;
   const bps = aliveBP().sort((a,b)=> (a.date+(a.ampm||'')) < (b.date+(b.ampm||'')) ? -1 : 1);
