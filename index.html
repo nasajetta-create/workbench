@@ -989,6 +989,44 @@
     .ck-tools button{font-size:.8rem;}
     .ck-exw{padding:0 .75rem .75rem;}
   }
+
+  /* ═══ W1126-18：主題 D 全部分頁拿掉卡片框，改用線條分區 ═══ */
+  body[data-skin="D"] .card, body[data-skin="D"] .dh-card, body[data-skin="D"] .cocat{background:transparent; border-radius:0; box-shadow:none; border:0; border-top:1px solid #C7C7CC; padding-left:.2rem; padding-right:.2rem;}
+  body[data-skin="D"] .dh-lines{background:transparent; border-radius:0; box-shadow:none; border-top:1px solid #C7C7CC; border-bottom:1px solid #C7C7CC;}
+  body[data-skin="D"] .dh-ln{background:transparent; border-left-color:#D1D1D6;}
+  body[data-skin="D"] .dh-lines+.card, body[data-skin="D"] .dh-lines+.dh-card{border-top:0;}
+  body[data-skin="D"] .cosum{border-top:1px solid #C7C7CC; border-bottom:1px solid #C7C7CC;}
+  body[data-skin="D"] .cosum>div{background:transparent; border-radius:0;}
+  body[data-skin="D"] .cosum>div+div{border-left:1px solid #D1D1D6;}
+  body[data-skin="D"] .list li{border-color:#D1D1D6;}
+  body[data-skin="D"] .dh-track{background:#fff;}
+  body[data-skin="D"] .dh-tl{background:transparent;}
+  body[data-skin="D"] .dh-tg{background:transparent; border-color:#D1D1D6; gap:0;}
+  body[data-skin="D"] .dh-tl+.dh-tl{border-left:1px solid #D1D1D6;}
+  body[data-skin="D"] .cal td{border-color:#D1D1D6;}
+  body[data-skin="D"] .me-grid{gap:0; align-items:stretch; border-top:1px solid #C7C7CC; border-bottom:1px solid #C7C7CC;}
+  body[data-skin="D"] .me-col{gap:0; border-left:1px solid #C7C7CC;}
+  body[data-skin="D"] .me-card{background:none; border-radius:0; box-shadow:none;}
+  body[data-skin="D"] .me-card:active{transform:none; background:color-mix(in srgb, var(--navy) 5%, transparent);}
+  body[data-skin="D"] .me-todo{padding-left:.2rem;}
+  body[data-skin="D"] .me-col .me-card+.me-card{border-top:1px solid #D1D1D6;}
+  body[data-skin="D"] .me-li{border-top-color:#E5E5EA;}
+  /* 當月清單：已結束收合 */
+  .due.end{color:var(--sub); font-weight:400;}
+  li.done-ev .ttl{color:var(--sub);}
+  .list li.cal-endbar, .list li.cal-endbar:hover{background:none;}
+  .cal-endbar{display:flex; align-items:center; gap:.4rem; padding:.6rem .2rem; font-size:.85rem; color:var(--sub); cursor:pointer; list-style:none;}
+  .cal-endbar b{margin-left:auto; font-weight:400;}
+  @media (max-width:760px){
+    body[data-skin="D"] .card, body[data-skin="D"] .dh-card, body[data-skin="D"] .cocat{border-radius:0; padding-left:.2rem; padding-right:.2rem;}
+    body[data-skin="D"] .dh-lines{gap:0;}
+    body[data-skin="D"] .dh-ln{background:transparent; border-radius:0; border-left:1px solid #D1D1D6; padding:.75rem .85rem;}
+    body[data-skin="D"] .dh-ln:nth-child(odd){border-left:none;}
+    body[data-skin="D"] .dh-ln:nth-child(n+3){border-top:1px solid #D1D1D6;}
+    body[data-skin="D"] .dh-lines.n3 .dh-ln:last-child{border-left:none;}
+    body[data-skin="D"] .me-col{border-left:0; border-top:1px solid #C7C7CC;}
+    body[data-skin="D"] .me-card{padding-left:.2rem; padding-right:.2rem;}
+  }
 </style>
 </head>
 <body data-skin="A">
@@ -1570,8 +1608,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 'use strict';
-/* ════════ 艋舺良的工作台 W1126-17（個人頁：拿掉大標、標題放大加圖示、鎖頭縮小放標題旁、左待辦右三張）／W1126-16（Google 行事曆過期後，點頁面第一下自動續連）／W1126-15（旅程：填出發後回程自動帶入出發日、不能選更早；「工程」改名「案場」，案場頁分段 在建案／已完工；沒有進行中投標案時頂部隱藏「投標」、首頁四格變三格、公司事務頁最上面多「投標」類）／W1126-14（首頁「這一週」可切 週一～週日／從今天起，預設週一，存 prefs.wkStart）／W1126-13（首頁「這一週」：人員休假「休：」拉到日期那一列）／W1126-12（主題 D 首頁「這一週」：沒行程的日子縮窄、有行程的變寬）／W1126-11（主題 D 首頁最下方加版號小字）／W1126-10（年度健檢 A～E：今年該做的事・自費建議・已知狀況・紅字白話說明・四年趨勢・部位分組・預約勾選・看診摘要・記錄看診・健檢前提醒・搜尋；新增 D.ckplan→meta/ckplan）／W1126-09（年度健檢超過 4 年：最近 3 年＋更早下拉）／W1126-08（首頁加小工具捷徑：PDF 解密）／W1126-07（主題 D 設為預設：每台裝置一次性切到 D）／W1126-06（健康頁新版套用到 A/B/C 主題）／W1126-05（設定頁加「小工具・移除 PDF 密碼」入口 pdfunlock.html）／W1126-04（主題 D 健康頁：體重有感版＋記一筆 7 項＋年度健檢；修 .pipe 投標四格）／W1126-03（W1126-02 主題 D＋合併 W0928-02 體重多指標目標值＋達標預估＋BMI 目標自動換算） ════════ */
-const VERSION = 'W1126-17';
+/* ════════ 艋舺良的工作台 W1126-18（主題 D 全部分頁拿掉卡片框改線條分區；當月清單：行程過了顯示已結束並收起，只有待辦才叫逾期）／W1126-17（個人頁：拿掉大標、標題放大加圖示、鎖頭縮小放標題旁、左待辦右三張）／W1126-16（Google 行事曆過期後，點頁面第一下自動續連）／W1126-15（旅程：填出發後回程自動帶入出發日、不能選更早；「工程」改名「案場」，案場頁分段 在建案／已完工；沒有進行中投標案時頂部隱藏「投標」、首頁四格變三格、公司事務頁最上面多「投標」類）／W1126-14（首頁「這一週」可切 週一～週日／從今天起，預設週一，存 prefs.wkStart）／W1126-13（首頁「這一週」：人員休假「休：」拉到日期那一列）／W1126-12（主題 D 首頁「這一週」：沒行程的日子縮窄、有行程的變寬）／W1126-11（主題 D 首頁最下方加版號小字）／W1126-10（年度健檢 A～E：今年該做的事・自費建議・已知狀況・紅字白話說明・四年趨勢・部位分組・預約勾選・看診摘要・記錄看診・健檢前提醒・搜尋；新增 D.ckplan→meta/ckplan）／W1126-09（年度健檢超過 4 年：最近 3 年＋更早下拉）／W1126-08（首頁加小工具捷徑：PDF 解密）／W1126-07（主題 D 設為預設：每台裝置一次性切到 D）／W1126-06（健康頁新版套用到 A/B/C 主題）／W1126-05（設定頁加「小工具・移除 PDF 密碼」入口 pdfunlock.html）／W1126-04（主題 D 健康頁：體重有感版＋記一筆 7 項＋年度健檢；修 .pipe 投標四格）／W1126-03（W1126-02 主題 D＋合併 W0928-02 體重多指標目標值＋達標預估＋BMI 目標自動換算） ════════ */
+const VERSION = 'W1126-18';
 const GCAL_CLIENT_ID = '654856338073-ukdt5nvtc8riq2010lado0i0n5vuhcfl.apps.googleusercontent.com';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
@@ -1681,11 +1719,12 @@ function mdw(dateStr){ // 8/11(二) 格式
   const d = new Date(dateStr + 'T00:00:00');
   return (+dateStr.slice(5,7)) + '/' + (+dateStr.slice(8,10)) + '(' + WD[d.getDay()] + ')';
 }
-function dueLabel(dateStr, time){
+function dueLabel(dateStr, time, isEv){
   const n = dayDiff(dateStr);
   let txt = mdw(dateStr) + (time ? ' '+time : '');
   let cls = '';
-  if (n < 0){ txt = '逾期 '+(-n)+' 天'; cls = 'warn'; }
+  if (n < 0 && isEv){ txt = mdw(dateStr)+' 已結束'; cls = 'end'; }   // W1126-18：行程過了＝已結束，只有待辦才叫逾期
+  else if (n < 0){ txt = '逾期 '+(-n)+' 天'; cls = 'warn'; }
   else if (n === 0){ txt = '今天'+(time?' '+time:''); cls = 'warn'; }
   else if (n === 1){ txt = '明天'+(time?' '+time:''); cls = 'soon'; }
   else if (n <= 3){ cls = 'soon'; }
@@ -1897,8 +1936,9 @@ function liHtml(it){
   /* V13：列內不再放範圍籤（4A）、不再放 G 前綴與天氣（1）——分區／全站切換已表明歸屬 */
   const chk = it.kind==='td' ? `<span class="tdchk" data-chk="${it.id}">${it.done?'✓':''}</span>` : '';
   let due = '';
-  if (it.date){ const d = dueLabel(it.date, it.time); due = `<span class="due ${d.cls}">${d.txt}</span>`; }
-  return `<li data-id="${it.id}" ${it.ro?`data-ro="${it.ro}"`:''} class="${it.done?'done':''}">${chk}<span class="ttl">${esc(it.title)}</span>${due}</li>`;
+  let past = false;
+  if (it.date){ const d = dueLabel(it.date, it.time, it.kind!=='td' || it.done); past = d.cls==='end'; due = `<span class="due ${d.cls}">${d.txt}</span>`; }
+  return `<li data-id="${it.id}" ${it.ro?`data-ro="${it.ro}"`:''} class="${it.done?'done':''}${past?' done-ev':''}">${chk}<span class="ttl">${esc(it.title)}</span>${due}</li>`;
 }
 function bindLis(root){
   root.querySelectorAll('li[data-id]').forEach(li => li.onclick = e => {
@@ -2035,6 +2075,7 @@ function renderCards(){
 
 /* ── 月曆 ── */
 let calY = new Date().getFullYear(), calM = new Date().getMonth();
+let calShowEnd = false;   // W1126-18 當月清單已結束是否展開
 const WDH = ['一','二','三','四','五','六','日'];   // 月曆表頭：每週從星期一開始
 function drawCal(tbl, y, m, mini){
   const first = new Date(y, m, 1), off = (first.getDay()+6)%7, days = new Date(y, m+1, 0).getDate();
@@ -2070,7 +2111,13 @@ function renderCalPage(){
   const mm = calY+'-'+String(calM+1).padStart(2,'0');
   const evs = allEvents().filter(i => i.date && i.date.startsWith(mm) && inScope(i))
     .sort((a,b)=> (a.date+(a.time||'')) < (b.date+(b.time||'')) ? -1:1);
-  $('#calList').innerHTML = evs.length ? evs.map(liHtml).join('') : '<div class="empty">本月沒有行程</div>';
+  /* W1126-18：已結束的行程（與已完成的過期待辦）收起來，點一下展開 */
+  const isEnd = i => i.date && dayDiff(i.date) < 0 && (i.kind !== 'td' || i.done);
+  const live = evs.filter(i => !isEnd(i)), ended = evs.filter(isEnd);
+  let ch = live.map(liHtml).join('');
+  if (ended.length) ch += `<li class="cal-endbar" id="calEndBar">已結束 ${ended.length} 件<b>${calShowEnd?'收起 ▴':'展開 ▾'}</b></li>` + (calShowEnd ? ended.map(liHtml).join('') : '');
+  $('#calList').innerHTML = evs.length ? ch : '<div class="empty">本月沒有行程</div>';
+  const eb = $('#calEndBar'); if (eb) eb.onclick = () => { calShowEnd = !calShowEnd; renderCalPage(); };
   bindLis($('#calList').parentElement);
 }
 $('#calPrev').onclick = () => { calM--; if(calM<0){calM=11;calY--;} renderCalPage(); };
@@ -3082,7 +3129,8 @@ function renderHeat(){
   for (let d = new Date(start); d <= end; d.setDate(d.getDate()+1)){
     const c = counts[ymd(d)] || 0;
     const lvl = c===0 ? 0 : c===1 ? 1 : c===2 ? 2 : c<=4 ? 3 : 4;
-    const bg = lvl===0 ? 'color-mix(in srgb, var(--ink) 6%, var(--card))' : `color-mix(in srgb, var(--case) ${lvl*25}%, var(--card))`;
+    const hb = document.body.dataset.skin==='D' ? '#fff' : 'var(--card)';   // W1126-18：D 拿掉白底後，熱力圖格子自帶白底
+    const bg = lvl===0 ? `color-mix(in srgb, var(--ink) ${hb==='#fff'?10:6}%, ${hb})` : `color-mix(in srgb, var(--case) ${lvl*25}%, ${hb})`;
     html += `<i title="${ymd(d)}・${c}" style="display:block; background:${bg};"></i>`;
   }
   box.innerHTML = html;
