@@ -1090,6 +1090,18 @@
   .tr-addc input{width:10rem; padding:.2rem .45rem; font-size:.85rem;}
   .tr-cap{font-size:.8rem; color:var(--sub); font-weight:600; margin:.6rem 0 .5rem;}
   .tr-map{width:100%; height:auto; display:block;}
+  .tr-map [data-zc]{cursor:pointer;}
+  .tr-sel{fill:color-mix(in srgb, var(--tv) 55%, #fff);}
+  .tr-cap{display:flex; align-items:center; gap:.6rem; min-height:1.7rem;}
+  .tr-zn{font-size:1rem; color:var(--ink);}
+  #trZAll{border-style:solid;}
+  .tr-cbar{display:flex; flex-wrap:wrap; align-items:center; gap:.4rem; padding:.7rem 0 .2rem;}
+  .tr-cbl{font-size:.75rem; font-weight:700; color:var(--sub); letter-spacing:.06em; margin-left:.5rem;}
+  .tr-cbl:first-child{margin-left:0;}
+  .tr-cz[data-zc]{cursor:pointer;}
+  .tr-cz.on{background:color-mix(in srgb, var(--tv) 22%, transparent); border-color:var(--tv); font-weight:700;}
+  .tr-ltg{margin-left:auto; display:inline-flex; align-items:center; gap:.2rem; font-size:.82rem; font-weight:600; color:var(--sub); cursor:pointer; white-space:nowrap; padding:.2rem 0 .2rem .6rem;}
+  .tr-ltg .ic{transition:transform .15s;} .tr-ltg .ic.on{transform:rotate(90deg);}
   .tr-mapload{font-size:.85rem; color:var(--sub); padding:2rem 0; text-align:center;}
   .tr-sea{fill:#fff; stroke:var(--tl2);}
   .tr-grat{fill:none; stroke:#EDEDF0;}
@@ -1711,8 +1723,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 'use strict';
-/* ════════ 艋舺良的工作台 W1127-04（地名表補 178 處：廣州、深圳等中國城市、芭達雅等泰國、東南亞、歐美澳常見旅遊地）／W1127-03（足跡國家／城市改成收折列表：每國一行（前三城＋座數），點開看全部；地名辨識：補日本四國、九州、熊本、青森、十和田等 36 處，認不得的名稱當城市放「其他」，舊補登裡不是國名的自動搬到城市）／W1127-02（補登城市畫航線：每個國家一條、終點 600 km 內不重畫；點「以前去過」的章→補上日期視窗（城市國家先帶好、已完成先勾），存檔後補登自動減一次）／W1127-01（Google 行事曆完全自動：勾選的日曆寫 meta/gcalcfg，Worker 每 30 分鐘抓好放 meta/gcalcache，不用開網頁也更新；補登城市也蓋護照章「以前去過」；地標補畫米蘭、佛羅倫斯、威尼斯、羅馬、梵蒂岡、里斯本、波多）／W1126-22（旅遊頁補登改成城市或國家、同城再補登＝×2、桌機地圖也放大到去過範圍、城市名避免重疊）／W1126-21（旅遊頁：近期｜想去兩欄、我的足跡＋世界地圖、護照章含地標；旅程加國家／城市；已踏國家自動算＋補登；新增 lib/worldmap.json）／W1126-20（右上日期加西元年份與農曆，兩行）／W1126-19（個人頁待辦：「今天到期」只算今天，逾期另外顯示「逾期 N 件」）／W1126-18（主題 D 全部分頁拿掉卡片框改線條分區；當月清單：行程過了顯示已結束並收起，只有待辦才叫逾期）／W1126-17（個人頁：拿掉大標、標題放大加圖示、鎖頭縮小放標題旁、左待辦右三張）／W1126-16（Google 行事曆過期後，點頁面第一下自動續連）／W1126-15（旅程：填出發後回程自動帶入出發日、不能選更早；「工程」改名「案場」，案場頁分段 在建案／已完工；沒有進行中投標案時頂部隱藏「投標」、首頁四格變三格、公司事務頁最上面多「投標」類）／W1126-14（首頁「這一週」可切 週一～週日／從今天起，預設週一，存 prefs.wkStart）／W1126-13（首頁「這一週」：人員休假「休：」拉到日期那一列）／W1126-12（主題 D 首頁「這一週」：沒行程的日子縮窄、有行程的變寬）／W1126-11（主題 D 首頁最下方加版號小字）／W1126-10（年度健檢 A～E：今年該做的事・自費建議・已知狀況・紅字白話說明・四年趨勢・部位分組・預約勾選・看診摘要・記錄看診・健檢前提醒・搜尋；新增 D.ckplan→meta/ckplan）／W1126-09（年度健檢超過 4 年：最近 3 年＋更早下拉）／W1126-08（首頁加小工具捷徑：PDF 解密）／W1126-07（主題 D 設為預設：每台裝置一次性切到 D）／W1126-06（健康頁新版套用到 A/B/C 主題）／W1126-05（設定頁加「小工具・移除 PDF 密碼」入口 pdfunlock.html）／W1126-04（主題 D 健康頁：體重有感版＋記一筆 7 項＋年度健檢；修 .pipe 投標四格）／W1126-03（W1126-02 主題 D＋合併 W0928-02 體重多指標目標值＋達標預估＋BMI 目標自動換算） ════════ */
-const VERSION = 'W1127-04';
+/* ════════ 艋舺良的工作台 W1127-05（足跡：地圖移到上面；國家收成一排、城市清單預設收起；點國家（地圖上或那一排）→地圖放大到那一國，再點一次或按「看全部」回來；展開清單裡的國家也會跟著放大）／W1127-04（地名表補 178 處：廣州、深圳等中國城市、芭達雅等泰國、東南亞、歐美澳常見旅遊地）／W1127-03（足跡國家／城市改成收折列表：每國一行（前三城＋座數），點開看全部；地名辨識：補日本四國、九州、熊本、青森、十和田等 36 處，認不得的名稱當城市放「其他」，舊補登裡不是國名的自動搬到城市）／W1127-02（補登城市畫航線：每個國家一條、終點 600 km 內不重畫；點「以前去過」的章→補上日期視窗（城市國家先帶好、已完成先勾），存檔後補登自動減一次）／W1127-01（Google 行事曆完全自動：勾選的日曆寫 meta/gcalcfg，Worker 每 30 分鐘抓好放 meta/gcalcache，不用開網頁也更新；補登城市也蓋護照章「以前去過」；地標補畫米蘭、佛羅倫斯、威尼斯、羅馬、梵蒂岡、里斯本、波多）／W1126-22（旅遊頁補登改成城市或國家、同城再補登＝×2、桌機地圖也放大到去過範圍、城市名避免重疊）／W1126-21（旅遊頁：近期｜想去兩欄、我的足跡＋世界地圖、護照章含地標；旅程加國家／城市；已踏國家自動算＋補登；新增 lib/worldmap.json）／W1126-20（右上日期加西元年份與農曆，兩行）／W1126-19（個人頁待辦：「今天到期」只算今天，逾期另外顯示「逾期 N 件」）／W1126-18（主題 D 全部分頁拿掉卡片框改線條分區；當月清單：行程過了顯示已結束並收起，只有待辦才叫逾期）／W1126-17（個人頁：拿掉大標、標題放大加圖示、鎖頭縮小放標題旁、左待辦右三張）／W1126-16（Google 行事曆過期後，點頁面第一下自動續連）／W1126-15（旅程：填出發後回程自動帶入出發日、不能選更早；「工程」改名「案場」，案場頁分段 在建案／已完工；沒有進行中投標案時頂部隱藏「投標」、首頁四格變三格、公司事務頁最上面多「投標」類）／W1126-14（首頁「這一週」可切 週一～週日／從今天起，預設週一，存 prefs.wkStart）／W1126-13（首頁「這一週」：人員休假「休：」拉到日期那一列）／W1126-12（主題 D 首頁「這一週」：沒行程的日子縮窄、有行程的變寬）／W1126-11（主題 D 首頁最下方加版號小字）／W1126-10（年度健檢 A～E：今年該做的事・自費建議・已知狀況・紅字白話說明・四年趨勢・部位分組・預約勾選・看診摘要・記錄看診・健檢前提醒・搜尋；新增 D.ckplan→meta/ckplan）／W1126-09（年度健檢超過 4 年：最近 3 年＋更早下拉）／W1126-08（首頁加小工具捷徑：PDF 解密）／W1126-07（主題 D 設為預設：每台裝置一次性切到 D）／W1126-06（健康頁新版套用到 A/B/C 主題）／W1126-05（設定頁加「小工具・移除 PDF 密碼」入口 pdfunlock.html）／W1126-04（主題 D 健康頁：體重有感版＋記一筆 7 項＋年度健檢；修 .pipe 投標四格）／W1126-03（W1126-02 主題 D＋合併 W0928-02 體重多指標目標值＋達標預估＋BMI 目標自動換算） ════════ */
+const VERSION = 'W1127-05';
 const GCAL_CLIENT_ID = '654856338073-ukdt5nvtc8riq2010lado0i0n5vuhcfl.apps.googleusercontent.com';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
@@ -3230,7 +3242,8 @@ async function trResolveUnknown(){   // 補登裡認不得的地名，背景查�
 }
 /* W1127-03：足跡改成國家收折列表（2026-11-27 使用者從 表格／方格／收折 三版選定收折） */
 const trFoldOpen = new Set();
-function trPlaceTable(st, exN){
+let trListOpen = false, trZoomC = null;   // W1127-05：城市清單預設收起；地圖放大到哪一國
+function trRows(st, exN){
   const rows = {}, row = k => rows[k] = rows[k] || {cities:{}, exC:false};
   st.done.forEach(t => { trCities(t).forEach(c => { const k = (TR_CITY[c]||[])[2] || trCountries(t)[0] || '其他'; const r = row(k); r.cities[c] = r.cities[c] || {n:0, ex:0}; r.cities[c].n++; });
     if (!trCities(t).length) trCountries(t).forEach(k => row(k)); });
@@ -3238,6 +3251,18 @@ function trPlaceTable(st, exN){
   (D.prefs.extraCountries||[]).forEach(k => { row(k).exC = true; });
   const ct = k => TR_CONT_ORDER.indexOf(TR_CONT[k] || '其他');
   const keys = Object.keys(rows).sort((a, b) => ct(a) - ct(b) || Object.keys(rows[b].cities).length - Object.keys(rows[a].cities).length || a.localeCompare(b, 'zh-Hant'));
+  return {rows, keys};
+}
+function trZoomable(k){ return !!((TR_CN[k] && WMAP && WMAP.c[TR_CN[k]]) || TR_CITY[k] || Object.keys(TR_CITY).some(c => TR_CITY[c][2] === k)); }
+function trCountryBar(st, exN){   // W1127-05：收起時只留一排國家，點國家→地圖放大
+  const {keys} = trRows(st, exN); if (!keys.length) return '';
+  let lastCt = '';
+  return `<div class="tr-cbar">` + keys.map(k => { const cn = TR_CONT[k] || '其他', hd = cn !== lastCt ? (lastCt = cn, `<span class="tr-cbl">${cn}</span>`) : '';
+    return hd + `<span class="tag tr-chip tr-cz${trZoomC === k ? ' on' : ''}"${k !== '其他' ? ` data-zc="${esc(k)}"` : ''}>${esc(k)}</span>`; }).join('')
+    + `<span class="tr-ltg" id="trListTg">${trListOpen ? '收起城市清單' : '城市清單'}<svg class="ic${trListOpen ? ' on' : ''}"><use href="#i-chev"></use></svg></span></div>`;
+}
+function trPlaceTable(st, exN){
+  const {rows, keys} = trRows(st, exN);
   if (!keys.length) return '';
   const cityHtml = (r, cs) => cs.map(c => { const o = r.cities[c]; return `<span class="tr-pc${o.ex?' ex':''}"${o.ex?` data-rmcity="${esc(c)}" title="補登的，點一下減一次"`:''}>${esc(c)}${o.n>1?`<small>×${o.n}</small>`:''}${o.ex?'<i>×</i>':''}</span>`; }).join('');
   const head = (k, i, r) => { const en = TR_CN[k] ? TR_CN[k].replace('United States of America','USA').replace('United Kingdom','UK') : '';
@@ -3310,11 +3335,15 @@ function trMapSvg(st, mob){
     const w = Math.max(320, x1 - x0), h = Math.max(w*0.62, y1 - y0), cx = (x0+x1)/2, cy = (y0+y1)/2;
     vb = [Math.max(0, Math.min(W - w, cx - w/2)), Math.max(0, Math.min(H - h, cy - h/2)), Math.min(w, W), Math.min(h, H)];
   }
+  const zb = trZoomC ? trZoomBox(trZoomC, pts) : null;   // W1127-05：點國家放大
+  if (zb) vb = zb; else trZoomC = null;
+  const zh = {}; Object.keys(st.cnt).forEach(c => { const e = TR_CN[c]; if (e && !zh[e]) zh[e] = c; });
   const sc = vb[2]/W;   // 放大時線條字級跟著縮
   let s = `<svg class="tr-map" viewBox="${vb.map(v=>v.toFixed(1)).join(' ')}" role="img" aria-label="去過的國家地圖">`;
   s += `<path d="${WMAP.sphere}" class="tr-sea"/><path d="${WMAP.grat}" class="tr-grat" style="stroke-width:${(.6*sc).toFixed(2)}"/>`;
   for (const n in WMAP.c){ const h = n === 'Taiwan', v = vis.has(n);
-    s += `<path d="${WMAP.c[n]}" class="${h?'tr-home':v?'tr-vis':'tr-land'}" style="stroke-width:${((v?1:.5)*sc).toFixed(2)}"/>`; }
+    const sel = v && !h && zh[n] === trZoomC;
+    s += `<path d="${WMAP.c[n]}" class="${h?'tr-home':v?'tr-vis':'tr-land'}${sel?' tr-sel':''}"${v && !h && zh[n] ? ` data-zc="${esc(zh[n])}"` : ''} style="stroke-width:${((sel?2:v?1:.5)*sc).toFixed(2)}"/>`; }
   const lm = mob ? 2.3 : 1;   // 手機字和點放大，才看得清楚
   const fs = (13*sc*lm).toFixed(1), sw = (3*sc*lm).toFixed(1);
   st.done.forEach(t => {
@@ -3350,6 +3379,24 @@ function trMapSvg(st, mob){
     s += `<text x="${at[0].toFixed(1)}" y="${at[1].toFixed(1)}" class="tr-lab" style="font-size:${fs}px;stroke-width:${sw}px">${esc(p[0])}</text>`; });
   s += `<circle cx="${hx.toFixed(1)}" cy="${hy.toFixed(1)}" r="${(5.5*sc*lm).toFixed(1)}" class="tr-hm" style="stroke-width:${(2*sc*lm).toFixed(1)}"/><text x="${(hx+8*sc*lm).toFixed(1)}" y="${(hy+16*sc*lm).toFixed(1)}" class="tr-lab hm" style="font-size:${fs}px;stroke-width:${sw}px">台北</text>`;
   return s + '</svg>';
+}
+function trZoomBox(k, pts){   // 該國本土外框（離本土太遠的屬地不算）＋去過的城市
+  const [W, H] = WMAP.vb, bs = [];
+  const d = WMAP.c[TR_CN[k]];
+  if (d){ const subs = d.split('M').filter(Boolean).map(t => { const n = t.match(/-?[\d.]+/g).map(Number); let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
+      for (let i = 0; i + 1 < n.length; i += 2){ x0 = Math.min(x0, n[i]); x1 = Math.max(x1, n[i]); y0 = Math.min(y0, n[i+1]); y1 = Math.max(y1, n[i+1]); } return [x0, y0, x1, y1]; });
+    const big = subs.slice().sort((a, b) => (b[2]-b[0])*(b[3]-b[1]) - (a[2]-a[0])*(a[3]-a[1]))[0], cx = (big[0]+big[2])/2, cy = (big[1]+big[3])/2;
+    subs.forEach(b => { if (Math.hypot((b[0]+b[2])/2 - cx, (b[1]+b[3])/2 - cy) < 60) bs.push(b); }); }
+  pts.forEach(p => { const g = TR_CITY[p[0]]; if (g && (g[2] === k || p[0] === k)){ const [x, y] = trEE(p[1], p[2]); bs.push([x, y, x, y]); } });
+  if (!bs.length){ const g = TR_CITY[k] || (Object.keys(TR_CITY).map(c => TR_CITY[c]).find(g => g[2] === k)); if (!g) return null; const [x, y] = trEE(g[0], g[1]); bs.push([x, y, x, y]); }
+  const x0 = Math.min(...bs.map(b => b[0])), x1 = Math.max(...bs.map(b => b[2])), y0 = Math.min(...bs.map(b => b[1])), y1 = Math.max(...bs.map(b => b[3]));
+  let w = Math.max(60, (x1 - x0)*1.3), h = Math.max(w*0.62, (y1 - y0)*1.3); w = Math.max(w, h/0.62); w = Math.min(w, W); h = Math.min(h, H);
+  const cx = (x0+x1)/2, cy = (y0+y1)/2;
+  return [Math.max(0, Math.min(W - w, cx - w/2)), Math.max(0, Math.min(H - h, cy - h/2)), w, h];
+}
+function trZoom(k){   // 點同一國＝回到全部
+  if (k && k !== trZoomC && !trZoomable(k)){ toast('地圖上沒有「' + k + '」的位置'); return; }
+  trZoomC = (!k || k === trZoomC) ? null : k; renderTripPage();
 }
 function trLoadMap(){
   if (WMAP || wmapLoading) return; wmapLoading = true;
@@ -3395,10 +3442,12 @@ function renderTripPage(){
       <div><small>旅行天數</small><b class="tr-n">${st.days}</b><em>天</em></div>
       <div><small>飛行里程</small><b class="tr-n">${st.km >= 10000 ? (st.km/10000).toFixed(1) : Math.round(st.km).toLocaleString()}</b><em>${st.km >= 10000 ? '萬 km' : 'km'}<span class="tr-earth">${st.km >= 10000 ? '・繞地球 '+laps+' 圈' : ''}</span></em></div>
     </div>
-    ${trPlaceTable(st, exN)}
+    <div class="tr-cap">${trZoomC ? `<b class="tr-zn">${esc(trZoomC)}</b><span class="tag tr-chip add" id="trZAll">看全部</span>` : '去過的國家塗色，虛線＝從台北飛出去的航線；點國家可放大'}</div>
+    <div id="trMap">${trMapSvg(st, mob)}</div>
+    ${trCountryBar(st, exN)}
+    ${trListOpen ? trPlaceTable(st, exN) : ''}
     <div class="tr-chips">${trAddC ? `<span class="tr-addc"><input id="trCIn" placeholder="城市或國家，例：米蘭、越南" aria-label="補登"><button class="btn" id="trCOk">加入</button></span>` : '<span class="tag tr-chip add" id="trCAdd">＋ 補登城市或國家</span>'}</div>
-    <div class="tr-cap">去過的國家塗色，虛線＝從台北飛出去的航線</div>
-    <div id="trMap">${trMapSvg(st, mob)}</div>`;
+`;
   /* ④ 護照章 */
   const recs = st.done.slice().sort((a,b)=> (b.start||'') < (a.start||'') ? -1 : 1);
   const byY = {}; recs.forEach(t => { const y = (t.start||'').slice(0,4) || '未填日期'; (byY[y] = byY[y] || []).push(t); });
@@ -3441,7 +3490,12 @@ function renderTripPage(){
   $('#page-trip').querySelectorAll('[data-rmcity]').forEach(n => n.onclick = () => {
     const a = (D.prefs.extraCities||[]).slice(), i = a.lastIndexOf(n.dataset.rmcity); if (i >= 0) a.splice(i, 1);   // 點一下減一次
     D.prefs.extraCities = a; D.prefs.mt = now(); save(); fbPushPrefs(); renderTripPage(); });
-  $('#page-trip').querySelectorAll('[data-pfold]').forEach(n => n.onclick = e => { if (e.target.closest('[data-rmc]')) return; const k = n.dataset.pfold; trFoldOpen.has(k) ? trFoldOpen.delete(k) : trFoldOpen.add(k); renderTripPage(); });
+  $('#page-trip').querySelectorAll('[data-pfold]').forEach(n => n.onclick = e => { if (e.target.closest('[data-rmc]')) return; const k = n.dataset.pfold;
+    if (trFoldOpen.has(k)){ trFoldOpen.delete(k); if (trZoomC === k) trZoomC = null; } else { trFoldOpen.add(k); if (trZoomable(k)) trZoomC = k; }   /* W1127-05：展開哪一國，地圖就放大到哪一國 */
+    renderTripPage(); });
+  $('#page-trip').querySelectorAll('[data-zc]').forEach(n => n.onclick = () => trZoom(n.dataset.zc));
+  { const tg = $('#trListTg'); if (tg) tg.onclick = () => { trListOpen = !trListOpen; renderTripPage(); };
+    const za = $('#trZAll'); if (za) za.onclick = () => trZoom(null); }
   $('#page-trip').querySelectorAll('[data-rmc]').forEach(n => n.onclick = () => {
     D.prefs.extraCountries = (D.prefs.extraCountries||[]).filter(x => x !== n.dataset.rmc); D.prefs.mt = now(); save(); fbPushPrefs(); renderTripPage(); });
   if (!WMAP) trLoadMap();
