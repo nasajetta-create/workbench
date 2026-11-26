@@ -279,6 +279,329 @@
     .cal td{height:72px;}
     .fab{bottom:88px;}
   }
+
+  /* ═══ 公司事務頁（新頁；A/B/C 沿用各主題平角風格，D 另有覆寫） ═══ */
+  body{--ringbg:var(--tint2);}
+  .cohead{display:flex; align-items:flex-end; gap:14px; flex-wrap:wrap; margin-bottom:14px;}
+  .cotitle{margin-right:auto;}
+  .cokick{display:none;}
+  .cotitle h2{font-family:var(--serif); font-size:1.3rem; font-weight:700; letter-spacing:-.01em;}
+  .cot-d{display:none;}
+  .cosum{display:flex; border:1px solid var(--line); background:var(--card);}
+  .cosum > div{padding:6px 16px; font-size:.75rem; color:var(--sub); border-right:1px solid var(--hair); text-align:center;}
+  .cosum > div:last-child{border-right:none;}
+  .cosum strong{display:block; font-size:1.5rem; color:var(--ink); line-height:1.15; font-variant-numeric:tabular-nums;}
+  .cosum .r strong{color:var(--urgent);}
+  .cogrid{display:grid; grid-template-columns:1fr 1fr; gap:14px; align-items:start;}
+  .cogrid .card{margin-bottom:0;}
+  .catic{font-style:normal; width:1.6rem; height:1.6rem; display:inline-flex; align-items:center; justify-content:center; font-size:.8rem; font-weight:800; border:1px solid; flex:none;
+    color:var(--cc); background:color-mix(in srgb, var(--cc) 10%, var(--card)); border-color:color-mix(in srgb, var(--cc) 38%, var(--card));}
+  .cocnt{margin-left:auto; font-size:.78rem; color:var(--sub); font-weight:400;}
+  .corow{display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--hair); cursor:pointer;}
+  .corow:last-child{border-bottom:none;}
+  .corow:hover{background:var(--tint);}
+  .cpc{width:2.75rem; height:2.75rem; flex:none; position:relative;}
+  .cpc svg{width:100%; height:100%; display:block;}
+  .cpc b{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:.68rem; font-weight:800; font-variant-numeric:tabular-nums;}
+  .cnm{flex:1; min-width:0;}
+  .cnm div{font-size:.95rem; font-weight:700; overflow-wrap:anywhere;}
+  .cnm small{display:block; font-size:.78rem; color:var(--sub); overflow-wrap:anywhere;}
+  .cdue{text-align:right; font-size:.95rem; font-weight:800; flex:none; font-variant-numeric:tabular-nums;}
+  .cdue small{display:block; font-size:.72rem; color:var(--sub); font-weight:600;}
+  .cdue.late{color:var(--urgent);}
+  .cdue.soon{color:var(--soon);}
+  .corow.done .cnm div{text-decoration:line-through; color:var(--sub);}
+  .coempty{color:var(--sub); font-size:.85rem; padding:10px 0;}
+  .codone{margin-top:14px;}
+  .codone .morelnk{padding:4px 0;}
+  .chips.cocats{display:grid; grid-template-columns:1fr 1fr;}
+  .chips.cocats button{border-bottom:1px solid var(--line);}
+  .chips.cocats button:nth-child(2n){border-right:none;}
+  .chips.cocats button:nth-last-child(-n+2){border-bottom:none;}
+  @media (max-width:760px){
+    .cogrid{grid-template-columns:1fr; gap:8px;}
+    .cosum{width:100%;}
+    .cosum > div{flex:1;}
+  }
+
+  /* ═══ 主題 D：iPhone 質感（以下全部限定 body[data-skin="D"]） ═══ */
+  .dbar, .dhome{display:none;}
+  body[data-skin="D"]{--page:#F2F2F7; --card:#ffffff; --line:#E5E5EA; --ink:#111114; --sub:#8A8A8E;
+    --site:#B4561B; --case:#1B417D; --life:#1E7A45; --co:#5B3FC4; --accent:#1B417D; --urgent:#E5484D; --soon:#C9951F;
+    --gold:#ECB744; --navy:#1B417D; --ringbg:#EEEEF2; --sep:#F0F0F2;
+    --serif:-apple-system,"SF Pro Display","PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;
+    font-family:-apple-system,"SF Pro Text","PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;}
+  body[data-skin="D"] .side, body[data-skin="D"] .tabbar, body[data-skin="D"] .fab{display:none !important;}
+  body[data-skin="D"] .app{max-width:1280px;}
+  body[data-skin="D"] .main{padding:1.4rem 2.25rem 3rem;}
+
+  /* 頂部入口列 */
+  body[data-skin="D"] .dbar{display:flex; align-items:center; gap:1rem; margin-bottom:2rem;}
+  body[data-skin="D"] .dtabs{display:flex; gap:.35rem; order:0;}
+  body[data-skin="D"] .dtabs button{padding:.45rem .85rem; border-radius:999px; font-size:1.02rem; font-weight:700; color:var(--sub); white-space:nowrap; transition:background .15s, color .15s;}
+  body[data-skin="D"] .dtabs button:hover{background:#fff; color:var(--ink);}
+  body[data-skin="D"] .dtabs button.on{color:var(--ink);}
+  body[data-skin="D"] .dtabs button b{color:var(--urgent); font-size:.75rem; margin-left:.15rem; font-weight:800; vertical-align:.05em;}
+  body[data-skin="D"] .dhead{order:1; margin-left:auto; display:flex; align-items:center; gap:1rem;}
+  body[data-skin="D"] .ddate{font-size:.95rem; color:var(--sub); font-weight:600; font-variant-numeric:tabular-nums; white-space:nowrap;}
+  body[data-skin="D"] .dquick{background:#111114; color:#fff; border-radius:999px; padding:.6rem 1.15rem; font-size:.95rem; font-weight:700; white-space:nowrap; display:flex; align-items:center; gap:.2rem;}
+  body[data-skin="D"] .dquick:active{transform:scale(.97);}
+
+  /* 共用元件改圓角、底色分層 */
+  body[data-skin="D"] .card{border:none; border-radius:1.25rem; padding:1rem 1.25rem; box-shadow:0 1px 2px rgba(0,0,0,.03);}
+  body[data-skin="D"] .card h3{margin:-1rem -1.25rem .6rem; padding:.95rem 1.25rem .55rem; border-bottom:none; font-size:.95rem; font-weight:800; color:var(--ink);}
+  body[data-skin="D"] .card.folded h3, body[data-skin="D"] .card.afold h3{margin-bottom:-1rem;}
+  body[data-skin="D"] .list li{border-bottom-color:var(--sep);}
+  body[data-skin="D"] .due{border-left:none;}
+  body[data-skin="D"] .tdchk{border-radius:50%; border-width:2px;}
+  body[data-skin="D"] .btn{border-radius:999px; border-color:transparent; background:var(--page); font-weight:600;}
+  body[data-skin="D"] .btn:hover{background:#E9E9EE; border-color:transparent;}
+  body[data-skin="D"] .btn.pri{background:var(--navy); border-color:var(--navy); color:#fff; font-weight:700;}
+  body[data-skin="D"] .btn.del{background:color-mix(in srgb, var(--urgent) 9%, #fff); color:var(--urgent);}
+  body[data-skin="D"] input, body[data-skin="D"] select, body[data-skin="D"] .frow textarea{border-radius:.7rem; background:#fff; border-color:var(--line);}
+  body[data-skin="D"] input[type="checkbox"], body[data-skin="D"] input[type="range"]{border-radius:0;}
+  body[data-skin="D"] input[type="checkbox"], body[data-skin="D"] input[type="range"]{accent-color:var(--navy);}
+  body[data-skin="D"] .modal{border:none; border-radius:1.4rem 1.4rem 0 0;}
+  body[data-skin="D"] .modal h3{font-family:inherit; font-weight:800; border-bottom:none;}
+  body[data-skin="D"] .chips, body[data-skin="D"] .subtabs, body[data-skin="D"] .scope, body[data-skin="D"] .skins{border-radius:.75rem; overflow:hidden; border-color:var(--line);}
+  body[data-skin="D"] .chips button.on, body[data-skin="D"] .subtabs button.on, body[data-skin="D"] .scope button.on{background:var(--navy); color:#fff;}
+  body[data-skin="D"] .chips button[style].on{background:var(--tint2); color:inherit;}
+  body[data-skin="D"] .tag{border-radius:.4rem;}
+  body[data-skin="D"] .col{border:none; border-radius:.9rem;}
+  body[data-skin="D"] .col h5{background:transparent; border-bottom:none;}
+  body[data-skin="D"] .jcard{border:none; border-radius:.75rem; box-shadow:0 1px 2px rgba(0,0,0,.05);}
+  body[data-skin="D"] .warnbox, body[data-skin="D"] .okbox{border-radius:.75rem;}
+  body[data-skin="D"] .pagehead h2{font-family:inherit; font-size:1.9rem; font-weight:800;}
+  body[data-skin="D"] .calhead b{font-family:inherit; font-weight:800;}
+  body[data-skin="D"] .calhead button{border-radius:999px; border-color:var(--line);}
+  body[data-skin="D"] .cal td.today{outline-color:var(--navy);}
+  body[data-skin="D"] .toast{border-radius:999px;}
+  body[data-skin="D"] .skins button.on{outline-color:var(--navy);}
+
+  /* 今天首頁 */
+  body[data-skin="D"] #page-home > .topbar, body[data-skin="D"] #cards{display:none;}
+  body[data-skin="D"] .dhome{display:block;}
+  body[data-skin="D"] .dh-top{display:grid; grid-template-columns:minmax(0,1fr) 25rem; gap:1.75rem; align-items:start; margin-bottom:1.5rem;}
+  body[data-skin="D"] .dh-next{cursor:pointer; min-width:0; padding-top:.5rem;}
+  body[data-skin="D"] .dh-kick{font-size:.95rem; color:var(--sub); font-weight:700;}
+  body[data-skin="D"] .dh-big{display:flex; align-items:baseline; gap:1.25rem; flex-wrap:wrap; margin-top:.25rem;}
+  body[data-skin="D"] .dh-tm{font-size:6.5rem; font-weight:800; letter-spacing:-.045em; line-height:.95; font-variant-numeric:tabular-nums;}
+  body[data-skin="D"] .dh-tt{font-size:2.2rem; font-weight:800; line-height:1.2; overflow-wrap:anywhere; min-width:0;}
+  body[data-skin="D"] .dh-left{font-size:1.05rem; color:var(--sub); margin-top:.9rem;}
+  body[data-skin="D"] .dh-left em{font-style:normal; color:var(--navy); font-weight:800;}
+  body[data-skin="D"] .dh-left .dh-ctx{margin-left:1rem;}
+  body[data-skin="D"] .dh-none{font-size:2rem; font-weight:800; margin-top:.5rem;}
+  body[data-skin="D"] .dh-card{background:#fff; border-radius:1.5rem; padding:1.1rem 1.4rem; box-shadow:0 1px 2px rgba(0,0,0,.03);}
+  body[data-skin="D"] .dh-lab{font-size:.85rem; color:var(--sub); font-weight:700; margin-bottom:.55rem;}
+  body[data-skin="D"] .dh-lab.red{color:var(--urgent);}
+  body[data-skin="D"] .dh-od{display:flex; align-items:center; gap:.85rem; padding:.7rem 0; border-top:1px solid var(--sep);}
+  body[data-skin="D"] .dh-od:first-of-type{border-top:none;}
+  body[data-skin="D"] .dh-ring{width:1.45rem; height:1.45rem; border-radius:50%; border:.16rem solid var(--urgent); flex:none; transition:background .15s;}
+  body[data-skin="D"] .dh-ring:hover{background:color-mix(in srgb, var(--urgent) 14%, #fff);}
+  body[data-skin="D"] .dh-od .n{flex:1; min-width:0; font-size:1.05rem; font-weight:700; cursor:pointer; overflow-wrap:anywhere;}
+  body[data-skin="D"] .dh-od .m{font-size:.8rem; color:var(--sub); white-space:nowrap;}
+  body[data-skin="D"] .dh-calm{font-size:.95rem; color:var(--sub); padding:.4rem 0 .2rem;}
+  body[data-skin="D"] .dh-sec{margin-bottom:1.1rem;}
+  body[data-skin="D"] .dh-allday{display:flex; flex-wrap:wrap; gap:.4rem; margin-bottom:.6rem; align-items:center; font-size:.78rem; color:var(--sub);}
+  /* 時間軸：桌機橫式 */
+  body[data-skin="D"] .dh-tlh{position:relative; padding-top:1.6rem;}
+  body[data-skin="D"] .dh-track{position:relative; background:var(--page); border-radius:.9rem;}
+  body[data-skin="D"] .dh-tev{position:absolute; border-radius:.6rem; padding:0 .75rem; display:block; line-height:2.5rem; font-size:.92rem; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:pointer; height:2.5rem;}
+  body[data-skin="D"] .dh-tev small{font-size:.72rem; font-weight:600; opacity:.8; margin-left:.45rem;}
+  body[data-skin="D"] .dh-hrs{position:relative; height:1.4rem; margin-top:.5rem;}
+  body[data-skin="D"] .dh-hrs span{position:absolute; transform:translateX(-50%); font-size:.8rem; color:var(--sub); font-variant-numeric:tabular-nums;}
+  body[data-skin="D"] .dh-hrs span:first-child{transform:none;}
+  body[data-skin="D"] .dh-hrs span:last-child{transform:translateX(-100%);}
+  body[data-skin="D"] .dh-nowh{position:absolute; top:-.4rem; bottom:-.4rem; width:.18rem; margin-left:-.09rem; background:var(--gold); z-index:2;}
+  body[data-skin="D"] .dh-nowh span{position:absolute; bottom:100%; left:50%; transform:translateX(-50%); margin-bottom:.2rem; font-size:.8rem; font-weight:800; color:var(--soon); white-space:nowrap;}
+  body[data-skin="D"] .dh-tlv{display:none;}
+  /* 事件色 */
+  body[data-skin="D"] .tv-past{background:#E3E3E8; color:var(--sub);}
+  body[data-skin="D"] .tv-nx{background:var(--navy); color:#fff;}
+  body[data-skin="D"] .sc-site{background:#FDF0E6; color:#B4561B;}
+  body[data-skin="D"] .sc-case{background:#E8F0FD; color:#1B417D;}
+  body[data-skin="D"] .sc-co{background:#EFEBFB; color:#5B3FC4;}
+  body[data-skin="D"] .sc-life{background:#E6F5EC; color:#1E7A45;}
+  body[data-skin="D"] .dh-chip{display:block; font-size:.85rem; font-weight:700; padding:.4rem .7rem; border-radius:.6rem; cursor:pointer; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  body[data-skin="D"] .dh-chip small{font-weight:600; opacity:.75; margin-right:.3rem; font-variant-numeric:tabular-nums;}
+  /* 這一週 */
+  body[data-skin="D"] .dh-wk{display:grid; grid-template-columns:repeat(7, minmax(0,1fr));}
+  body[data-skin="D"] .dh-day{padding:0 .8rem .3rem; border-left:1px solid var(--sep); min-height:6rem; min-width:0;}
+  body[data-skin="D"] .dh-day:first-child{border-left:none; padding-left:0;}
+  body[data-skin="D"] .dh-dd{font-size:1.5rem; font-weight:800; margin-bottom:.45rem; font-variant-numeric:tabular-nums;}
+  body[data-skin="D"] .dh-dd small{font-size:.8rem; color:var(--sub); font-weight:600; margin-left:.3rem;}
+  body[data-skin="D"] .dh-dd.t{color:var(--navy);}
+  body[data-skin="D"] .dh-chips{display:flex; flex-direction:column; gap:.4rem;}
+  body[data-skin="D"] .dh-dim{font-size:.8rem; color:#C7C7CC;}
+  /* 四條線 */
+  body[data-skin="D"] .dh-lines{display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); background:#fff; border-radius:1.5rem; box-shadow:0 1px 2px rgba(0,0,0,.03);}
+  body[data-skin="D"] .dh-ln{padding:1.1rem 1.4rem; border-left:1px solid var(--sep); cursor:pointer; min-width:0;}
+  body[data-skin="D"] .dh-ln:first-child{border-left:none;}
+  body[data-skin="D"] .dh-ln .h{display:flex; justify-content:space-between; align-items:center; font-size:1rem; font-weight:700; gap:.5rem;}
+  body[data-skin="D"] .dh-dot{display:inline-block; width:.55rem; height:.55rem; border-radius:50%; margin-right:.5rem; vertical-align:.08em;}
+  body[data-skin="D"] .dh-st{font-size:.75rem; font-weight:700; padding:.15rem .55rem; border-radius:999px; white-space:nowrap;}
+  body[data-skin="D"] .dh-st.ok{background:#E6F5EC; color:#1E7A45;}
+  body[data-skin="D"] .dh-st.bad{background:#FDECEC; color:var(--urgent);}
+  body[data-skin="D"] .dh-ln .v{display:flex; align-items:center; gap:.55rem; font-size:1.3rem; font-weight:800; margin-top:.7rem; line-height:1.3; overflow-wrap:anywhere;}
+  body[data-skin="D"] .dh-ln .v .cpc{width:2.1rem; height:2.1rem;}
+  body[data-skin="D"] .dh-ln .v .cpc b{font-size:0;}
+  body[data-skin="D"] .dh-ln .s{font-size:.85rem; color:var(--sub); margin-top:.3rem; overflow-wrap:anywhere;}
+
+  /* 公司事務頁 */
+  body[data-skin="D"] .cohead{margin:.25rem 0 1.6rem; gap:2.5rem; align-items:flex-end;}
+  body[data-skin="D"] .cokick{display:block; font-size:.9rem; color:var(--sub); font-weight:700;}
+  body[data-skin="D"] .cot-d{display:inline;}
+  body[data-skin="D"] .cot-m{display:none;}
+  body[data-skin="D"] .cotitle h2{font-family:inherit; font-size:2.6rem; font-weight:800; line-height:1.15;}
+  body[data-skin="D"] .cosum{border:none; background:none; gap:2.5rem;}
+  body[data-skin="D"] .cosum > div{border:none; padding:0; text-align:left; font-size:.85rem; font-weight:700;}
+  body[data-skin="D"] .cosum strong{font-size:2.9rem; font-weight:800; line-height:1.05;}
+  body[data-skin="D"] .coadd{align-self:center;}
+  body[data-skin="D"] .cogrid{gap:1.1rem;}
+  body[data-skin="D"] .cocat{border-radius:1.5rem; padding:1.1rem 1.4rem;}
+  body[data-skin="D"] .cocat h3{margin:-1.1rem -1.4rem .2rem; padding:1.1rem 1.4rem .8rem; font-size:1.08rem; gap:.6rem;}
+  body[data-skin="D"] .cocat h3{background:linear-gradient(var(--sep),var(--sep)) no-repeat 1.4rem 100% / calc(100% - 2.8rem) 1px;}
+  body[data-skin="D"] .catic{border:none; border-radius:.55rem; width:1.9rem; height:1.9rem; background:color-mix(in srgb, var(--cc) 13%, #fff);}
+  body[data-skin="D"] .corow{border-bottom-color:var(--sep); padding:.85rem 0;}
+  body[data-skin="D"] .corow:hover{background:transparent;}
+  body[data-skin="D"] .cpc{width:2.9rem; height:2.9rem;}
+  body[data-skin="D"] .cnm div{font-size:1rem;}
+  body[data-skin="D"] .cdue{font-size:1rem;}
+
+  /* ═══ W1126-02：主題 D 個人頁＋圓環＋右上設定 ═══ */
+  body[data-skin="D"] .dset{width:2.5rem; height:2.5rem; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--sub);}
+  body[data-skin="D"] .dset:hover{background:#fff; color:var(--ink);}
+  body[data-skin="D"] .dset.on{background:#fff; color:var(--ink);}
+  .dset{display:none;}
+  body[data-skin="D"] .dset{display:flex;}
+  .dpb{margin:.45rem 0 .2rem; display:flex;}
+  body[data-skin="D"] .dpb .cpc{width:3rem !important; height:3rem !important; flex:none;}
+  body[data-skin="D"] .dpb .cpc svg{width:100% !important; height:100% !important; max-width:none;}
+  body[data-skin="D"] .dpb .cpc b{font-size:.66rem !important;}
+  .me-head h2{font-size:1.9rem; font-weight:800; margin:0 0 1rem;}
+  .me-grid{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:1rem;}
+  .me-card{background:#fff; border-radius:1.5rem; padding:1.1rem 1.35rem 1.2rem; box-shadow:0 1px 2px rgba(0,0,0,.03); cursor:pointer; min-width:0; transition:transform .12s;}
+  .me-card:active{transform:scale(.985);}
+  .me-hd{display:flex; font-size:.9rem; font-weight:700; color:var(--sub); margin-bottom:.55rem;}
+  .me-hd span{margin-left:auto; font-size:1.2rem; line-height:1; color:#C7C7CC;}
+  .me-big{font-size:2.6rem; font-weight:800; letter-spacing:-.03em; line-height:1.1; font-variant-numeric:tabular-nums; overflow-wrap:anywhere;}
+  .me-big.sm{font-size:1.55rem; letter-spacing:-.01em;}
+  .me-big small{font-size:.9rem; font-weight:600; color:var(--sub); margin-left:.35rem; letter-spacing:0;}
+  .me-sub{font-size:.85rem; color:var(--sub); margin-top:.25rem; line-height:1.4;}
+  .me-sub .warn{color:var(--soon);}
+  .me-list{margin-top:.7rem;}
+  .me-li{display:flex; align-items:center; gap:.6rem; padding:.55rem 0; border-top:1px solid var(--sep); font-size:.95rem; min-width:0;}
+  .me-li span{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .me-li em{font-style:normal; font-size:.8rem; color:var(--sub); white-space:nowrap;}
+  .me-li em.late{color:var(--urgent); font-weight:700;}
+  .me-li.plain{margin-top:.7rem;}
+  .me-ck{width:1.05rem; height:1.05rem; border:2px solid #C7C7CC; border-radius:50%; flex:none;}
+  .me-lock{width:2.6rem; height:2.6rem; border-radius:.8rem; background:var(--page); display:flex; align-items:center; justify-content:center; color:var(--navy); margin-bottom:.6rem;}
+  .me-row{display:flex; align-items:center; gap:1.1rem;}
+  .me-rgw{display:flex; flex-direction:column; align-items:center; gap:.3rem; flex:none;}
+  .me-rgw small{font-size:.72rem; color:var(--sub); font-weight:600;}
+  .me-rg.cpc{width:4.2rem; height:4.2rem;}
+  .me-rg.cpc b{font-size:.85rem;}
+  .me-cd{display:flex; align-items:baseline; gap:.5rem; flex-wrap:wrap; margin-top:.35rem; font-size:.85rem; color:var(--sub);}
+  .me-cd b{font-size:2.2rem; font-weight:800; color:var(--navy); letter-spacing:-.03em; font-variant-numeric:tabular-nums;}
+  .me-cd b.sm{font-size:1.2rem;}
+  .me-empty{font-size:.9rem; color:var(--sub); padding:.6rem 0;}
+  @media (max-width:760px){
+    .me-head h2{font-size:1.6rem; margin:.3rem 0 .75rem;}
+    .me-grid{gap:.6rem;}
+    .me-card{border-radius:1.1rem; padding:.85rem .9rem .9rem;}
+    .me-big{font-size:2rem;}
+    .me-big.sm{font-size:1.15rem;}
+    .me-li{font-size:.85rem; padding:.45rem 0;}
+    .me-li em{display:none;}
+    .me-rg.cpc{width:3rem; height:3rem;}
+    .me-rg.cpc b{font-size:.68rem;}
+    .me-row{flex-direction:column; align-items:flex-start; gap:.6rem;}
+    .me-rgw{flex-direction:row;}
+    .me-cd b{font-size:1.7rem;}
+    body[data-skin="D"] .dset{width:2.4rem; height:2.4rem; margin-left:auto;}
+  }
+
+  /* 主題 D 手機 */
+  @media (max-width:760px){
+    body[data-skin="D"] .main{padding:0 1.1rem calc(2.5rem + env(safe-area-inset-bottom));}
+    body[data-skin="D"] .dbar{display:contents;}
+    body[data-skin="D"] .dhead{margin:0; padding-top:calc(.9rem + env(safe-area-inset-top)); justify-content:space-between;}
+    body[data-skin="D"] .dq-t{display:none;}
+    body[data-skin="D"] .dquick{width:2.4rem; height:2.4rem; padding:0; justify-content:center; font-size:1.4rem; font-weight:300;}
+    body[data-skin="D"] .dtabs{position:sticky; top:0; z-index:25; margin:0 -1.1rem .4rem; padding:.7rem 1.1rem .6rem; gap:.2rem; justify-content:space-between;
+      background:rgba(242,242,247,.92); -webkit-backdrop-filter:saturate(1.8) blur(14px); backdrop-filter:saturate(1.8) blur(14px);}
+    body[data-skin="D"] .dtabs button{padding:.44rem .52rem; font-size:.84rem; font-weight:600; color:#6B6B70; background:#fff;}
+    body[data-skin="D"] .dtabs button.on{background:#111114; color:#fff;}
+    body[data-skin="D"] .dtabs button b{font-size:.68rem;}
+    body[data-skin="D"] .card{padding:.85rem 1rem; border-radius:1.3rem; margin-bottom:.75rem;}
+    body[data-skin="D"] .card h3{margin:-.85rem -1rem .5rem; padding:.8rem 1rem .4rem;}
+    body[data-skin="D"] .card.folded h3, body[data-skin="D"] .card.afold h3{margin-bottom:-.85rem;}
+    body[data-skin="D"] .pagehead h2{font-size:1.7rem;}
+
+    body[data-skin="D"] .dh-top{grid-template-columns:1fr; gap:.9rem; margin-bottom:.9rem;}
+    body[data-skin="D"] .dh-next{padding-top:.4rem;}
+    body[data-skin="D"] .dh-big{display:block;}
+    body[data-skin="D"] .dh-tm{font-size:4.75rem; letter-spacing:-.05em; margin-top:.1rem;}
+    body[data-skin="D"] .dh-tt{font-size:1.6rem; margin-top:.35rem;}
+    body[data-skin="D"] .dh-left{font-size:.88rem; margin-top:.5rem;}
+    body[data-skin="D"] .dh-left .dh-ctx{display:block; margin-left:0; margin-top:.15rem;}
+    body[data-skin="D"] .dh-card{border-radius:1.4rem; padding:.9rem 1rem;}
+    body[data-skin="D"] .dh-sec{margin-bottom:.9rem;}
+    body[data-skin="D"] .dh-od .n{font-size:1rem;}
+    body[data-skin="D"] .dh-tlh{display:none;}
+    body[data-skin="D"] .dh-tlv{display:block; position:relative; margin-left:2.1rem;}
+    body[data-skin="D"] .dh-vh{position:absolute; left:-2.1rem; right:0; font-size:.7rem; color:#A0A0A5; line-height:1; font-variant-numeric:tabular-nums;}
+    body[data-skin="D"] .dh-vh::after{content:""; position:absolute; left:2.1rem; right:0; top:.4rem; border-top:1px solid var(--sep);}
+    body[data-skin="D"] .dh-vev{position:absolute; border-radius:.65rem; padding:.35rem .6rem; font-size:.88rem; font-weight:700; overflow:hidden; cursor:pointer; line-height:1.25;}
+    body[data-skin="D"] .dh-vev small{display:block; font-size:.7rem; font-weight:500; opacity:.85;}
+    body[data-skin="D"] .dh-nowv{position:absolute; left:-.4rem; right:0; border-top:.16rem solid var(--gold); z-index:2;}
+    body[data-skin="D"] .dh-nowv::before{content:""; position:absolute; left:-.3rem; top:-.36rem; width:.56rem; height:.56rem; border-radius:50%; background:var(--gold);}
+    body[data-skin="D"] .dh-nowv span{position:absolute; right:0; bottom:.15rem; font-size:.7rem; color:var(--soon); font-weight:800;}
+    body[data-skin="D"] .dh-wk{display:block;}
+    body[data-skin="D"] .dh-day{display:flex; align-items:flex-start; gap:.6rem; padding:.5rem 0; border-left:none; border-top:1px solid var(--sep); min-height:0;}
+    body[data-skin="D"] .dh-day:first-child{border-top:none;}
+    body[data-skin="D"] .dh-dd{width:3.4rem; flex:none; font-size:1.25rem; margin:0;}
+    body[data-skin="D"] .dh-dd small{font-size:.75rem; margin-left:.2rem;}
+    body[data-skin="D"] .dh-chips{flex-direction:row; flex-wrap:wrap; gap:.35rem; flex:1; min-width:0; padding-top:.1rem;}
+    body[data-skin="D"] .dh-chip{font-size:.8rem; padding:.3rem .55rem; max-width:100%;}
+    body[data-skin="D"] .dh-dim{padding-top:.35rem;}
+    body[data-skin="D"] .dh-lines{grid-template-columns:1fr 1fr; gap:.6rem; background:none; box-shadow:none;}
+    body[data-skin="D"] .dh-ln{background:#fff; border-radius:1.25rem; border-left:none; padding:.75rem .85rem;}
+    body[data-skin="D"] .dh-ln .h{font-size:.88rem;}
+    body[data-skin="D"] .dh-st{font-size:.68rem; padding:.1rem .45rem;}
+    body[data-skin="D"] .dh-ln .v{font-size:1.05rem; margin-top:.45rem;}
+    body[data-skin="D"] .dh-ln .v .cpc{width:1.7rem; height:1.7rem;}
+    body[data-skin="D"] .dh-ln .s{font-size:.75rem;}
+
+    body[data-skin="D"] .cohead{gap:.75rem; margin:.6rem 0 .9rem; align-items:center;}
+    body[data-skin="D"] .cotitle{order:1;}
+    body[data-skin="D"] .coadd{order:2; padding:.45rem .85rem; font-size:.88rem;}
+    body[data-skin="D"] .cosum{order:3; width:100%; display:grid; grid-template-columns:repeat(3,1fr); gap:.5rem;}
+    body[data-skin="D"] .cosum > div{background:#fff; border-radius:1rem; padding:.6rem .75rem; font-size:.75rem;}
+    body[data-skin="D"] .cosum strong{font-size:1.75rem; line-height:1.1;}
+    body[data-skin="D"] .cokick, body[data-skin="D"] .cot-d{display:none;}
+    body[data-skin="D"] .cot-m{display:inline;}
+    body[data-skin="D"] .cotitle h2{font-size:1.9rem;}
+    body[data-skin="D"] .cogrid{gap:.75rem;}
+    body[data-skin="D"] .cogrid .card{margin-bottom:0;}
+    body[data-skin="D"] .cocat{padding:.4rem 1rem .3rem; border-radius:1.3rem;}
+    body[data-skin="D"] .cocat h3{margin:-.4rem -1rem 0; padding:.75rem 1rem .3rem; font-size:.8rem; color:var(--cc); gap:0;}
+    body[data-skin="D"] .cocat h3{background:none;}
+    body[data-skin="D"] .cocat h3 .catic{display:none;}
+    body[data-skin="D"] .cocat h3 .cocnt{display:none;}
+    body[data-skin="D"] .cocat h3 .cocat-n{display:inline;}
+    body[data-skin="D"] .corow{padding:.6rem 0; gap:.7rem;}
+    body[data-skin="D"] .cpc{width:2.6rem; height:2.6rem;}
+    body[data-skin="D"] .cpc b{font-size:.64rem;}
+    body[data-skin="D"] .cnm div{font-size:.95rem;}
+    body[data-skin="D"] .cdue{font-size:.88rem;}
+  }
+  .cocat-n{display:none;}
+  @media (min-width:761px){
+    body[data-skin="D"] .modal{border-radius:1.4rem;}
+  }
 </style>
 </head>
 <body data-skin="A">
@@ -315,6 +638,7 @@
   <symbol id="i-print" viewBox="0 0 24 24"><path d="M7 9V3h10v6"/><path d="M4 9h16v8h-3M7 17H4V9"/><path d="M7 14h10v7H7z"/></symbol>
   <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M7 3h10v6a5 5 0 0 1-10 0z"/><path d="M7 5H4v2a3 3 0 0 0 3 3M17 5h3v2a3 3 0 0 1-3 3"/><path d="M12 14v4M8 21h8M9.5 18h5v3h-5z"/></symbol>
   <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.6 8-8 9.5C7.6 20 4 17 4 12V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
   <!-- 天氣 -->
   <symbol id="w-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.2v2.6M12 19.2v2.6M2.2 12h2.6M19.2 12h2.6M5.3 5.3l1.9 1.9M16.8 16.8l1.9 1.9M18.7 5.3l-1.9 1.9M7.2 16.8l-1.9 1.9"/></symbol>
   <symbol id="w-cloud" viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 0 0 .5-8 6 6 0 0 0-11.4 1.4A3.5 3.5 0 0 0 7 18z"/></symbol>
@@ -344,6 +668,14 @@
 
   <div class="main">
 
+    <!-- ═══ 主題 D：頂部入口列（桌機一列；手機日期列＋入口列，入口列往下滑時固定） ═══ -->
+    <div class="dbar" id="dBar">
+      <div class="dhead"><span class="ddate" id="dDate"></span><button class="dset" id="dSet" aria-label="設定・備份" title="設定・備份"><svg class="ic big" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button><button class="dquick" id="dQuick" aria-label="快速記錄">＋<span class="dq-t">&nbsp;快速記錄</span></button></div>
+      <nav class="dtabs" id="dTabs">
+        <button data-dt="home">今天</button><button data-dt="proj">工程</button><button data-dt="bid">投標</button><button data-dt="company">公司<b id="dCoBad"></b></button><button data-dt="me">個人</button><button data-dt="cal">行事曆</button>
+      </nav>
+    </div>
+
     <!-- ═══ 首頁 ═══ -->
     <section class="page on" id="page-home">
       <div class="topbar">
@@ -365,6 +697,7 @@
         </div>
       </div>
       <div id="cards"></div>
+      <div class="dhome" id="dHome"></div>
     </section>
 
     <!-- ═══ 行事曆 ═══ -->
@@ -388,6 +721,14 @@
     <section class="page" id="page-todo">
       <div class="card"><h3>待辦清單</h3><div class="bd"><ul class="list" id="todoAll"></ul></div></div>
       <div class="card"><h3>已完成<span class="pn">（近 30 天）</span></h3><div class="bd"><ul class="list" id="todoDone"></ul></div></div>
+    </section>
+
+    <!-- ═══ 個人（W1126-02，主題 D） ═══ -->
+    <section class="page" id="page-me"><div id="meBox"></div></section>
+
+    <!-- ═══ 公司事務（W1126-01） ═══ -->
+    <section class="page" id="page-company">
+      <div id="coBox"></div>
     </section>
 
     <!-- ═══ 在建工程 ═══ -->
@@ -478,6 +819,7 @@
       <div style="font-size:.82rem; color:var(--sub); margin-bottom:10px;" id="vtagSet">—</div>
       <div class="card"><h3><svg class="ic"><use href="#i-page"></use></svg>頁面</h3><div class="bd">
         <div class="setrow" style="cursor:pointer;" onclick="go('todo')">待辦清單<span style="margin-left:auto; color:var(--sub);">▸</span></div>
+        <div class="setrow" style="cursor:pointer;" onclick="go('company')">公司事務<span style="margin-left:auto; color:var(--sub);">▸</span></div>
         <div class="setrow" style="cursor:pointer;" onclick="go('fin')">財務看板<span style="margin-left:auto; color:var(--sub);">▸</span></div>
         <div class="setrow" style="cursor:pointer;" onclick="go('health')">健康管理<span style="margin-left:auto; color:var(--sub);">▸</span></div>
         <div class="setrow" style="cursor:pointer;" onclick="go('trip')">旅遊規劃<span style="margin-left:auto; color:var(--sub);">▸</span></div>
@@ -489,9 +831,10 @@
             <button data-k="A" title="墨線紙感"><i style="background:#f5f2ea;"></i></button>
             <button data-k="B" title="石墨夜幕"><i style="background:#1f1f1e;"></i></button>
             <button data-k="C" title="莫蘭迪霧色"><i style="background:#eef0f2;"></i></button>
+            <button data-k="D" title="主題 D・iPhone 質感"><i style="background:#F2F2F7; border-color:#1B417D;"></i></button>
             <button data-k="auto">自動</button>
           </span>
-          <small>自動＝跟隨系統：日間亮色（記住你選的 A 或 C）、夜間切 B</small>
+          <small>主題 D＝iPhone 質感，頂部六個入口取代側邊選單與底部列。自動＝跟隨系統：日間亮色（記住你選的 A 或 C）、夜間切 B</small>
         </div>
         <div class="setrow">字級
           <span class="scope" id="fsCtl" style="margin-left:auto;">
@@ -736,6 +1079,27 @@
   </div>
 </div>
 
+<div class="mask" id="cmask">
+  <div class="modal">
+    <h3 id="cTitle">公司事務 <button class="x" id="cClose" aria-label="關閉"><svg class="ic"><use href="#i-close"></use></svg></button></h3>
+    <div class="frow"><label>類別</label><div class="chips cocats" id="cCat">
+      <button data-v="主管交辦">主管交辦</button><button data-v="人事與考核">人事與考核</button><button data-v="教育訓練與簡報">教育訓練與簡報</button><button data-v="公司專案推動">公司專案推動</button>
+    </div></div>
+    <div class="frow"><label>事項名稱</label><input id="c_title" placeholder="例：12 月排休表回報"></div>
+    <div class="frow" style="display:flex; gap:8px;">
+      <div style="flex:1.3;"><label>期限</label><input type="date" id="c_due"></div>
+      <div style="flex:1;"><label>進度 %</label><input type="number" id="c_pct" min="0" max="100" step="5"></div>
+    </div>
+    <div class="frow"><input type="range" id="c_rng" min="0" max="100" step="5" style="padding:0; border:none; background:none;"></div>
+    <div class="frow"><label>備註</label><input id="c_note" placeholder="例：等同仁簽認"></div>
+    <div class="frow"><label><input type="checkbox" id="c_done" style="width:auto;"> 已完成</label></div>
+    <div class="mbtns">
+      <button class="btn del" id="cDel" style="display:none;">刪除</button>
+      <button class="btn pri" id="cSave">儲存</button>
+    </div>
+  </div>
+</div>
+
 <div class="mask" id="lockMask" style="z-index:90; align-items:center;">
   <div class="modal" style="max-width:300px; text-align:center;">
     <h3 style="justify-content:center;"><svg class="ic"><use href="#i-lock"></use></svg> 艋舺良的工作台</h3>
@@ -752,8 +1116,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 'use strict';
-/* ════════ 艋舺良的工作台 W0928-02（體重多指標目標值＋達標預估＋BMI 目標自動換算） ════════ */
-const VERSION = 'W0928-02';
+/* ════════ 艋舺良的工作台 W1126-03（W1126-02 主題 D＋合併 W0928-02 體重多指標目標值＋達標預估＋BMI 目標自動換算） ════════ */
+const VERSION = 'W1126-03';
 const GCAL_CLIENT_ID = '654856338073-ukdt5nvtc8riq2010lado0i0n5vuhcfl.apps.googleusercontent.com';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
@@ -787,6 +1151,7 @@ function blank(){ return {
   weights: [],                     // {id,kg,date,rv,mt,del}
   trips: [],                       // {id,kind:'near'|'wish',name,start,end,year,budget,split,note,done,rv,mt,del}
   notes: [],                       // {id,txt,tag,pin,rv,mt,del}
+  company: [],                     // W1126-01 公司事務 {id,cat,title,due,pct,note,done,rv,mt,del}
   prefs: {netBase:0, goalMoney:0, countries:0, countriesTarget:50, weightTarget:0, whTargets:{fat:0, muscle:0, visceral:0, bmi:0}, whStart:{}, mt:0},
   settings: {skin:'A', fs:'m', scope:'all', order:DEF_ORDER.slice(), folded:{}, showMoney:false, pin:null, lockApp:true, lockMoney:false},
   ver: 1
@@ -796,7 +1161,7 @@ function load(){
   try{ const r = localStorage.getItem(KEY); if(r) d = JSON.parse(r); }
   catch(e){ /* 私隱模式或預覽環境 */ }
   d = d || mem || blank();
-  ['projects','bids','clients','txs','weights','trips','notes','recurs','loans','bp','allergy'].forEach(k => { if(!Array.isArray(d[k])) d[k] = []; });
+  ['projects','bids','clients','txs','weights','trips','notes','recurs','loans','bp','allergy','company'].forEach(k => { if(!Array.isArray(d[k])) d[k] = []; });
   d.prefs = d.prefs || {};
   d.prefs.health = Object.assign({bpSys:130, bpDia:80, exWeek:3}, (d.prefs||{}).health||{});
   d.prefs = Object.assign({netBase:0, goalMoney:0, countries:0, countriesTarget:50, weightTarget:0, whTargets:{fat:0, muscle:0, visceral:0, bmi:0}, whStart:{}, mt:0}, d.prefs||{});
@@ -947,7 +1312,7 @@ const CARDS = {
     el.innerHTML = '<div style="display:flex; gap:22px; flex-wrap:wrap;">' + D.goals.map(g => {
       const pct = goalPct(g);
       return `<div class="goal" style="flex:1; min-width:130px; cursor:pointer;" data-g="${g.id}">
-        <b>${esc(g.name)}</b><div class="bar"><i style="width:${pct}%;"></i></div>
+        <b>${esc(g.name)}</b>${pBar(pct, 'var(--accent)')}
         <small style="color:var(--sub); font-size:.75rem;">${pct}%・${sub(g)}</small></div>`;
     }).join('') + '</div>';
     el.querySelectorAll('[data-g]').forEach(n => n.onclick = () => openGoal(n.dataset.g));
@@ -1000,7 +1365,7 @@ const CARDS = {
       return `<div style="margin-bottom:10px; cursor:pointer;" data-goproj="${p.id}">
         <div style="display:flex; justify-content:space-between; font-size:.88rem;"><b>${esc(p.name)}</b>
         <span style="color:var(--sub); font-size:.82rem;">${p.prog||0}%${over?' <b style="color:var(--urgent);">超支</b>':''}</span></div>
-        <div class="bar"><i style="width:${p.prog||0}%; background:var(--site);"></i></div></div>`;
+        ${pBar(p.prog||0, 'var(--site)')}</div>`;
     }).join('');
     el.querySelectorAll('[data-goproj]').forEach(n => n.onclick = () => { projSel = n.dataset.goproj; go('proj'); });
   }},
@@ -1276,7 +1641,7 @@ function renderProjPage(){
       <h3>基本資料 <span class="sp"><button class="btn" style="padding:3px 12px; font-size:.82rem;" id="pEdit">編輯</button></span></h3>
       <div class="bd">
         <div class="setrow">進度 <b style="margin-left:auto;">${p.prog||0}%</b></div>
-        <div class="bar"><i style="width:${p.prog||0}%; background:var(--site);"></i></div>
+        ${pBar(p.prog||0, 'var(--site)')}
         <div class="setrow" style="margin-top:6px;">合約金額 <span style="margin-left:auto;">${money(p.contract)}</span></div>
         <div class="setrow">已入帳 <span style="margin-left:auto; color:var(--life);">${money(inPaid)}</span></div>
         ${p.status==='warranty' ? `<div class="setrow">保固到期 <span style="margin-left:auto;" class="${p.wEnd && dayDiff(p.wEnd)<=30?'due warn':''}">${p.wEnd||'未設'}${p.wEnd?'（剩 '+dayDiff(p.wEnd)+' 天）':''}</span></div>
@@ -1299,7 +1664,7 @@ function renderProjPage(){
       <h3>支出・損益</h3>
       <div class="bd">
         <div style="font-size:.82rem; display:flex; justify-content:space-between;"><span>實際支出</span><span>${money(spent)}／預算 ${money(p.budget)}</span></div>
-        <div class="bar"><i style="width:${Math.min(100,spendPct)}%; background:${over?'var(--urgent)':'var(--sub)'};"></i></div>
+        ${pBar(Math.min(100,spendPct), over?'var(--urgent)':'var(--sub)')}
         ${over ? `<div class="warnbox"><svg class="ic"><use href="#i-warn"></use></svg> 花費進度 ${spendPct}% ＞ 工程進度 ${p.prog||0}%——超支警訊</div>`
                : `<div class="okbox">花費進度 ${spendPct}%・工程進度 ${p.prog||0}%，正常</div>`}
         <ul class="list">${(p.expenses||[]).slice(-6).reverse().map((e,ri) => {
@@ -1613,7 +1978,7 @@ function renderFinPage(){
       ? `<div class="iform"><input type="number" id="nbase" placeholder="基準額" value="${D.prefs.netBase||''}"><button class="btn" id="nbaseSet">設定</button></div>
          <div class="iform"><input type="number" id="gmoney" placeholder="財務自由目標額" value="${D.prefs.goalMoney||''}"><button class="btn" id="gmoneySet">設目標</button></div>`
       : `<div style="font-size:.75rem; color:var(--sub);">點右上「<svg class="ic"><use href="#i-eye"></use></svg> 金額」顯示後，可編輯基準額與目標額</div>`) +
-    `${D.prefs.goalMoney>0 ? `<div class="bar" style="margin-top:8px;"><i style="width:${goalPct(D.goals[0])}%; background:var(--accent);"></i></div><div style="font-size:.75rem; color:var(--sub); margin-top:3px;">財務自由 ${goalPct(D.goals[0])}%</div>` : ''}`;
+    `${D.prefs.goalMoney>0 ? `${pBar(goalPct(D.goals[0]), 'var(--accent)', 'margin-top:8px;')}<div style="font-size:.75rem; color:var(--sub); margin-top:3px;">財務自由 ${goalPct(D.goals[0])}%</div>` : ''}`;
   if (D.settings.showMoney){
     $('#nbaseSet').onclick = () => { D.prefs.netBase = +$('#nbase').value||0; D.prefs.mt = now(); save(); fbPushPrefs(); renderFinPage(); };
     $('#gmoneySet').onclick = () => { D.prefs.goalMoney = +$('#gmoney').value||0; D.prefs.mt = now(); save(); fbPushPrefs(); renderFinPage(); };
@@ -1686,7 +2051,7 @@ function renderFinPage(){
       ${nAcct ? `<div class="acct" style="font-size:.75rem;">${esc(nAcct)}</div>` : ''}
       <div style="display:flex; justify-content:space-between; font-size:.78rem; color:var(--sub); margin-top:2px;">
         <span>已還 <b style="color:var(--life);">${money(paidAmt)}</b>／總額 ${money(principal)}</span><span>${pct}%</span></div>
-      <div class="bar"><i style="width:${pct}%; background:var(--case);"></i></div>
+      ${pBar(pct, 'var(--case)')}
       <div style="font-size:.75rem; color:var(--sub); margin-top:3px;">${parts.join('・')}</div>
       </div>
       ${monthly === 0 ? `<div class="iform" style="margin-top:6px;"><input type="number" placeholder="這次還多少（本金）" data-lramt="${l.id}" style="max-width:150px;"><button class="btn" data-lrepay="${l.id}">－還一筆</button></div>` : ''}
@@ -2082,7 +2447,7 @@ function renderHealthPage(){
   $('#exBox').innerHTML =
     `<div style="display:flex; align-items:baseline; gap:8px;"><b style="font-size:1.3rem; ${exN>=(H.exWeek||3)?'color:var(--life);':''}">${exN}</b>
      <span style="font-size:.82rem; color:var(--sub);">／本週目標 <input type="number" id="exTgt" value="${H.exWeek||3}" style="width:44px; padding:2px 4px; display:inline-block;"> 次</span></div>
-    <div class="bar"><i style="width:${Math.min(100, Math.round(exN/(H.exWeek||3)*100))}%; background:var(--life);"></i></div>` +
+    ${pBar(Math.min(100, Math.round(exN/(H.exWeek||3)*100)), 'var(--life)')}` +
     (exList.length ? '<ul class="list">' + exList.map(e => `<li style="cursor:default;"><span class="ttl">${esc(e.title)}</span><span class="due">${mdw(e.date)}${e.time?' '+e.time:''}</span></li>`).join('') + '</ul>' : '<div class="empty">本週還沒動——日曆標題含「運動/健身」會自動計入</div>') +
     `<div class="iform"><input id="exTxt" placeholder="補記一筆（例：跑步 5K）"><button class="btn" id="exAdd">＋補記</button></div>`;
   $('#exTgt').onchange = e => { D.prefs.health.exWeek = Math.max(1, +e.target.value||3); D.prefs.mt = now(); save(); fbPushPrefs(); renderHealthPage(); };
@@ -2672,14 +3037,14 @@ function applySkin(){
   const k = D.settings.skin;
   let real = k;
   if (k === 'auto') real = mq.matches ? 'B' : lastLight;
-  else if (k !== 'B') lastLight = k;
+  else if (k === 'A' || k === 'C') lastLight = k;   /* D 不列入「自動」的亮色記憶 */
   document.body.dataset.skin = real;
   $$('#skinCtl button, #skinCtl2 button').forEach(b => b.classList.toggle('on', b.dataset.k===k));
 }
 function skinClick(e){
   if (!e.target.closest('button')) return;
   const k = e.target.closest('button').dataset.k; if(!k) return;
-  D.settings.skin = k; save(); applySkin();
+  D.settings.skin = k; save(); renderAll();   /* W1126-01：主題 D 首頁版面不同，切換後整頁重繪 */
 }
 $('#skinCtl').onclick = skinClick; $('#skinCtl2').onclick = skinClick;
 mq.addEventListener('change', applySkin);
@@ -2810,6 +3175,7 @@ function fbPushAll(){
   D.loans.forEach(l => fbPushDoc('loans', l));
   D.bp.forEach(b => fbPushDoc('bp', b));
   D.allergy.forEach(a => fbPushDoc('allergy', a));
+  D.company.forEach(c => fbPushDoc('company', c));
 }
 function mergeArr(arr, inc){
   const ex = arr.find(x => x.id === inc.id);
@@ -2840,7 +3206,7 @@ function fbStart(){
     }, e => console.warn('snap', e));
     fbSubs.push(un);
   });
-  const collMap = {projects:'projects', bids:'bids', clients:'clients', weights:'weights', trips:'trips', notes:'notes', recurs:'recurs', loans:'loans', bp:'bp', allergy:'allergy'};
+  const collMap = {projects:'projects', bids:'bids', clients:'clients', weights:'weights', trips:'trips', notes:'notes', recurs:'recurs', loans:'loans', bp:'bp', allergy:'allergy', company:'company'};
   const y0 = new Date().getFullYear();
   ['txs_'+(y0-1), 'txs_'+y0, 'txs_'+(y0+1)].forEach(c => collMap[c] = 'txs');
   Object.keys(collMap).forEach(coll => {
@@ -2906,10 +3272,343 @@ document.addEventListener('click', e => {
   }
 });
 
+
+/* ════════ 主題 D（W1126-01）：頂部六入口＋今天首頁＋公司事務 ════════ */
+const isD = () => document.body.dataset.skin === 'D';
+const CO_CATS = ['主管交辦','人事與考核','教育訓練與簡報','公司專案推動'];
+const CO_COL = {'主管交辦':'#E5484D','人事與考核':'#6E4FD8','教育訓練與簡報':'#2F6FE0','公司專案推動':'#1E7A45'};
+const DSC = {site:'工程', case:'投標', life:'個人'};
+const aliveC = () => D.company.filter(c => !c.del);
+const activeC = () => aliveC().filter(c => !c.done);
+const coOverdue = () => activeC().filter(c => c.due && dayDiff(c.due) < 0);
+function weekEndStr(){ const d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate() + (7 - d.getDay()) % 7); return ymd(d); }   // 本週日
+const coThisWeek = () => { const t = todayStr(), e = weekEndStr(); return activeC().filter(c => c.due && c.due >= t && c.due <= e); };
+const p2 = n => String(n).padStart(2,'0');
+const mdS = ds => (+ds.slice(5,7)) + '/' + (+ds.slice(8,10));
+/* 進度圓環：viewBox 48，尺寸由 CSS（rem）決定；顏色用 style 才吃得到 CSS 變數 */
+function ringSvg(pct, col){
+  const r = 20, c = 2*Math.PI*r, p = Math.max(0, Math.min(100, +pct||0));
+  return `<svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="${r}" fill="none" style="stroke:var(--ringbg);" stroke-width="5"/>` +
+    (p > 0 ? `<circle cx="24" cy="24" r="${r}" fill="none" style="stroke:${col};" stroke-width="5" stroke-linecap="round" stroke-dasharray="${(c*p/100).toFixed(2)} ${c.toFixed(2)}" transform="rotate(-90 24 24)"/>` : '') + '</svg>';
+}
+function dWhen(ds){ const n = dayDiff(ds); if (n===0) return '今天'; if (n===1) return '明天'; if (n>1 && n<7) return '週' + WD[new Date(ds+'T00:00:00').getDay()]; return mdS(ds); }
+
+/* ── 頂部入口列 ── */
+const DT_OF = {home:'home', proj:'proj', bid:'bid', company:'company', cal:'cal', me:'me', todo:'me', fin:'me', health:'me', trip:'me', note:'me'};   /* W1126-02：個人頁＋其下四頁亮「個人」；設定頁亮右上齒輪 */
+function renderDBar(){
+  const d = new Date();
+  $('#dDate').textContent = `${d.getMonth()+1} 月 ${d.getDate()} 日 週${WD[d.getDay()]}`;
+  const n = coOverdue().length;
+  $('#dCoBad').textContent = n ? String(n) : '';
+  const cur = DT_OF[pageNow] || '';
+  $$('#dTabs button').forEach(b => b.classList.toggle('on', b.dataset.dt === cur));
+  $('#dSet').classList.toggle('on', pageNow === 'set');
+}
+$('#dTabs').onclick = e => { const b = e.target.closest('button'); if (b) go(b.dataset.dt); };
+$('#dQuick').onclick = () => openAdd(pageNow==='todo' ? 'td' : 'ev');
+$('#dSet').onclick = () => go('set');
+
+/* ── 今天首頁 ── */
+const hOf = tm => { const a = String(tm).split(':'); return (+a[0]||0) + (+a[1]||0)/60; };
+const EV_SPAN = 1.5;   // 行程只有開始時間，時間軸上以 1.5 小時顯示
+function scKey(x){ return x.co ? 'co' : (DSC[x.scope] ? x.scope : 'life'); }
+function dNext(){
+  const t = todayStr(), d = new Date(), hm = p2(d.getHours())+':'+p2(d.getMinutes());
+  const c = allEvents().filter(e => e.date && (e.date > t || (e.date === t && e.time && e.time > hm)))
+    .sort((a,b) => (a.date+(a.time||'00:00')) < (b.date+(b.time||'00:00')) ? -1 : 1);
+  return c[0] || null;
+}
+function dLeft(e){
+  if (e.time){
+    const m = Math.max(0, Math.round((new Date(e.date+'T'+e.time+':00') - new Date()) / 60000));
+    if (m < 60) return m + ' 分';
+    if (m < 1440) return Math.floor(m/60) + ' 小時' + (m%60 ? ' ' + (m%60) + ' 分' : '');
+    return dayDiff(e.date) + ' 天';
+  }
+  return dayDiff(e.date) + ' 天';
+}
+function dItemAttrs(x){ return `data-k="${x.co?'co':'it'}" data-id="${esc(x.id)}"${x.ro?` data-ro="${esc(x.ro)}"`:''}`; }
+function dDayItems(ds){
+  const ev = allEvents().filter(e => e.date === ds);
+  const td = alive().filter(i => i.kind==='td' && !i.done && i.date === ds);
+  const co = activeC().filter(c => c.due === ds).map(c => ({id:c.id, title:c.title, co:1}));
+  return ev.concat(td, co).sort((a,b) => (a.time||'99') < (b.time||'99') ? -1 : 1);
+}
+function dTimelineH(timed, nowH, nextId){
+  const H0 = 6, H1 = 20, span = H1 - H0, LH = 2.9;
+  const pct = h => (Math.max(H0, Math.min(H1, h)) - H0) / span * 100;
+  const nL = Math.max(1, ...timed.map(x => x.L + 1));
+  let h = `<div class="dh-tlh"><div class="dh-track" style="height:${(nL*LH + .4).toFixed(2)}rem;">`;
+  timed.forEach(x => {
+    const l = pct(x.s), w = Math.max(0, Math.min(100 - l, EV_SPAN / span * 100));
+    h += `<div class="dh-tev ${x.cls}" ${dItemAttrs(x.e)} style="left:${l.toFixed(2)}%; width:${w.toFixed(2)}%; top:${(x.L*LH + .4).toFixed(2)}rem;" title="${esc(x.e.time+' '+x.e.title)}">${esc(x.e.title)}<small>${esc(x.e.time)}</small></div>`;
+  });
+  if (nowH >= H0 && nowH <= H1){
+    const d = new Date();
+    h += `<div class="dh-nowh" style="left:${pct(nowH).toFixed(2)}%;"><span>現在 ${p2(d.getHours())}:${p2(d.getMinutes())}</span></div>`;
+  }
+  h += '</div><div class="dh-hrs">';
+  for (let k = H0; k <= H1; k += 2) h += `<span style="left:${pct(k).toFixed(2)}%;">${p2(k)}</span>`;
+  return h + '</div></div>';
+}
+function dTimelineV(timed, nowH){
+  const PH = 2.4;   // 每小時 rem
+  let H0 = Math.min(8, Math.floor(nowH), ...timed.map(x => Math.floor(x.s)));
+  let H1 = Math.max(18, Math.ceil(nowH), ...timed.map(x => Math.ceil(x.s + EV_SPAN)));
+  H0 = Math.max(6, H0); if (H0 % 2) H0--; H1 = Math.min(22, Math.max(H0 + 4, H1)); if (H1 % 2) H1++;
+  const top = hh => (Math.max(H0, Math.min(H1, hh)) - H0) * PH;
+  const nL = Math.max(1, ...timed.map(x => x.L + 1));
+  let h = `<div class="dh-tlv" style="height:${((H1-H0)*PH + .6).toFixed(2)}rem;">`;
+  for (let k = H0; k <= H1; k += 2) h += `<div class="dh-vh" style="top:${top(k).toFixed(2)}rem;">${p2(k)}</div>`;
+  timed.forEach(x => {
+    const t0 = top(x.s) + .45, hgt = Math.max(1.6, Math.min(top(x.s + EV_SPAN), (H1-H0)*PH) - top(x.s) - .15);
+    h += `<div class="dh-vev ${x.cls}" ${dItemAttrs(x.e)} style="top:${t0.toFixed(2)}rem; height:${hgt.toFixed(2)}rem; left:calc(${(x.L/nL*100).toFixed(2)}% + .5rem); width:calc(${(100/nL).toFixed(2)}% - .6rem);">${esc(x.e.title)}<small>${esc(x.e.time)}${x.cls==='tv-past'?'・已過':''}</small></div>`;
+  });
+  if (nowH >= H0 && nowH <= H1){
+    const d = new Date();
+    h += `<div class="dh-nowv" style="top:${(top(nowH) + .45).toFixed(2)}rem;"><span>現在 ${p2(d.getHours())}:${p2(d.getMinutes())}</span></div>`;
+  }
+  return h + '</div>';
+}
+function renderDHome(){
+  const box = $('#dHome'), t = todayStr(), nd = new Date(), nowH = nd.getHours() + nd.getMinutes()/60;
+  const hr = nd.getHours(), hi = (hr<5?'晚安':hr<11?'早安':hr<18?'午安':'晚安') + '，艋舺。下一件事';
+  /* ① 下一件事 */
+  const nx = dNext();
+  let next;
+  if (nx){
+    const big = nx.time || dWhen(nx.date);
+    const ctx = (DSC[nx.scope] || '個人') + '・' + (dayDiff(nx.date)===0 ? '今天' : mdw(nx.date));
+    next = `<div class="dh-next" ${dItemAttrs(nx)}><div class="dh-kick">${hi}</div>
+      <div class="dh-big"><div class="dh-tm">${esc(big)}</div><div class="dh-tt">${esc(nx.title)}</div></div>
+      <div class="dh-left">還有 <em>${dLeft(nx)}</em><span class="dh-ctx">${esc(ctx)}</span></div></div>`;
+  } else {
+    next = `<div class="dh-next" data-k="add"><div class="dh-kick">${hi}</div><div class="dh-none">接下來沒有排定的行程</div><div class="dh-left">按右上角「＋」記一筆</div></div>`;
+  }
+  /* ② 先處理的逾期（待辦＋公司事務） */
+  const od = alive().filter(i => i.kind==='td' && !i.done && i.date && dayDiff(i.date) < 0)
+      .map(i => ({k:'it', id:i.id, title:i.title, date:i.date, meta:DSC[i.scope]||'個人'}))
+    .concat(coOverdue().map(c => ({k:'co', id:c.id, title:c.title, date:c.due, meta:c.cat})))
+    .sort((a,b) => a.date < b.date ? -1 : 1);
+  const odHtml = od.length
+    ? `<div class="dh-lab red">先處理這 ${od.length} 件逾期</div>` + od.slice(0,3).map(o =>
+        `<div class="dh-od"><button class="dh-ring" data-done="${o.k}" data-id="${esc(o.id)}" title="標為完成" aria-label="標為完成"></button>
+         <span class="n" data-k="${o.k}" data-id="${esc(o.id)}">${esc(o.title)}</span><span class="m">${esc(o.meta)}・晚 ${-dayDiff(o.date)} 天</span></div>`).join('')
+      + (od.length > 3 ? `<div class="dh-calm">另有 ${od.length-3} 件逾期，到待辦清單或公司事務查看</div>` : '')
+    : `<div class="dh-lab">逾期</div><div class="dh-calm">沒有逾期的事，很好。</div>`;
+  /* ③ 今天時間軸 */
+  const todays = allEvents().filter(e => e.date === t);
+  const timed = todays.filter(e => e.time).map(e => ({e, s:hOf(e.time)})).sort((a,b) => a.s - b.s);
+  const ends = [];
+  timed.forEach(x => {
+    let L = ends.findIndex(v => v <= x.s + 1e-6); if (L < 0){ L = ends.length; ends.push(0); }
+    ends[L] = x.s + EV_SPAN; x.L = L;
+    x.cls = (nx && x.e.id === nx.id) ? 'tv-nx' : (x.s + EV_SPAN <= nowH ? 'tv-past' : 'sc-' + scKey(x.e));
+  });
+  const allday = todays.filter(e => !e.time);
+  const tl = `<div class="dh-card dh-sec"><div class="dh-lab">今天</div>` +
+    (allday.length ? `<div class="dh-allday">全天${allday.map(e => `<span class="dh-chip sc-${scKey(e)}" ${dItemAttrs(e)}>${esc(e.title)}</span>`).join('')}</div>` : '') +
+    (timed.length || allday.length ? '' : `<div class="dh-calm" style="padding-top:0;">今天沒有排定時間的行程</div>`) +
+    dTimelineH(timed, nowH) + dTimelineV(timed, nowH) + '</div>';
+  /* ④ 這一週（今天起七天） */
+  let wk = '';
+  for (let i = 0; i < 7; i++){
+    const dd = new Date(); dd.setHours(0,0,0,0); dd.setDate(dd.getDate() + i);
+    const ds = ymd(dd), its = dDayItems(ds);
+    wk += `<div class="dh-day"><div class="dh-dd${i===0?' t':''}">${dd.getDate()}<small>${i===0?'今天':WD[dd.getDay()]}</small></div><div class="dh-chips">` +
+      (its.length ? its.map(x => `<span class="dh-chip sc-${scKey(x)}" ${dItemAttrs(x)} title="${esc((x.time?x.time+' ':'')+x.title)}">${x.time?`<small>${esc(x.time)}</small>`:''}${esc(x.title)}</span>`).join('') : '<span class="dh-dim">—</span>') +
+      '</div></div>';
+  }
+  const week = `<div class="dh-card dh-sec"><div class="dh-lab">這一週</div><div class="dh-wk">${wk}</div></div>`;
+  /* ⑤ 四條線 */
+  const st = n => n ? `<span class="dh-st bad">${n} 件逾期</span>` : '<span class="dh-st ok">正常</span>';
+  const odBy = sc => alive().filter(i => i.kind==='td' && !i.done && i.date && dayDiff(i.date) < 0 && i.scope === sc).length;
+  // 工程
+  const ps = aliveP().filter(p => p.status==='active');
+  let lnSite;
+  if (ps.length){
+    const p = ps[0];
+    const spent = (p.expenses||[]).reduce((s,e)=>s+(+e.amt||0),0);
+    const sp = p.budget > 0 ? Math.round(spent/p.budget*100) : null;
+    const over = p.budget>0 && p.prog>0 && (spent/p.budget*100) > (+p.prog + 5);
+    const bl = (p.billing||[]).map((b,i) => Object.assign({i}, b)).filter(b => b.due && b.status !== '入帳').sort((a,b) => a.due < b.due ? -1 : 1)[0];
+    const sub = [sp!=null ? '支出 '+sp+'%' : '', bl ? mdS(bl.due)+' 第 '+(bl.i+1)+' 期請款' : '', ps.length>1 ? '另 '+(ps.length-1)+' 案' : ''].filter(Boolean).join('，');
+    const n = odBy('site');
+    lnSite = {go:'proj', name:'工程', col:'#E07B2A', st: over ? '<span class="dh-st bad">超支</span>' : st(n),
+      v:`<span class="cpc">${ringSvg(p.prog, over ? 'var(--urgent)' : 'var(--navy)')}<b>${p.prog||0}%</b></span><span>${esc(p.name)} ${p.prog||0}%</span>`, s: sub || '進行中'};
+  } else lnSite = {go:'proj', name:'工程', col:'#E07B2A', st:st(odBy('site')), v:'無在建工程', s:'到工程頁新增'};
+  // 投標
+  const bs = aliveB().filter(b => !['won','lost'].includes(b.stage));
+  const closes = bs.filter(b => b.dates && b.dates.close && dayDiff(b.dates.close) >= 0).sort((a,b) => a.dates.close < b.dates.close ? -1 : 1);
+  let lnCase;
+  if (closes.length){
+    const c0 = closes[0], n = dayDiff(c0.dates.close);
+    lnCase = {v: esc(c0.name) + (n===0 ? ' 今天截標' : ' ' + n + ' 天後截標'), s: bs.length>1 ? '另有 '+(bs.length-1)+' 案進行中' : '目前只有這一案'};
+  } else lnCase = {v: bs.length ? bs.length + ' 案進行中' : '目前無投標案', s: bs.length ? '尚無截標日期' : '到投標頁新增'};
+  Object.assign(lnCase, {go:'bid', name:'投標', col:'#2F6FE0', st:st(odBy('case'))});
+  // 公司
+  const lnCo = {go:'company', name:'公司', col:'#6E4FD8', st:st(coOverdue().length), v: activeC().length + ' 件進行中', s:'本週到期 ' + coThisWeek().length + ' 件'};
+  // 個人
+  const le = allEvents().filter(e => e.scope==='life' && e.date && e.date >= t).sort((a,b) => (a.date+(a.time||'')) < (b.date+(b.time||'')) ? -1 : 1)[0];
+  const tr = D.trips.filter(x => !x.del && x.kind==='near' && !x.done && x.start && x.start >= t).sort((a,b) => a.start < b.start ? -1 : 1)[0];
+  const lnLife = {go:'set', name:'個人', col:'#2FA35E', st:st(odBy('life')),
+    v: le ? dWhen(le.date) + ' ' + esc(le.title) : '近期沒有個人行程',
+    s: tr ? esc(tr.name) + ' ' + dayDiff(tr.start) + ' 天後出發' : '沒有排定的旅程'};
+  const lines = `<div class="dh-lines">` + [lnSite, lnCase, lnCo, lnLife].map(l =>
+    `<div class="dh-ln" data-go="${l.go}"><div class="h"><span><i class="dh-dot" style="background:${l.col};"></i>${l.name}</span>${l.st}</div><div class="v">${l.v}</div><div class="s">${l.s}</div></div>`).join('') + '</div>';
+
+  box.innerHTML = `<div class="dh-top">${next}<div class="dh-card">${odHtml}</div></div>${tl}${week}${lines}`;
+}
+function coComplete(id){
+  const c = D.company.find(x => x.id === id); if (!c) return;
+  c.done = true; c.pct = 100; c.rv = (c.rv||0) + 1; c.mt = now(); save(); fbPushDoc('company', c); renderAll(); toast('已完成');
+}
+$('#dHome').addEventListener('click', e => {
+  const r = e.target.closest('[data-done]');
+  if (r){ if (r.dataset.done === 'co') coComplete(r.dataset.id); else { toggleDone(r.dataset.id); toast('已完成'); } return; }
+  const ln = e.target.closest('[data-go]'); if (ln){ go(ln.dataset.go); return; }
+  const x = e.target.closest('[data-k]'); if (!x) return;
+  const k = x.dataset.k, id = x.dataset.id, ro = x.dataset.ro;
+  if (k === 'add'){ openAdd('ev'); return; }
+  if (k === 'co'){ openCo(id); return; }
+  if (ro === 'gcal'){ const g = (D.settings.gcal.cache||[]).find(v => v.id===id); if (g && g.link) window.open(g.link); return; }
+  if (ro){ go(ro); return; }
+  openEdit(id);
+});
+
+/* ── 公司事務頁 ── */
+let coDoneOpen = false;
+function coDueInfo(c){
+  if (!c.due) return {d:'—', s:'無期限', cls:''};
+  const n = dayDiff(c.due), md = mdS(c.due);
+  if (c.done) return {d:md, s:'已完成', cls:''};
+  if (n < 0) return {d:md, s:'晚 '+(-n)+' 天', cls:'late'};
+  if (n === 0) return {d:md, s:'今天到期', cls:'soon'};
+  return {d:md, s:'剩 '+n+' 天', cls: n <= 3 ? 'soon' : ''};
+}
+/* ════════ W1126-02：進度表示（主題 D 用圓環，A/B/C 維持原本） ════════ */
+function pBar(pct, col, st){
+  const p = Math.max(0, Math.min(100, Math.round(+pct||0)));
+  if (isD()) return `<div class="dpb"${st?` style="${st}"`:''}><span class="cpc">${ringSvg(p, col)}<b>${p}%</b></span></div>`;
+  return `<div class="bar"${st?` style="${st}"`:''}><i style="width:${p}%; background:${col};"></i></div>`;
+}
+
+/* ════════ W1126-02：主題 D 個人頁（待辦、財務、健康、旅遊） ════════ */
+function renderMePage(){
+  const t = todayStr();
+  /* ① 待辦 */
+  const tds = alive().filter(i => i.kind==='td' && !i.done).sort((a,b)=> (a.date||'9999') < (b.date||'9999') ? -1:1);
+  const dueN = tds.filter(i => i.date && i.date <= t).length;
+  const tdRows = tds.slice(0,3).map(i => {
+    const late = i.date && i.date < t;
+    return `<div class="me-li"><i class="me-ck"></i><span>${esc(i.title)}</span>${i.date?`<em class="${late?'late':''}">${late?'逾期':dWhen(i.date)}</em>`:''}</div>`;
+  }).join('');
+  const cTodo = `<div class="me-card" data-me="todo"><div class="me-hd">待辦<span>›</span></div>
+    <div class="me-big">${dueN}<small>件今天到期</small></div>
+    <div class="me-sub">未完成共 ${tds.length} 件</div>
+    ${tdRows ? `<div class="me-list">${tdRows}</div>` : '<div class="me-empty">沒有未完成待辦</div>'}</div>`;
+  /* ② 財務：維持「首頁不顯示金額」規則，只當入口 */
+  const nPend = pendingRecurs().length;
+  const cFin = `<div class="me-card" data-me="fin"><div class="me-hd">財務<span>›</span></div>
+    <div class="me-lock"><svg class="ic big"><use href="#i-lock"></use></svg></div>
+    <div class="me-big sm">財務看板</div>
+    <div class="me-sub">${nPend ? `<b class="warn">${nPend} 筆固定收支待確認</b>` : '點進去看金額'}</div></div>`;
+  /* ③ 健康 */
+  const ws = D.weights.filter(w => !w.del && w.kg).sort((a,b)=> a.date<b.date?-1:1);
+  const cur = ws[ws.length-1];
+  const m30 = ws.filter(w => w.date >= ymd(new Date(Date.now()-30*86400000)));
+  const d30 = (cur && m30.length>1) ? (cur.kg - m30[0].kg) : null;
+  const exN = exerciseWeekCount(), exT = (D.prefs.health && D.prefs.health.exWeek) || 3;
+  const cHealth = `<div class="me-card" data-me="health"><div class="me-hd">健康<span>›</span></div>
+    <div class="me-row"><div class="me-rgw"><span class="cpc me-rg">${ringSvg(Math.min(100, exN/exT*100), 'var(--life)')}<b>${exN}/${exT}</b></span><small>本週運動</small></div>
+    <div><div class="me-sub">最近體重</div><div class="me-big sm">${cur ? cur.kg + '<small>kg</small>' : '—'}</div>
+    ${d30===null ? '' : `<div class="me-sub">30 天 ${d30>0?'+':''}${d30.toFixed(1)} kg</div>`}</div></div></div>`;
+  /* ④ 旅遊 */
+  const near = D.trips.filter(x => !x.del && x.kind==='near' && !x.done && x.start && (x.end||x.start) >= t)
+    .sort((a,b)=> a.start < b.start ? -1:1);
+  const nx = near[0], n2 = near[1];
+  let tripIn;
+  if (nx){
+    const n = dayDiff(nx.start);
+    tripIn = `<div class="me-sub">下一趟</div><div class="me-big sm">${esc(nx.name)}</div>
+      <div class="me-cd">${n>0 ? `<b>${n}</b><span>天後出發</span>` : '<b class="sm">旅行中</b>'}<span>${mdS(nx.start)}${nx.end?'～'+mdS(nx.end):''}</span></div>
+      ${n2 ? `<div class="me-li plain"><span>之後：${esc(n2.name)}</span><em>${mdS(n2.start)}</em></div>` : ''}`;
+  } else tripIn = '<div class="me-empty">還沒有近期旅程</div>';
+  const cTrip = `<div class="me-card" data-me="trip"><div class="me-hd">旅遊<span>›</span></div>${tripIn}</div>`;
+  $('#meBox').innerHTML = `<div class="me-head"><h2>個人</h2></div><div class="me-grid">${cTodo}${cFin}${cHealth}${cTrip}</div>`;
+  $$('#meBox [data-me]').forEach(n => n.onclick = () => go(n.dataset.me));
+}
+function coRow(c){
+  const di = coDueInfo(c), p = Math.max(0, Math.min(100, +c.pct||0));
+  const col = c.done ? 'var(--life)' : di.cls==='late' ? 'var(--urgent)' : 'var(--case)';
+  return `<div class="corow${c.done?' done':''}" data-co="${esc(c.id)}"><div class="cpc">${ringSvg(p, col)}<b>${p}%</b></div>
+    <div class="cnm"><div>${esc(c.title)}</div>${c.note?`<small>${esc(c.note)}</small>`:''}</div>
+    <div class="cdue ${di.cls}">${di.d}<small>${di.s}</small></div></div>`;
+}
+function renderCompanyPage(){
+  const act = activeC(), od = coOverdue().length, wk = coThisWeek().length;
+  const sortC = (a,b) => (a.due||'9999') < (b.due||'9999') ? -1 : (a.due||'9999') > (b.due||'9999') ? 1 : 0;
+  const cats = CO_CATS.map(cat => {
+    const its = act.filter(c => c.cat === cat).sort(sortC);
+    return `<div class="card cocat" style="--cc:${CO_COL[cat]};"><h3><i class="catic">${cat[0]}</i>${cat}<span class="cocat-n">・${its.length} 件</span><span class="cocnt">${its.length} 件</span></h3>` +
+      (its.length ? its.map(coRow).join('') : '<div class="coempty">目前沒有事項</div>') + '</div>';
+  }).join('');
+  const done = aliveC().filter(c => c.done).sort((a,b) => (b.mt||0) - (a.mt||0));
+  $('#coBox').innerHTML = `<div class="cohead">
+      <div class="cotitle"><div class="cokick">公司事務</div><h2><span class="cot-d">${CO_CATS.length} 類・${act.length} 件</span><span class="cot-m">公司事務</span></h2></div>
+      <div class="cosum"><div>進行中<strong>${act.length}</strong></div><div class="${od?'r':''}">逾期<strong>${od}</strong></div><div>本週到期<strong>${wk}</strong></div></div>
+      <button class="btn pri coadd" id="coAdd">＋ 新增事務</button></div>
+    <div class="cogrid">${cats}</div>` +
+    (done.length ? `<div class="card codone"><div class="morelnk" id="coDoneTg">已完成 ${done.length} 件 ${coDoneOpen?'▾':'▸'}</div>${coDoneOpen ? done.map(coRow).join('') : ''}</div>` : '');
+  $('#coAdd').onclick = () => openCo(null);
+  const tg = $('#coDoneTg'); if (tg) tg.onclick = () => { coDoneOpen = !coDoneOpen; renderCompanyPage(); };
+  $$('#coBox [data-co]').forEach(n => n.onclick = () => openCo(n.dataset.co));
+}
+let cEditing = null, cCat = CO_CATS[0];
+function syncCoModal(){ $$('#cCat button').forEach(b => b.classList.toggle('on', b.dataset.v === cCat)); }
+function openCo(id){
+  cEditing = id ? D.company.find(c => c.id === id) : null;
+  const c = cEditing || {};
+  cCat = CO_CATS.includes(c.cat) ? c.cat : CO_CATS[0];
+  $('#cTitle').firstChild.textContent = cEditing ? '編輯公司事務 ' : '新增公司事務 ';
+  $('#c_title').value = c.title || ''; $('#c_due').value = c.due || '';
+  $('#c_pct').value = +c.pct || 0; $('#c_rng').value = +c.pct || 0;
+  $('#c_note').value = c.note || ''; $('#c_done').checked = !!c.done;
+  $('#cDel').style.display = cEditing ? '' : 'none';
+  syncCoModal(); $('#cmask').classList.add('on');
+  if (!cEditing) setTimeout(() => $('#c_title').focus(), 50);
+}
+$('#cCat').onclick = e => { const b = e.target.closest('button'); if (b){ cCat = b.dataset.v; syncCoModal(); } };
+$('#c_rng').oninput = e => { $('#c_pct').value = e.target.value; };
+$('#c_pct').oninput = e => { $('#c_rng').value = Math.max(0, Math.min(100, +e.target.value||0)); };
+$('#cClose').onclick = () => $('#cmask').classList.remove('on');
+$('#cmask').onclick = e => { if (e.target === $('#cmask')) $('#cmask').classList.remove('on'); };
+$('#cSave').onclick = () => {
+  const title = $('#c_title').value.trim();
+  if (!title){ toast('事項名稱不能空白'); return; }
+  if (!CO_CATS.includes(cCat)){ toast('請選類別'); return; }
+  const v = {cat:cCat, title, due:$('#c_due').value || null, pct:Math.max(0, Math.min(100, Math.round(+$('#c_pct').value||0))),
+    note:$('#c_note').value.trim(), done:$('#c_done').checked};
+  let c = cEditing;
+  if (c) Object.assign(c, v, {rv:(c.rv||0)+1, mt:now()});
+  else { c = Object.assign({id:uid()}, v, {rv:1, mt:now(), del:false}); D.company.push(c); }
+  save(); fbPushDoc('company', c); $('#cmask').classList.remove('on'); renderAll(); toast('已儲存');
+};
+$('#cDel').onclick = () => {
+  if (!cEditing || !confirm('刪除「' + cEditing.title + '」？')) return;
+  cEditing.del = true; cEditing.rv = (cEditing.rv||0) + 1; cEditing.mt = now();
+  save(); fbPushDoc('company', cEditing); $('#cmask').classList.remove('on'); renderAll(); toast('已刪除（墓碑保留）');
+};
+
 function renderAll(){
   processRecurs();   // 固定收支／貸款到期自動入帳（確定性 id 冪等；登入時綁 txs 資料就緒旗標）
   renderTop(); applyScope(); applySkin(); applyFs();
-  if (pageNow==='home') renderCards();
+  if (pageNow==='me' && !isD()) pageNow = 'set';   /* 個人頁只在主題 D；換主題時回設定頁 */
+  $$('.page').forEach(sx => sx.classList.toggle('on', sx.id === 'page-'+pageNow));
+  if (pageNow==='home'){ if (isD()) renderDHome(); else renderCards(); }
+  if (pageNow==='me') renderMePage();
+  if (pageNow==='company') renderCompanyPage();
+  renderDBar();
   if (pageNow==='cal') renderCalPage();
   if (pageNow==='todo') renderTodoPage();
   if (pageNow==='proj') renderProjPage();
