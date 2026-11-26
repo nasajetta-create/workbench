@@ -1085,6 +1085,7 @@
   .tr-stamps{display:flex; flex-wrap:wrap; gap:1.8rem; padding:0 .4rem;}
   .tr-stamp{width:9.6rem; height:9.6rem; border:2px solid var(--tv); outline:1px solid var(--tv); outline-offset:3px; border-radius:1rem; display:flex; flex-direction:column; align-items:center; justify-content:center; color:var(--tv); text-align:center; background:color-mix(in srgb, var(--tv) 6%, transparent); flex:none; cursor:pointer; padding:.4rem;}
   .tr-stamp.c{border-radius:50%;}
+  .tr-ex .tr-stamp{cursor:default;}
   .tr-stamp svg{width:3.4rem; height:3.4rem; fill:none; stroke:currentColor; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; margin-bottom:.1rem;}
   .tr-stamp .tr-sc{font-size:.56rem; letter-spacing:.16em; font-weight:700; opacity:.8; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
   .tr-stamp b{font-size:1.08rem; font-weight:800; margin:.05rem 0; color:var(--ink); max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
@@ -1688,8 +1689,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 'use strict';
-/* ════════ 艋舺良的工作台 W1126-22（旅遊頁補登改成城市或國家、同城再補登＝×2、桌機地圖也放大到去過範圍、城市名避免重疊）／W1126-21（旅遊頁：近期｜想去兩欄、我的足跡＋世界地圖、護照章含地標；旅程加國家／城市；已踏國家自動算＋補登；新增 lib/worldmap.json）／W1126-20（右上日期加西元年份與農曆，兩行）／W1126-19（個人頁待辦：「今天到期」只算今天，逾期另外顯示「逾期 N 件」）／W1126-18（主題 D 全部分頁拿掉卡片框改線條分區；當月清單：行程過了顯示已結束並收起，只有待辦才叫逾期）／W1126-17（個人頁：拿掉大標、標題放大加圖示、鎖頭縮小放標題旁、左待辦右三張）／W1126-16（Google 行事曆過期後，點頁面第一下自動續連）／W1126-15（旅程：填出發後回程自動帶入出發日、不能選更早；「工程」改名「案場」，案場頁分段 在建案／已完工；沒有進行中投標案時頂部隱藏「投標」、首頁四格變三格、公司事務頁最上面多「投標」類）／W1126-14（首頁「這一週」可切 週一～週日／從今天起，預設週一，存 prefs.wkStart）／W1126-13（首頁「這一週」：人員休假「休：」拉到日期那一列）／W1126-12（主題 D 首頁「這一週」：沒行程的日子縮窄、有行程的變寬）／W1126-11（主題 D 首頁最下方加版號小字）／W1126-10（年度健檢 A～E：今年該做的事・自費建議・已知狀況・紅字白話說明・四年趨勢・部位分組・預約勾選・看診摘要・記錄看診・健檢前提醒・搜尋；新增 D.ckplan→meta/ckplan）／W1126-09（年度健檢超過 4 年：最近 3 年＋更早下拉）／W1126-08（首頁加小工具捷徑：PDF 解密）／W1126-07（主題 D 設為預設：每台裝置一次性切到 D）／W1126-06（健康頁新版套用到 A/B/C 主題）／W1126-05（設定頁加「小工具・移除 PDF 密碼」入口 pdfunlock.html）／W1126-04（主題 D 健康頁：體重有感版＋記一筆 7 項＋年度健檢；修 .pipe 投標四格）／W1126-03（W1126-02 主題 D＋合併 W0928-02 體重多指標目標值＋達標預估＋BMI 目標自動換算） ════════ */
-const VERSION = 'W1126-22';
+/* ════════ 艋舺良的工作台 W1127-01（Google 行事曆完全自動：勾選的日曆寫 meta/gcalcfg，Worker 每 30 分鐘抓好放 meta/gcalcache，不用開網頁也更新；補登城市也蓋護照章「以前去過」；地標補畫米蘭、佛羅倫斯、威尼斯、羅馬、梵蒂岡、里斯本、波多）／W1126-22（旅遊頁補登改成城市或國家、同城再補登＝×2、桌機地圖也放大到去過範圍、城市名避免重疊）／W1126-21（旅遊頁：近期｜想去兩欄、我的足跡＋世界地圖、護照章含地標；旅程加國家／城市；已踏國家自動算＋補登；新增 lib/worldmap.json）／W1126-20（右上日期加西元年份與農曆，兩行）／W1126-19（個人頁待辦：「今天到期」只算今天，逾期另外顯示「逾期 N 件」）／W1126-18（主題 D 全部分頁拿掉卡片框改線條分區；當月清單：行程過了顯示已結束並收起，只有待辦才叫逾期）／W1126-17（個人頁：拿掉大標、標題放大加圖示、鎖頭縮小放標題旁、左待辦右三張）／W1126-16（Google 行事曆過期後，點頁面第一下自動續連）／W1126-15（旅程：填出發後回程自動帶入出發日、不能選更早；「工程」改名「案場」，案場頁分段 在建案／已完工；沒有進行中投標案時頂部隱藏「投標」、首頁四格變三格、公司事務頁最上面多「投標」類）／W1126-14（首頁「這一週」可切 週一～週日／從今天起，預設週一，存 prefs.wkStart）／W1126-13（首頁「這一週」：人員休假「休：」拉到日期那一列）／W1126-12（主題 D 首頁「這一週」：沒行程的日子縮窄、有行程的變寬）／W1126-11（主題 D 首頁最下方加版號小字）／W1126-10（年度健檢 A～E：今年該做的事・自費建議・已知狀況・紅字白話說明・四年趨勢・部位分組・預約勾選・看診摘要・記錄看診・健檢前提醒・搜尋；新增 D.ckplan→meta/ckplan）／W1126-09（年度健檢超過 4 年：最近 3 年＋更早下拉）／W1126-08（首頁加小工具捷徑：PDF 解密）／W1126-07（主題 D 設為預設：每台裝置一次性切到 D）／W1126-06（健康頁新版套用到 A/B/C 主題）／W1126-05（設定頁加「小工具・移除 PDF 密碼」入口 pdfunlock.html）／W1126-04（主題 D 健康頁：體重有感版＋記一筆 7 項＋年度健檢；修 .pipe 投標四格）／W1126-03（W1126-02 主題 D＋合併 W0928-02 體重多指標目標值＋達標預估＋BMI 目標自動換算） ════════ */
+const VERSION = 'W1127-01';
 const GCAL_CLIENT_ID = '654856338073-ukdt5nvtc8riq2010lado0i0n5vuhcfl.apps.googleusercontent.com';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
@@ -3136,7 +3137,7 @@ const TR_HOME = [121.56, 25.03];   // 台北
 const TR_CN = {   // 中文國名 → 地圖名稱
  '日本':'Japan','韓國':'South Korea','泰國':'Thailand','越南':'Vietnam','新加坡':'','馬來西亞':'Malaysia','印尼':'Indonesia','菲律賓':'Philippines','柬埔寨':'Cambodia','寮國':'Laos','緬甸':'Myanmar',
  '中國':'China','香港':'','澳門':'','蒙古':'Mongolia','印度':'India','尼泊爾':'Nepal','斯里蘭卡':'Sri Lanka','馬爾地夫':'','不丹':'Bhutan','杜拜':'United Arab Emirates','阿聯':'United Arab Emirates','土耳其':'Turkey','以色列':'Israel','約旦':'Jordan','埃及':'Egypt','摩洛哥':'Morocco','南非':'South Africa','肯亞':'Kenya',
- '法國':'France','德國':'Germany','英國':'United Kingdom','愛爾蘭':'Ireland','義大利':'Italy','西班牙':'Spain','葡萄牙':'Portugal','荷蘭':'Netherlands','比利時':'Belgium','盧森堡':'Luxembourg','瑞士':'Switzerland','奧地利':'Austria','捷克':'Czechia','匈牙利':'Hungary','波蘭':'Poland','斯洛伐克':'Slovakia','斯洛維尼亞':'Slovenia','克羅埃西亞':'Croatia','希臘':'Greece','丹麥':'Denmark','瑞典':'Sweden','挪威':'Norway','芬蘭':'Finland','冰島':'Iceland','愛沙尼亞':'Estonia','俄羅斯':'Russia','羅馬尼亞':'Romania','保加利亞':'Bulgaria','塞爾維亞':'Serbia',
+ '法國':'France','德國':'Germany','英國':'United Kingdom','愛爾蘭':'Ireland','義大利':'Italy','梵蒂岡':'Vatican','西班牙':'Spain','葡萄牙':'Portugal','荷蘭':'Netherlands','比利時':'Belgium','盧森堡':'Luxembourg','瑞士':'Switzerland','奧地利':'Austria','捷克':'Czechia','匈牙利':'Hungary','波蘭':'Poland','斯洛伐克':'Slovakia','斯洛維尼亞':'Slovenia','克羅埃西亞':'Croatia','希臘':'Greece','丹麥':'Denmark','瑞典':'Sweden','挪威':'Norway','芬蘭':'Finland','冰島':'Iceland','愛沙尼亞':'Estonia','俄羅斯':'Russia','羅馬尼亞':'Romania','保加利亞':'Bulgaria','塞爾維亞':'Serbia',
  '美國':'United States of America','加拿大':'Canada','墨西哥':'Mexico','古巴':'Cuba','巴西':'Brazil','阿根廷':'Argentina','智利':'Chile','秘魯':'Peru',
  '澳洲':'Australia','紐西蘭':'New Zealand','帛琉':'','關島':'','斐濟':'Fiji'};
 const TR_ALIAS = {'南韓':'韓國','大韓民國':'韓國','美':'美國','英':'英國','澳大利亞':'澳洲','荷蘭王國':'荷蘭','捷克共和國':'捷克','阿拉伯聯合大公國':'阿聯','義大利共和國':'義大利','意大利':'義大利','新西蘭':'紐西蘭','梵諦岡':'梵蒂岡','波爾圖':'波多'};
@@ -3159,6 +3160,16 @@ const TR_LM = {   // 護照章地標（線條手繪）
  '曼谷':'<path d="M24 3v6M22 9h4l1 5h-6zM20 14h8l1 5H19zM18 19h12l2 6H16zM14 25h20v4H14zM12 29h24v13H12zM20 42v-7h8v7M6 42h36"/>'};
 TR_LM['京都'] = '<path d="M24 3v5M18 11h12l-6-3zM15 11h18M19 11v4h10v-4M14 19h20l-5-4H19zM18 19v4h12v-4M12 27h24l-6-4H18zM17 27v4h14v-4M10 35h28l-7-4H17zM16 35v8h16v-8M22 43v-5h4v5M6 43h36"/>';
 TR_LM['那霸'] = TR_LM['沖繩'];
+/* W1127-01 補畫：補登城市的地標 */
+TR_LM['米蘭'] = '<path d="M6 43h36M10 43V24h28v19M10 24l14-9 14 9M8 43V18l1-3 1 3M38 43V18l1-3 1 3M14 24V13l1-3 1 3M32 24V13l1-3 1 3M24 15V5l1-3 1 3M20 19v-6M28 19v-6M21 43v-8l3-3 3 3v8M14 30v6M34 30v6"/>';
+TR_LM['佛羅倫斯'] = '<path d="M6 43h36M10 43V32h28v11M14 32v-6h20v6M14 26q0-14 10-16q10 2 10 16M24 10V6M22 6h4M22 6l2-3 2 3M19 26q1-9 5-15M29 26q-1-9-5-15M16 37h4M28 37h4M22 43v-6h4v6"/>';
+TR_LM['威尼斯'] = '<path d="M4 30q20-18 40 0M8 30v-4M40 30v-4M14 24v-5h20v5M18 19v-3h12v3M4 30h40M8 38q16 6 32 0M10 38l-3-3M38 38l2-4 2 1M24 39v-5M22 34h4M6 44q4-2 8 0t8 0 8 0 8 0 8 0"/>';
+TR_LM['羅馬'] = '<path d="M6 42V20q18-8 36 0v22M6 42h36M6 28q18-6 36 0M6 35q18-5 36 0M12 42v-5M18 42v-6M24 42v-6M30 42v-6M36 42v-5M12 32v-4M18 31v-5M24 31v-5M30 31v-5M36 32v-4M12 24v-3M18 23v-3M24 23v-4M30 23v-3M36 24v-3"/>';
+TR_LM['梵蒂岡'] = '<path d="M4 43h40M8 43V30h32v13M8 30h32l-4-3H12zM12 43v-9M16 43v-9M20 43v-9M28 43v-9M32 43v-9M36 43v-9M22 43v-5h4v5M16 27v-5h16v5M17 22q0-12 7-13q7 1 7 13M24 9V5M22 5h4M24 5V2"/>';
+TR_LM['梵諦岡'] = TR_LM['梵蒂岡'];
+TR_LM['里斯本'] = '<path d="M14 42V24h20v18M17 24V10h14v14M17 10l-2-3M31 10l2-3M17 10h14M20 10V6h8v4M24 6V3M14 24l-2-3M34 24l2-3M21 17h6M22 30h4M22 36h4M10 42h28M4 45q5-2 10 0t10 0 10 0 10 0"/>';
+TR_LM['波多'] = '<path d="M4 14h40M4 18h40M8 14v-4M40 14v-4M8 44q16-46 32 0M10 18v26M38 18v26M14 36q10-24 20 0M16 18v8M32 18v8M4 44h40"/>';
+TR_LM['波爾圖'] = TR_LM['波多'];
 const TR_PLANE = '<path d="M6 30l36-14-10 22-8-8-6 8v-10l18-12"/>';
 let WMAP = null, wmapLoading = false;
 function trExCity(){ const o = {}; (D.prefs.extraCities||[]).forEach(c => o[c] = (o[c]||0) + 1); return o; }   // W1126-22 補登城市次數
@@ -3307,7 +3318,12 @@ function renderTripPage(){
   $('#tripRec').innerHTML = recs.length ? Object.keys(byY).sort().reverse().map(y => `<div class="tr-yr">${y}</div><div class="tr-stamps">` +
     byY[y].map(t => { const cs = trCities(t); const cty = trCountries(t);
       return cs.length ? cs.map(c => stamp(t, c, (TR_CITY[c]||[])[2] || cty[0] || '')).join('') : stamp(t, '', cty[0] || ''); }).join('') + '</div>').join('')
-    : '<div class="tr-empty">旅程勾「已完成」就會在這裡蓋一個章</div>';
+    : '';
+  { /* W1127-01：補登的城市（沒有日期）也蓋章，放最後「以前去過」 */
+    const exS = Object.keys(exN).map(c => stamp({id:'ex_'+c, start:''}, c, (TR_CITY[c]||[])[2] || '').replace(/ data-trip="[^"]*"/, '').replace('<span class="tr-sd"></span>', exN[c] > 1 ? `<span class="tr-sd">×${exN[c]}</span>` : '<span class="tr-sd"></span>')).join('');
+    if (exS) $('#tripRec').innerHTML += `<div class="tr-yr">以前去過</div><div class="tr-stamps tr-ex">${exS}</div>`;
+    if (!$('#tripRec').innerHTML) $('#tripRec').innerHTML = '<div class="tr-empty">旅程勾「已完成」就會在這裡蓋一個章</div>';
+  }
   /* 事件 */
   $('#page-trip').querySelectorAll('[data-split]').forEach(b => b.onclick = e => { e.stopPropagation(); window.open(b.dataset.split); });
   $('#page-trip').querySelectorAll('[data-trip]').forEach(n => n.onclick = () => openTrip(n.dataset.trip));
@@ -3487,7 +3503,7 @@ function gDisconnect(){
 }
 /* W1126-16：連線過期後，使用者在頁面點第一下就自動續（瀏覽器規定要有點擊才能開 Google 視窗） */
 let gAutoAt = 0;
-function gNeedRenew(){ const g = G(); return !!g && !g.off && g.cals && Object.keys(g.cals).length > 0 && !gOK(); }
+function gNeedRenew(){ const g = G(); if (g && g.cloud && !g.writeOn && Date.now() - g.cloud.at < 2*3600000) return false; return !!g && !g.off && g.cals && Object.keys(g.cals).length > 0 && !gOK(); }
 document.addEventListener('pointerdown', () => {
   if (!gNeedRenew() || Date.now() - gAutoAt < 5*60000) return;
   if (typeof google === 'undefined' || !google.accounts) return;
@@ -3530,7 +3546,7 @@ async function gSync(){
       });
     }catch(e){ console.warn('gcal', e); }
   }
-  G().cache = out; save(); renderAll();
+  G().cache = out; G().cacheAt = Date.now(); save(); renderAll(); fbPushGcalCfg();
 }
 async function gEnsureWCal(){
   if (G().wId || !gOK()) return G().wId;
@@ -3571,16 +3587,41 @@ async function gDeleteEvent(it){
   if (!gOK() || !it.gid || !G().wId) return;
   try{ await fetch(`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(G().wId)}/events/${it.gid}`, {method:'DELETE', headers:gHdr()}); }catch(e){}
 }
+/* W1127-01：行事曆完全自動——勾選的日曆寫 meta/gcalcfg，Worker 每 30 分鐘用服務帳戶抓，結果放 meta/gcalcache */
+function fbPushGcalCfg(){
+  if (typeof fbDb === 'undefined' || !fbDb || !fbUser || !gCalsList.length) return;
+  const list = gCalsList.filter(c => (G().cals[c.id]||{}).on).map(c => ({id:c.id, summary:c.summary||'', scope:(G().cals[c.id]||{}).scope||'life', color:(G().cals[c.id]||{}).color||null}));
+  const js = JSON.stringify(list);
+  if (js === G().cfgSent) return;
+  fbDb.collection('meta').doc('gcalcfg').set({json: js, mt: now()}).then(() => { G().cfgSent = js; save(); }).catch(e => console.warn('gcalcfg', e));
+}
+function gApplyCloud(d){
+  if (!d) return false;
+  G().cloud = {at: d.at||0, sa: d.sa||'', n: d.n||0, note: d.note||''};
+  let ch = false;
+  if ((d.at||0) > (G().cacheAt||0) && typeof d.json === 'string'){
+    try{ const evs = JSON.parse(d.json); if (Array.isArray(evs)){ G().cache = evs; G().cacheAt = d.at; ch = true; } }catch(e){}
+  }
+  return ch;
+}
+function gCloudRow(){
+  const c = G().cloud;
+  if (!c) return `<div class="setrow">雲端自動更新<span style="margin-left:auto; opacity:.6;">尚未啟用</span></div>`;
+  const t = new Date(c.at), hm = `${t.getMonth()+1}/${t.getDate()} ${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}`;
+  return `<div class="setrow" style="display:block;">雲端自動更新<small style="display:block; font-size:.86rem;">每 30 分鐘・最後 ${hm}・${c.n} 筆</small>
+    ${c.note ? `<small style="display:block; color:var(--accent);">${esc(c.note)}</small>` : ''}
+    <small style="display:block;">不用開網頁也會更新；新增的日曆要分享給：<span class="gsa">${esc(c.sa)}</span></small></div>`;
+}
 function renderGcal(){
   const box = $('#gcalBox'); if (!box) return;
   if (!gOK()){
-    box.innerHTML = `<div class="setrow">${G().cache.length ? '連線已到期（快取仍顯示中）' : '未連接'}
+    box.innerHTML = gCloudRow() + `<div class="setrow">${G().cloud ? '手動連線已到期（雲端自動照常更新）' : (G().cache.length ? '連線已到期（快取仍顯示中）' : '未連接')}
       <button class="btn pri" id="gConnBtn" style="margin-left:auto;">連接 Google 行事曆</button>
       <small>連接後可把 Google 行事曆顯示進工作台，並將工作台行程回寫到手機原生日曆。</small></div>`;
     $('#gConnBtn').onclick = () => gConnect(true);
     return;
   }
-  box.innerHTML = `<div class="setrow"><svg class="ic" style="color:var(--life)"><use href="#i-check"></use></svg> 已連接 <button class="btn" id="gDiscBtn" style="margin-left:auto;">中斷</button>
+  box.innerHTML = gCloudRow() + `<div class="setrow"><svg class="ic" style="color:var(--life)"><use href="#i-check"></use></svg> 已連接 <button class="btn" id="gDiscBtn" style="margin-left:auto;">中斷</button>
       <button class="btn" id="gSyncBtn">↻ 立即同步</button></div>
     <div class="setrow" style="display:block;"><small>勾選要顯示的日曆，並指定分類（影響範圍切換過濾）：</small>
       <ul class="list" style="margin-top:6px;">` +
@@ -4059,6 +4100,12 @@ function fbStart(){
     }
   }, e => console.warn('snap', e));
   fbSubs.push(uck);
+  const ugc = fbDb.collection('meta').doc('gcalcache').onSnapshot(doc => {   // W1127-01 行事曆雲端自動
+    const ch = gApplyCloud(doc.data());
+    try{ localStorage.setItem(KEY, JSON.stringify(D)); }catch(e){ mem = D; }
+    if (ch) renderAll(); else renderGcal();
+  }, e => console.warn('snap', e));
+  fbSubs.push(ugc);
   fbPushAll();                      // 本機較新的推上去（set 冪等）
   const today = todayStr();          // 每日還原點
   const ref = fbDb.collection('snaps').doc(today);

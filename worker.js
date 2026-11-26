@@ -1,4 +1,7 @@
-/* 艋舺良的工作台 — 每朝簡報＋自動備份＋Notion 鏡像＋G95 報告＋健檢前提醒 Worker（WK1126-01）
+/* 艋舺良的工作台 — 每朝簡報＋自動備份＋Notion 鏡像＋G95 報告＋健檢前提醒＋Google 行事曆自動 Worker（WK1127-01）
+ * WK1127-01 變更：Google 行事曆完全自動。cron 改用 「每 30 分鐘」(星號斜線30)（取代原本健檢的 "0 12 * * *"，免費版觸發器上限 5 個）：
+ *   每輪用服務帳戶讀 meta/gcalcfg（App 勾選的日曆）→ 抓近 7 天～後 60 天事件 → 寫 meta/gcalcache，App 即時收到。
+ *   健檢前一晚改成在台北 20:00 那一輪順便跑。日曆要先「分享」給服務帳戶（查看所有活動詳細資料）。測試端點 /gcal?key=<TEST_KEY>。
  * WK1126-01 變更：新增健檢前一天提醒。cron "0 12 * * *"（UTC）＝台北 20:00；讀 Firestore meta/ckplan.nextDate，
  *   等於台北明天就推播「明天健檢」＋準備事項。測試端點 /ckremind?key=<TEST_KEY>（不看日期，強制送一次）。
  *   App 端 W1126-10 起在健檢卡「下次健檢日期」設定。加密段未改。
@@ -39,7 +42,12 @@ export default {
     else if (event.cron === '0 19 * * *') await backup(env);
     else if (event.cron === '0 15 * * *') await notionSync(env);
     else if (/^30 23 /.test(event.cron)) await g95Report(env);   // 台北一三五 07:30（儀表板存的是 SUN,TUE,THU 寫法·用前綴比對最穩）
-    else if (event.cron === '0 12 * * *') await ckRemind(env);   // WK1126-01 台北 20:00 健檢前一天提醒
+    else if (event.cron === '0 12 * * *') await ckRemind(env);   // WK1126-01 台北 20:00 健檢前一天提醒（舊觸發器，改成 */30 後就不會進來）
+    else if (event.cron === '*/30 * * * *'){   // WK1127-01 每 30 分鐘：行事曆；UTC 12:00 那一輪加跑健檢提醒
+      const t = new Date(event.scheduledTime), jobs = [gcalSync(env)];
+      if (t.getUTCHours() === 12 && t.getUTCMinutes() < 15) jobs.push(ckRemind(env));
+      await Promise.allSettled(jobs);
+    }
   },
   async fetch(req, env){
     const url = new URL(req.url);
@@ -51,6 +59,7 @@ export default {
       if (url.pathname === '/notion'){ return new Response(await notionSync(env)); }
       if (url.pathname === '/g95report'){ return new Response(await g95Report(env)); }
       if (url.pathname === '/ckremind'){ return new Response(await ckRemind(env, true)); }
+      if (url.pathname === '/gcal'){ return new Response(await gcalSync(env)); }
       if (url.pathname === '/g95zdebug'){   // WK0817-03b 偵錯用：看快照資料形狀·不寄信不推播
         const tok = await gToken(env); const {S, snapDate} = await g95Snap(tok);
         const rows = (S.rows || []); const z0 = (S.zones || [])[0] || null;
@@ -63,7 +72,7 @@ export default {
         return new Response(page || '報告尚未產生：等下一次排程發送，或先呼叫 /g95report 產生一份。',
           {status: page ? 200 : 404, headers: {'Content-Type': 'text/html; charset=utf-8'}});
       }
-      return new Response('ok（/brief、/backup、/ping、/notion、/g95report、/g95view 或 /ckremind）');
+      return new Response('ok（/brief、/backup、/ping、/notion、/g95report、/g95view、/ckremind 或 /gcal）');
     }catch(e){ return new Response('錯誤：' + e.message, {status:500}); }
   }
 };
@@ -90,11 +99,11 @@ function cat(...arrs){
 }
 
 /* ══════════ Google 服務帳戶取 token ══════════ */
-async function gToken(env){
+async function gToken(env, scope){
   const sa = JSON.parse(env.SA_KEY);
   const enc = o => b64url(ENC.encode(JSON.stringify(o)));
   const now = Math.floor(Date.now()/1000);
-  const data = enc({alg:'RS256',typ:'JWT'}) + '.' + enc({iss:sa.client_email, scope:'https://www.googleapis.com/auth/datastore', aud:'https://oauth2.googleapis.com/token', iat:now, exp:now+3600});
+  const data = enc({alg:'RS256',typ:'JWT'}) + '.' + enc({iss:sa.client_email, scope: scope || 'https://www.googleapis.com/auth/datastore', aud:'https://oauth2.googleapis.com/token', iat:now, exp:now+3600});
   const pem = sa.private_key.replace(/-----[^-]+-----/g,'').replace(/\s/g,'');
   const bin = Uint8Array.from(atob(pem), c => c.charCodeAt(0));
   const key = await crypto.subtle.importKey('pkcs8', bin.buffer, {name:'RSASSA-PKCS1-v1_5', hash:'SHA-256'}, false, ['sign']);
@@ -266,6 +275,49 @@ async function ckRemind(env, force){
   const msg = (nd ? `${+d.slice(5,7)}/${+d.slice(8,10)} ` : '') + '準備事項：\n' + CK_PREP.map((s, i) => (i + 1) + '. ' + s).join('\n');
   const how = await pushAll(env, tok, '明天健檢', msg);
   return '推播結果：' + how + '\n\n' + msg;
+}
+
+/* ══════════ WK1127-01 Google 行事曆完全自動 ══════════
+ * App 在設定頁勾日曆時寫 meta/gcalcfg {json:[{id,summary,scope,color}]}；
+ * 這裡用服務帳戶讀那幾本（要先分享給 sa.client_email），結果寫 meta/gcalcache {at,sa,n,note,json}。 */
+async function fsPut(tok, path, obj){
+  const fields = {};
+  for (const k in obj){
+    const v = obj[k];
+    fields[k] = typeof v === 'number' ? {integerValue: String(Math.round(v))} : {stringValue: String(v)};
+  }
+  const r = await fetch(`${FS}/${path}`, {method:'PATCH', headers:{Authorization:'Bearer ' + tok, 'Content-Type':'application/json'}, body: JSON.stringify({fields})});
+  if (!r.ok) throw new Error('寫入 ' + path + ' 失敗 ' + r.status);
+}
+async function gcalSync(env){
+  const sa = JSON.parse(env.SA_KEY);
+  const tok = await gToken(env, 'https://www.googleapis.com/auth/datastore https://www.googleapis.com/auth/calendar.readonly');
+  const cfg = await readDoc(tok, 'meta/gcalcfg');
+  let cals = [];
+  try{ cals = cfg && cfg.json ? JSON.parse(cfg.json) : []; }catch(e){}
+  if (!cals.length){
+    await fsPut(tok, 'meta/gcalcache', {at: Date.now(), sa: sa.client_email, n: 0, note: '尚未收到要抓哪幾本日曆（請在工作台設定頁按一次「立即同步」）', json: '[]'});
+    return '沒有日曆設定；服務帳戶 ' + sa.client_email;
+  }
+  const tMin = new Date(Date.now() - 7*86400000).toISOString(), tMax = new Date(Date.now() + 60*86400000).toISOString();
+  const out = [], bad = [];
+  for (const c of cals){
+    const r = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(c.id)}/events?singleEvents=true&orderBy=startTime&maxResults=250&timeZone=Asia%2FTaipei&timeMin=${encodeURIComponent(tMin)}&timeMax=${encodeURIComponent(tMax)}`, {headers:{Authorization:'Bearer ' + tok}});
+    if (!r.ok){ bad.push(c.summary || c.id); continue; }
+    const j = await r.json();
+    (j.items || []).forEach(ev => {
+      if (ev.status === 'cancelled') return;
+      if (ev.extendedProperties && ev.extendedProperties.private && ev.extendedProperties.private.wbid) return;
+      const s = ev.start || {};
+      const date = s.date || (s.dateTime ? s.dateTime.slice(0,10) : null);
+      if (!date) return;
+      out.push({id:'g_' + ev.id, kind:'ev', scope: c.scope || 'life', title: ev.summary || '（無標題）',
+        date, time: s.dateTime ? s.dateTime.slice(11,16) : null, link: ev.htmlLink || null, color: c.color || null, cal: c.summary || null});
+    });
+  }
+  const note = bad.length ? `${bad.length} 本還沒分享給服務帳戶：${bad.join('、')}` : '';
+  await fsPut(tok, 'meta/gcalcache', {at: Date.now(), sa: sa.client_email, n: out.length, note, json: JSON.stringify(out)});
+  return `行事曆自動：${cals.length - bad.length}/${cals.length} 本成功，${out.length} 筆。服務帳戶 ${sa.client_email}` + (note ? '\n' + note : '');
 }
 
 /* ══════════ 測試推播（不含資料，只驗管線） ══════════ */
