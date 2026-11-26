@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>移除 PDF 密碼｜艋舺良的工作台</title>
+<meta name="theme-color" content="#F2F2F7">
+<link rel="icon" href="icon-192.png">
+<style>
+  /* 移除 PDF 密碼 P1126-01：檔案只在本機瀏覽器處理（qpdf WebAssembly），不上傳 */
+  html{font-size:16px;}
+  :root{--page:#F2F2F7; --card:#fff; --ink:#1C1C1E; --sub:#8E8E93; --line:#E5E5EA; --navy:#1B417D; --good:#1E7A45; --bad:#C62828;}
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--page); color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif; -webkit-font-smoothing:antialiased;}
+  button,input{font:inherit; color:inherit;}
+  button{cursor:pointer; border:none; background:none; padding:0;}
+  .wrap{max-width:40rem; margin:0 auto; padding:1rem 1rem 3rem;}
+  .top{display:flex; align-items:center; gap:.5rem; padding:.4rem 0 1rem;}
+  .back{display:inline-flex; align-items:center; gap:.2rem; color:var(--navy); font-weight:700; font-size:1rem; text-decoration:none;}
+  .ic{width:1.2em; height:1.2em; fill:none; stroke:currentColor; stroke-width:1.5; stroke-linecap:square; stroke-linejoin:miter; flex:none; vertical-align:-.2em;}
+  h1{font-size:1.9rem; font-weight:800; margin:.2rem 0 .3rem;}
+  .lead{color:var(--sub); font-size:.95rem; margin:0 0 1.2rem; line-height:1.5;}
+  .card{background:var(--card); border-radius:1.25rem; padding:1.2rem; margin-bottom:.9rem;}
+  .drop{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.4rem; border:1.5px dashed #C7C7CC; border-radius:1rem; padding:1.8rem 1rem; text-align:center; cursor:pointer; color:var(--sub);}
+  .drop.over{border-color:var(--navy); background:color-mix(in srgb, var(--navy) 5%, #fff);}
+  .drop b{color:var(--ink); font-size:1.1rem;}
+  .drop .ic{width:2.4rem; height:2.4rem; color:var(--navy);}
+  .lbl{font-size:.9rem; font-weight:700; color:var(--sub); margin:1.1rem 0 .4rem;}
+  .pw{display:flex; align-items:center; border:1px solid var(--line); border-radius:.8rem; background:#fff;}
+  .pw input{flex:1; border:none; outline:none; padding:.8rem .9rem; font-size:1.1rem; background:transparent; min-width:0;}
+  .pw button{padding:.6rem .9rem; color:var(--navy); font-size:.9rem; font-weight:700;}
+  .hint{font-size:.82rem; color:var(--sub); margin-top:.4rem; line-height:1.5;}
+  .go{display:block; width:100%; margin-top:1.1rem; padding:.95rem; border-radius:999px; background:var(--navy); color:#fff; font-size:1.1rem; font-weight:800;}
+  .go:disabled{opacity:.4; cursor:default;}
+  .list{border:1px solid var(--line); border-radius:1rem; overflow:hidden;}
+  .it{display:flex; align-items:center; gap:.8rem; padding:.85rem 1rem; border-top:1px solid var(--line);}
+  .it:first-child{border-top:none;}
+  .it .nm{flex:1; min-width:0;}
+  .it .nm b{display:block; font-size:1rem; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .it .nm span{font-size:.85rem; color:var(--sub);}
+  .it .nm span.ok{color:var(--good); font-weight:700;}
+  .it .nm span.ng{color:var(--bad); font-weight:700;}
+  .it .acts{display:flex; gap:.4rem; flex:none;}
+  .it .acts a, .it .acts button{display:inline-flex; align-items:center; gap:.25rem; padding:.45rem .8rem; border-radius:999px; font-size:.9rem; font-weight:700; text-decoration:none; color:var(--navy); background:color-mix(in srgb, var(--navy) 8%, #fff);}
+  .it .x{color:var(--sub); padding:.3rem;}
+  .empty{color:var(--sub); font-size:.92rem; text-align:center; padding:.6rem 0;}
+  .note{font-size:.85rem; color:var(--sub); line-height:1.6; padding:0 .3rem;}
+  .note b{color:var(--ink);}
+  @media (max-width:480px){ .it{flex-wrap:wrap;} .it .acts{width:100%; justify-content:flex-end;} }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z M14 3v4h4"/></symbol>
+  <symbol id="i-unlock" viewBox="0 0 24 24"><path d="M5 11h14v10H5z M8 11V7a4 4 0 0 1 7.5-2"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v12 M6 11l6 6 6-6 M5 20h14"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 15V3 M7 8l5-5 5 5 M5 12v9h14v-9"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+</defs></svg>
+<div class="wrap">
+  <div class="top"><a class="back" href="./"><svg class="ic"><use href="#i-back"></use></svg>工作台</a></div>
+  <h1>移除 PDF 密碼</h1>
+  <p class="lead">輸入你知道的密碼，存成一份不用密碼的 PDF。檔案只在這台裝置的瀏覽器裡處理，不會上傳到任何地方。</p>
+
+  <div class="card">
+    <label class="drop" id="drop">
+      <svg class="ic"><use href="#i-file"></use></svg>
+      <b>點這裡選 PDF</b>
+      <span>電腦也可以把檔案拖進來，一次可以放好幾份</span>
+      <input type="file" id="pick" accept="application/pdf,.pdf" multiple hidden>
+    </label>
+    <div class="lbl">密碼</div>
+    <div class="pw"><input type="password" id="pw" placeholder="輸入開啟這份 PDF 的密碼" autocomplete="off" autocapitalize="off" spellcheck="false"><button id="eye" type="button">顯示</button></div>
+    <div class="hint">好幾份用同一個密碼可以一起處理。只限制列印、複製的 PDF，密碼空白也能解。</div>
+    <button class="go" id="go" disabled><svg class="ic"><use href="#i-unlock"></use></svg> 移除密碼</button>
+  </div>
+
+  <div class="card"><div class="list" id="list"><div class="empty">還沒選檔案</div></div></div>
+
+  <p class="note"><b>常見密碼</b>：健檢報告、銀行或保險對帳單常用身分證字號（英文字母大寫）、出生年月日或手機號碼，以寄來的通知信為準。<br>
+  忘記密碼的檔案這裡解不開，請向寄件單位重新索取。</p>
+</div>
+
+<script src="lib/qpdf.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let files = [];   // {id,file,st:'wait'|'busy'|'ok'|'ng',msg,url,out}
+let seq = 0;
+
+function addFiles(list){
+  [...list].forEach(f => {
+    if (!/\.pdf$/i.test(f.name) && f.type !== 'application/pdf') return;
+    files.push({id: ++seq, file: f, st: 'wait', msg: '等待處理'});
+  });
+  render();
+}
+function kb(n){ return n > 1048576 ? (n/1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(n/1024)) + ' KB'; }
+function outName(n){ return n.replace(/\.pdf$/i, '') + '_無密碼.pdf'; }
+function render(){
+  const L = $('#list');
+  $('#go').disabled = !files.some(f => f.st === 'wait' || f.st === 'ng');
+  if (!files.length){ L.innerHTML = '<div class="empty">還沒選檔案</div>'; return; }
+  L.innerHTML = files.map(f => `<div class="it">
+    <div class="nm"><b>${esc(f.st === 'ok' ? f.out : f.file.name)}</b>
+      <span class="${f.st === 'ok' ? 'ok' : f.st === 'ng' ? 'ng' : ''}">${esc(f.msg)}・${kb(f.file.size)}</span></div>
+    <div class="acts">${f.st === 'ok' ? `<a href="${f.url}" download="${esc(f.out)}"><svg class="ic"><use href="#i-down"></use></svg>下載</a>${navigator.canShare ? `<button data-share="${f.id}"><svg class="ic"><use href="#i-share"></use></svg>分享</button>` : ''}` : ''}
+      <button class="x" data-rm="${f.id}" aria-label="移除"><svg class="ic"><use href="#i-close"></use></svg></button></div></div>`).join('');
+  L.querySelectorAll('[data-rm]').forEach(b => b.onclick = () => { const f = files.find(x => x.id == b.dataset.rm); if (f && f.url) URL.revokeObjectURL(f.url); files = files.filter(x => x !== f); render(); });
+  L.querySelectorAll('[data-share]').forEach(b => b.onclick = async () => {
+    const f = files.find(x => x.id == b.dataset.share); if (!f) return;
+    const blob = await fetch(f.url).then(r => r.blob());
+    const file = new File([blob], f.out, {type: 'application/pdf'});
+    if (navigator.canShare({files: [file]})) { try { await navigator.share({files: [file]}); } catch(e){} }
+  });
+}
+
+/* 每份檔案開一個新的 qpdf 執行個體（wasm 由瀏覽器快取，第二次很快） */
+async function runQpdf(args, input){
+  const out = [];
+  const q = await Module({locateFile: () => 'lib/qpdf.wasm', print: t => out.push(t), printErr: t => out.push(t)});
+  q.FS.writeFile('/in.pdf', input);
+  let code = 0;
+  try { code = q.callMain(args); } catch(e){ code = (e && typeof e.status === 'number') ? e.status : 99; }
+  let data = null;
+  try { data = q.FS.readFile('/out.pdf'); } catch(e){}
+  return {code, log: out.join('\n'), data};
+}
+async function unlockOne(f, pw){
+  f.st = 'busy'; f.msg = '處理中…'; render();
+  const buf = new Uint8Array(await f.file.arrayBuffer());
+  /* 判斷類型（wasm 版開不了檔時一律回 2，所以分兩步）：
+     --requires-password 回 3＝只限制列印複製；否則 --show-encryption 回 0＝沒加密、回 2＝要開啟密碼 */
+  const r1 = await runQpdf(['--requires-password', '/in.pdf'], buf);
+  let kind = 'need';
+  if (r1.code === 3) kind = 'owner';
+  else { const r2 = await runQpdf(['--show-encryption', '/in.pdf'], buf); if (r2.code === 0) kind = 'plain'; }
+  if (kind === 'plain'){ f.st = 'skip'; f.msg = '這份本來就沒有密碼，不用處理'; return; }
+  if (kind === 'need' && !pw){ f.st = 'ng'; f.msg = '這份需要密碼，請先輸入'; return; }
+  const chk = {code: kind === 'owner' ? 3 : 0};
+  const usePw = kind === 'owner' ? '' : pw;
+  const r = await runQpdf(['--password=' + usePw, '--decrypt', '/in.pdf', '/out.pdf'], buf);
+  if (r.data && r.data.length && (r.code === 0 || r.code === 3)){
+    f.out = outName(f.file.name);
+    f.url = URL.createObjectURL(new Blob([r.data], {type: 'application/pdf'}));
+    f.st = 'ok'; f.msg = chk.code === 3 ? '已解除列印、複製限制' : '已移除密碼';
+  } else if (chk.code === 0){
+    f.st = 'ng'; f.msg = '密碼不對，改好再按一次';
+  } else {
+    f.st = 'ng'; f.msg = '解不開，檔案可能損壞';
+  }
+}
+$('#go').onclick = async () => {
+  const pw = $('#pw').value;
+  $('#go').disabled = true;
+  for (const f of files){ if (f.st === 'wait' || f.st === 'ng'){ try { await unlockOne(f, pw); } catch(e){ f.st = 'ng'; f.msg = '處理失敗，請重新整理再試'; } render(); } }
+  render();
+};
+$('#pick').onchange = e => { addFiles(e.target.files); e.target.value = ''; };
+$('#eye').onclick = () => { const p = $('#pw'); p.type = p.type === 'password' ? 'text' : 'password'; $('#eye').textContent = p.type === 'password' ? '顯示' : '隱藏'; };
+$('#pw').onkeydown = e => { if (e.key === 'Enter' && !$('#go').disabled) $('#go').click(); };
+const dz = $('#drop');
+['dragenter','dragover'].forEach(t => dz.addEventListener(t, e => { e.preventDefault(); dz.classList.add('over'); }));
+['dragleave','drop'].forEach(t => dz.addEventListener(t, e => { e.preventDefault(); dz.classList.remove('over'); }));
+dz.addEventListener('drop', e => addFiles(e.dataTransfer.files));
+document.addEventListener('dragover', e => e.preventDefault());
+document.addEventListener('drop', e => { e.preventDefault(); if (!dz.contains(e.target)) addFiles(e.dataTransfer.files); });
+</script>
+</body>
+</html>
