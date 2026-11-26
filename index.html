@@ -1323,8 +1323,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 'use strict';
-/* ════════ 艋舺良的工作台 W1126-06（健康頁新版套用到 A/B/C 主題）／W1126-05（設定頁加「小工具・移除 PDF 密碼」入口 pdfunlock.html）／W1126-04（主題 D 健康頁：體重有感版＋記一筆 7 項＋年度健檢；修 .pipe 投標四格）／W1126-03（W1126-02 主題 D＋合併 W0928-02 體重多指標目標值＋達標預估＋BMI 目標自動換算） ════════ */
-const VERSION = 'W1126-06';
+/* ════════ 艋舺良的工作台 W1126-07（主題 D 設為預設：每台裝置一次性切到 D）／W1126-06（健康頁新版套用到 A/B/C 主題）／W1126-05（設定頁加「小工具・移除 PDF 密碼」入口 pdfunlock.html）／W1126-04（主題 D 健康頁：體重有感版＋記一筆 7 項＋年度健檢；修 .pipe 投標四格）／W1126-03（W1126-02 主題 D＋合併 W0928-02 體重多指標目標值＋達標預估＋BMI 目標自動換算） ════════ */
+const VERSION = 'W1126-07';
 const GCAL_CLIENT_ID = '654856338073-ukdt5nvtc8riq2010lado0i0n5vuhcfl.apps.googleusercontent.com';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
@@ -1361,7 +1361,7 @@ function blank(){ return {
   notes: [],                       // {id,txt,tag,pin,rv,mt,del}
   company: [],                     // W1126-01 公司事務 {id,cat,title,due,pct,note,done,rv,mt,del}
   prefs: {netBase:0, goalMoney:0, countries:0, countriesTarget:50, weightTarget:0, whTargets:{fat:0, muscle:0, visceral:0, bmi:0}, whStart:{}, mt:0},
-  settings: {skin:'A', fs:'m', scope:'all', order:DEF_ORDER.slice(), folded:{}, showMoney:false, pin:null, lockApp:true, lockMoney:false},
+  settings: {skin:'D', skinV:1, fs:'m', scope:'all', order:DEF_ORDER.slice(), folded:{}, showMoney:false, pin:null, lockApp:true, lockMoney:false},
   ver: 1
 };}
 function load(){
@@ -1389,6 +1389,8 @@ function load(){
     d.settings.order = o;
   }
   if (typeof d.settings.lockApp === 'undefined') d.settings.lockApp = true;
+  /* W1126-07：主題 D 改成預設，每台裝置一次性切到 D；之後使用者自己改的主題照留 */
+  if (!d.settings.skinV){ d.settings.skin = 'D'; d.settings.skinV = 1; }
   if (typeof d.settings.lockHealth === 'undefined') d.settings.lockHealth = false;
   const o = (d.settings.order||[]).filter(k => DEF_ORDER.includes(k));
   DEF_ORDER.forEach(k => { if(!o.includes(k)) o.splice(DEF_ORDER.indexOf(k)===DEF_ORDER.length-1 ? o.length : Math.min(o.length, DEF_ORDER.indexOf(k)), 0, k); });
