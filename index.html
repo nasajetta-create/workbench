@@ -1018,6 +1018,9 @@
   .list li.cal-endbar, .list li.cal-endbar:hover{background:none;}
   .cal-endbar{display:flex; align-items:center; gap:.4rem; padding:.6rem .2rem; font-size:.85rem; color:var(--sub); cursor:pointer; list-style:none;}
   .cal-endbar b{margin-left:auto; font-weight:400;}
+  .tr-cl{font-size:.8rem; color:var(--sub); font-weight:600; margin-right:.2rem; align-self:center; min-width:2.2em;}
+  .tr-chip.city small{color:var(--sub); font-size:.85em; margin-left:.1em;}
+  .tr-chip.city .tr-x{font-style:normal; margin-left:.35em; opacity:.7;}
   @media (max-width:760px){
     body[data-skin="D"] .card, body[data-skin="D"] .dh-card, body[data-skin="D"] .cocat{border-radius:0; padding-left:.2rem; padding-right:.2rem;}
     body[data-skin="D"] .dh-lines{gap:0;}
@@ -1685,8 +1688,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 'use strict';
-/* ════════ 艋舺良的工作台 W1126-21（旅遊頁：近期｜想去兩欄、我的足跡＋世界地圖、護照章含地標；旅程加國家／城市；已踏國家自動算＋補登；新增 lib/worldmap.json）／W1126-20（右上日期加西元年份與農曆，兩行）／W1126-19（個人頁待辦：「今天到期」只算今天，逾期另外顯示「逾期 N 件」）／W1126-18（主題 D 全部分頁拿掉卡片框改線條分區；當月清單：行程過了顯示已結束並收起，只有待辦才叫逾期）／W1126-17（個人頁：拿掉大標、標題放大加圖示、鎖頭縮小放標題旁、左待辦右三張）／W1126-16（Google 行事曆過期後，點頁面第一下自動續連）／W1126-15（旅程：填出發後回程自動帶入出發日、不能選更早；「工程」改名「案場」，案場頁分段 在建案／已完工；沒有進行中投標案時頂部隱藏「投標」、首頁四格變三格、公司事務頁最上面多「投標」類）／W1126-14（首頁「這一週」可切 週一～週日／從今天起，預設週一，存 prefs.wkStart）／W1126-13（首頁「這一週」：人員休假「休：」拉到日期那一列）／W1126-12（主題 D 首頁「這一週」：沒行程的日子縮窄、有行程的變寬）／W1126-11（主題 D 首頁最下方加版號小字）／W1126-10（年度健檢 A～E：今年該做的事・自費建議・已知狀況・紅字白話說明・四年趨勢・部位分組・預約勾選・看診摘要・記錄看診・健檢前提醒・搜尋；新增 D.ckplan→meta/ckplan）／W1126-09（年度健檢超過 4 年：最近 3 年＋更早下拉）／W1126-08（首頁加小工具捷徑：PDF 解密）／W1126-07（主題 D 設為預設：每台裝置一次性切到 D）／W1126-06（健康頁新版套用到 A/B/C 主題）／W1126-05（設定頁加「小工具・移除 PDF 密碼」入口 pdfunlock.html）／W1126-04（主題 D 健康頁：體重有感版＋記一筆 7 項＋年度健檢；修 .pipe 投標四格）／W1126-03（W1126-02 主題 D＋合併 W0928-02 體重多指標目標值＋達標預估＋BMI 目標自動換算） ════════ */
-const VERSION = 'W1126-21';
+/* ════════ 艋舺良的工作台 W1126-22（旅遊頁補登改成城市或國家、同城再補登＝×2、桌機地圖也放大到去過範圍、城市名避免重疊）／W1126-21（旅遊頁：近期｜想去兩欄、我的足跡＋世界地圖、護照章含地標；旅程加國家／城市；已踏國家自動算＋補登；新增 lib/worldmap.json）／W1126-20（右上日期加西元年份與農曆，兩行）／W1126-19（個人頁待辦：「今天到期」只算今天，逾期另外顯示「逾期 N 件」）／W1126-18（主題 D 全部分頁拿掉卡片框改線條分區；當月清單：行程過了顯示已結束並收起，只有待辦才叫逾期）／W1126-17（個人頁：拿掉大標、標題放大加圖示、鎖頭縮小放標題旁、左待辦右三張）／W1126-16（Google 行事曆過期後，點頁面第一下自動續連）／W1126-15（旅程：填出發後回程自動帶入出發日、不能選更早；「工程」改名「案場」，案場頁分段 在建案／已完工；沒有進行中投標案時頂部隱藏「投標」、首頁四格變三格、公司事務頁最上面多「投標」類）／W1126-14（首頁「這一週」可切 週一～週日／從今天起，預設週一，存 prefs.wkStart）／W1126-13（首頁「這一週」：人員休假「休：」拉到日期那一列）／W1126-12（主題 D 首頁「這一週」：沒行程的日子縮窄、有行程的變寬）／W1126-11（主題 D 首頁最下方加版號小字）／W1126-10（年度健檢 A～E：今年該做的事・自費建議・已知狀況・紅字白話說明・四年趨勢・部位分組・預約勾選・看診摘要・記錄看診・健檢前提醒・搜尋；新增 D.ckplan→meta/ckplan）／W1126-09（年度健檢超過 4 年：最近 3 年＋更早下拉）／W1126-08（首頁加小工具捷徑：PDF 解密）／W1126-07（主題 D 設為預設：每台裝置一次性切到 D）／W1126-06（健康頁新版套用到 A/B/C 主題）／W1126-05（設定頁加「小工具・移除 PDF 密碼」入口 pdfunlock.html）／W1126-04（主題 D 健康頁：體重有感版＋記一筆 7 項＋年度健檢；修 .pipe 投標四格）／W1126-03（W1126-02 主題 D＋合併 W0928-02 體重多指標目標值＋達標預估＋BMI 目標自動換算） ════════ */
+const VERSION = 'W1126-22';
 const GCAL_CLIENT_ID = '654856338073-ukdt5nvtc8riq2010lado0i0n5vuhcfl.apps.googleusercontent.com';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
@@ -1723,7 +1726,7 @@ function blank(){ return {
   trips: [],                       // {id,kind:'near'|'wish',name,start,end,year,budget,split,note,done,rv,mt,del}
   notes: [],                       // {id,txt,tag,pin,rv,mt,del}
   company: [],                     // W1126-01 公司事務 {id,cat,title,due,pct,note,done,rv,mt,del}
-  prefs: {netBase:0, goalMoney:0, countries:0, countriesTarget:50, extraCountries:[], weightTarget:0, whTargets:{fat:0, muscle:0, visceral:0, bmi:0}, whStart:{}, mt:0},
+  prefs: {netBase:0, goalMoney:0, countries:0, countriesTarget:50, extraCountries:[], extraCities:[], weightTarget:0, whTargets:{fat:0, muscle:0, visceral:0, bmi:0}, whStart:{}, mt:0},
   settings: {skin:'D', skinV:1, fs:'m', scope:'all', order:DEF_ORDER.slice(), folded:{}, showMoney:false, pin:null, lockApp:true, lockMoney:false},
   ver: 1
 };}
@@ -1748,7 +1751,7 @@ function load(){
   d.ckplan = ckPlanFix(d.ckplan);   /* W1126-10 */
   d.prefs = d.prefs || {};
   d.prefs.health = Object.assign({bpSys:130, bpDia:80, exWeek:3}, (d.prefs||{}).health||{});
-  d.prefs = Object.assign({netBase:0, goalMoney:0, countries:0, countriesTarget:50, extraCountries:[], weightTarget:0, whTargets:{fat:0, muscle:0, visceral:0, bmi:0}, whStart:{}, mt:0}, d.prefs||{});
+  d.prefs = Object.assign({netBase:0, goalMoney:0, countries:0, countriesTarget:50, extraCountries:[], extraCities:[], weightTarget:0, whTargets:{fat:0, muscle:0, visceral:0, bmi:0}, whStart:{}, mt:0}, d.prefs||{});
   d.prefs.whTargets = Object.assign({fat:0, muscle:0, visceral:0, bmi:0}, (d.prefs.whTargets && typeof d.prefs.whTargets==='object') ? d.prefs.whTargets : {});   /* W0928：巢狀物件另補 default */
   if (!d.prefs.whStart || typeof d.prefs.whStart !== 'object') d.prefs.whStart = {};
   d.prefs.taxP = Object.assign(JSON.parse(JSON.stringify(TAXP_DEF)), d.prefs.taxP||{});
@@ -3136,13 +3139,13 @@ const TR_CN = {   // 中文國名 → 地圖名稱
  '法國':'France','德國':'Germany','英國':'United Kingdom','愛爾蘭':'Ireland','義大利':'Italy','西班牙':'Spain','葡萄牙':'Portugal','荷蘭':'Netherlands','比利時':'Belgium','盧森堡':'Luxembourg','瑞士':'Switzerland','奧地利':'Austria','捷克':'Czechia','匈牙利':'Hungary','波蘭':'Poland','斯洛伐克':'Slovakia','斯洛維尼亞':'Slovenia','克羅埃西亞':'Croatia','希臘':'Greece','丹麥':'Denmark','瑞典':'Sweden','挪威':'Norway','芬蘭':'Finland','冰島':'Iceland','愛沙尼亞':'Estonia','俄羅斯':'Russia','羅馬尼亞':'Romania','保加利亞':'Bulgaria','塞爾維亞':'Serbia',
  '美國':'United States of America','加拿大':'Canada','墨西哥':'Mexico','古巴':'Cuba','巴西':'Brazil','阿根廷':'Argentina','智利':'Chile','秘魯':'Peru',
  '澳洲':'Australia','紐西蘭':'New Zealand','帛琉':'','關島':'','斐濟':'Fiji'};
-const TR_ALIAS = {'南韓':'韓國','大韓民國':'韓國','美':'美國','英':'英國','澳大利亞':'澳洲','荷蘭王國':'荷蘭','捷克共和國':'捷克','阿拉伯聯合大公國':'阿聯','義大利共和國':'義大利','意大利':'義大利','新西蘭':'紐西蘭'};
+const TR_ALIAS = {'南韓':'韓國','大韓民國':'韓國','美':'美國','英':'英國','澳大利亞':'澳洲','荷蘭王國':'荷蘭','捷克共和國':'捷克','阿拉伯聯合大公國':'阿聯','義大利共和國':'義大利','意大利':'義大利','新西蘭':'紐西蘭','梵諦岡':'梵蒂岡','波爾圖':'波多'};
 const TR_CITY = {   // 城市 → [經度, 緯度, 國家]
  '東京':[139.69,35.69,'日本'],'大阪':[135.5,34.69,'日本'],'京都':[135.77,35.01,'日本'],'奈良':[135.8,34.69,'日本'],'神戶':[135.19,34.69,'日本'],'名古屋':[136.91,35.18,'日本'],'札幌':[141.35,43.06,'日本'],'北海道':[141.35,43.06,'日本'],'福岡':[130.4,33.59,'日本'],'沖繩':[127.68,26.21,'日本'],'那霸':[127.68,26.21,'日本'],'白馬':[137.86,36.7,'日本'],'長野':[138.19,36.65,'日本'],'仙台':[140.87,38.27,'日本'],'廣島':[132.46,34.39,'日本'],'金澤':[136.66,36.56,'日本'],'箱根':[139.1,35.23,'日本'],'輕井澤':[138.6,36.35,'日本'],
  '首爾':[126.98,37.57,'韓國'],'釜山':[129.08,35.18,'韓國'],'濟州':[126.53,33.5,'韓國'],
  '曼谷':[100.5,13.75,'泰國'],'清邁':[98.99,18.79,'泰國'],'普吉':[98.39,7.88,'泰國'],'河內':[105.85,21.03,'越南'],'胡志明市':[106.63,10.82,'越南'],'峴港':[108.22,16.05,'越南'],'新加坡':[103.82,1.35,'新加坡'],'吉隆坡':[101.69,3.14,'馬來西亞'],'峇里島':[115.19,-8.41,'印尼'],'宿霧':[123.89,10.32,'菲律賓'],'馬尼拉':[120.98,14.6,'菲律賓'],'長灘島':[121.92,11.97,'菲律賓'],'吳哥窟':[103.86,13.41,'柬埔寨'],
  '香港':[114.17,22.32,'香港'],'澳門':[113.54,22.2,'澳門'],'上海':[121.47,31.23,'中國'],'北京':[116.4,39.9,'中國'],'杜拜':[55.27,25.2,'阿聯'],'伊斯坦堡':[28.98,41.01,'土耳其'],
- '巴黎':[2.35,48.86,'法國'],'尼斯':[7.26,43.7,'法國'],'倫敦':[-0.13,51.51,'英國'],'愛丁堡':[-3.19,55.95,'英國'],'柏林':[13.4,52.52,'德國'],'慕尼黑':[11.58,48.14,'德國'],'法蘭克福':[8.68,50.11,'德國'],'羅馬':[12.5,41.9,'義大利'],'米蘭':[9.19,45.46,'義大利'],'威尼斯':[12.32,45.44,'義大利'],'佛羅倫斯':[11.26,43.77,'義大利'],'巴塞隆納':[2.17,41.39,'西班牙'],'馬德里':[-3.7,40.42,'西班牙'],'里斯本':[-9.14,38.72,'葡萄牙'],'阿姆斯特丹':[4.9,52.37,'荷蘭'],'布魯塞爾':[4.35,50.85,'比利時'],'蘇黎世':[8.54,47.38,'瑞士'],'少女峰':[7.96,46.54,'瑞士'],'維也納':[16.37,48.21,'奧地利'],'薩爾斯堡':[13.04,47.81,'奧地利'],'布拉格':[14.42,50.08,'捷克'],'布達佩斯':[19.04,47.5,'匈牙利'],'哥本哈根':[12.57,55.68,'丹麥'],'斯德哥爾摩':[18.07,59.33,'瑞典'],'奧斯陸':[10.75,59.91,'挪威'],'赫爾辛基':[24.94,60.17,'芬蘭'],'雷克雅維克':[-21.94,64.15,'冰島'],'雅典':[23.73,37.98,'希臘'],'聖托里尼':[25.43,36.39,'希臘'],
+ '巴黎':[2.35,48.86,'法國'],'尼斯':[7.26,43.7,'法國'],'倫敦':[-0.13,51.51,'英國'],'愛丁堡':[-3.19,55.95,'英國'],'柏林':[13.4,52.52,'德國'],'慕尼黑':[11.58,48.14,'德國'],'法蘭克福':[8.68,50.11,'德國'],'羅馬':[12.5,41.9,'義大利'],'米蘭':[9.19,45.46,'義大利'],'威尼斯':[12.32,45.44,'義大利'],'佛羅倫斯':[11.26,43.77,'義大利'],'巴塞隆納':[2.17,41.39,'西班牙'],'馬德里':[-3.7,40.42,'西班牙'],'里斯本':[-9.14,38.72,'葡萄牙'],'波多':[-8.61,41.15,'葡萄牙'],'梵蒂岡':[12.45,41.9,'梵蒂岡'],'阿姆斯特丹':[4.9,52.37,'荷蘭'],'布魯塞爾':[4.35,50.85,'比利時'],'蘇黎世':[8.54,47.38,'瑞士'],'少女峰':[7.96,46.54,'瑞士'],'維也納':[16.37,48.21,'奧地利'],'薩爾斯堡':[13.04,47.81,'奧地利'],'布拉格':[14.42,50.08,'捷克'],'布達佩斯':[19.04,47.5,'匈牙利'],'哥本哈根':[12.57,55.68,'丹麥'],'斯德哥爾摩':[18.07,59.33,'瑞典'],'奧斯陸':[10.75,59.91,'挪威'],'赫爾辛基':[24.94,60.17,'芬蘭'],'雷克雅維克':[-21.94,64.15,'冰島'],'雅典':[23.73,37.98,'希臘'],'聖托里尼':[25.43,36.39,'希臘'],
  '紐約':[-74.0,40.71,'美國'],'洛杉磯':[-118.24,34.05,'美國'],'舊金山':[-122.42,37.77,'美國'],'西雅圖':[-122.33,47.61,'美國'],'拉斯維加斯':[-115.14,36.17,'美國'],'夏威夷':[-157.86,21.31,'美國'],'溫哥華':[-123.12,49.28,'加拿大'],'多倫多':[-79.38,43.65,'加拿大'],
  '雪梨':[151.21,-33.87,'澳洲'],'墨爾本':[144.96,-37.81,'澳洲'],'布里斯本':[153.03,-27.47,'澳洲'],'奧克蘭':[174.76,-36.85,'紐西蘭'],'皇后鎮':[168.66,-45.03,'紐西蘭'],'帛琉':[134.48,7.51,'帛琉'],'關島':[144.79,13.44,'關島']};
 const TR_LM = {   // 護照章地標（線條手繪）
@@ -3158,6 +3161,7 @@ TR_LM['京都'] = '<path d="M24 3v5M18 11h12l-6-3zM15 11h18M19 11v4h10v-4M14 19h
 TR_LM['那霸'] = TR_LM['沖繩'];
 const TR_PLANE = '<path d="M6 30l36-14-10 22-8-8-6 8v-10l18-12"/>';
 let WMAP = null, wmapLoading = false;
+function trExCity(){ const o = {}; (D.prefs.extraCities||[]).forEach(c => o[c] = (o[c]||0) + 1); return o; }   // W1126-22 補登城市次數
 function trSplit(s){ return (s||'').split(/[、,，\/／\s]+/).map(x => x.trim()).filter(Boolean); }
 function trNormC(c){ return TR_ALIAS[c] || c; }
 function trCities(t){ return trSplit(t.city); }
@@ -3189,7 +3193,10 @@ function trStats(){
   const done = D.trips.filter(t => !t.del && t.done);
   const cnt = {}; done.forEach(t => trCountries(t).forEach(c => cnt[c] = (cnt[c]||0) + 1));
   (D.prefs.extraCountries||[]).forEach(c => { if (!cnt[c]) cnt[c] = 0; });
-  const cities = new Set(); let days = 0, km = 0;
+  const exN = trExCity(), exMax = {};   // W1126-22：補登城市→國家（同國取最多次的城市）
+  Object.keys(exN).forEach(c => { const g = TR_CITY[c]; if (g) exMax[g[2]] = Math.max(exMax[g[2]]||0, exN[c]); });
+  Object.keys(exMax).forEach(k => cnt[k] = (cnt[k]||0) + exMax[k]);
+  const cities = new Set(D.prefs.extraCities||[]); let days = 0, km = 0;
   done.forEach(t => {
     trCities(t).forEach(c => cities.add(c));
     if (t.start && t.end){ const n = Math.round((new Date(t.end) - new Date(t.start))/86400000) + 1; if (n > 0 && n < 400) days += n; }
@@ -3204,7 +3211,9 @@ function trMapSvg(st, mob){
   const [W, H] = WMAP.vb; let vb = [0, 0, W, H];
   const pts = []; const seen = new Set();
   st.done.forEach(t => trCities(t).forEach(c => { const g = TR_CITY[c]; if (g && !seen.has(c)){ seen.add(c); pts.push([c, g[0], g[1]]); } }));
-  if (mob && pts.length){   // 手機：放大到去過的範圍
+  const exN = trExCity();
+  Object.keys(exN).forEach(c => { const g = TR_CITY[c]; if (g && !seen.has(c)){ seen.add(c); pts.push([c, g[0], g[1]]); } });
+  if (pts.length){   // W1126-22：桌機也放大到去過的範圍（手機 W1126-21 起）
     const xy = pts.map(p => trEE(p[1], p[2])).concat([trEE(TR_HOME[0], TR_HOME[1])]);
     let x0 = Math.min(...xy.map(p=>p[0])) - 50, x1 = Math.max(...xy.map(p=>p[0])) + 50, y0 = Math.min(...xy.map(p=>p[1])) - 40, y1 = Math.max(...xy.map(p=>p[1])) + 40;
     const w = Math.max(320, x1 - x0), h = Math.max(w*0.62, y1 - y0), cx = (x0+x1)/2, cy = (y0+y1)/2;
@@ -3228,10 +3237,16 @@ function trMapSvg(st, mob){
       prev = q;
     });
   });
-  pts.forEach(p => { const [x, y] = trEE(p[1], p[2]);
-    s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(3.6*sc*lm).toFixed(1)}" class="tr-pt" style="stroke-width:${(1.6*sc*lm).toFixed(2)}"/>`;
-    s += `<text x="${(x+6*sc*lm).toFixed(1)}" y="${(y-6*sc*lm).toFixed(1)}" class="tr-lab" style="font-size:${fs}px;stroke-width:${sw}px">${esc(p[0])}</text>`; });
   const [hx, hy] = trEE(TR_HOME[0], TR_HOME[1]);
+  /* W1126-22：城市名避開彼此（右上→右下→左上→左下→往下推），去過多次的點稍大 */
+  const F = 13*sc*lm, boxes = [[hx+8*sc*lm, hy+16*sc*lm-F, 2*F+2, F]], hit = b => boxes.some(o => b[0] < o[0]+o[2] && o[0] < b[0]+b[2] && b[1] < o[1]+o[3] && o[1] < b[1]+b[3]);
+  pts.forEach(p => { const [x, y] = trEE(p[1], p[2]), k = Math.min(3, Math.max(1, exN[p[0]]||1)), rr = 3.6*sc*lm*(1 + .3*(k-1)), w = p[0].length*F + 2, g = 6*sc*lm;
+    s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${rr.toFixed(1)}" class="tr-pt" style="stroke-width:${(1.6*sc*lm).toFixed(2)}"/>`;
+    const cand = [[x+g, y-g], [x+g, y+g+F*.8], [x-g-w, y-g], [x-g-w, y+g+F*.8]];
+    for (let i = 1; i <= 4; i++) cand.push([x+g, y-g+i*F*1.05], [x+g, y-g-i*F*1.05]);
+    let at = cand.find(c => !hit([c[0], c[1]-F, w, F])) || cand[0];
+    boxes.push([at[0], at[1]-F, w, F]);
+    s += `<text x="${at[0].toFixed(1)}" y="${at[1].toFixed(1)}" class="tr-lab" style="font-size:${fs}px;stroke-width:${sw}px">${esc(p[0])}</text>`; });
   s += `<circle cx="${hx.toFixed(1)}" cy="${hy.toFixed(1)}" r="${(5.5*sc*lm).toFixed(1)}" class="tr-hm" style="stroke-width:${(2*sc*lm).toFixed(1)}"/><text x="${(hx+8*sc*lm).toFixed(1)}" y="${(hy+16*sc*lm).toFixed(1)}" class="tr-lab hm" style="font-size:${fs}px;stroke-width:${sw}px">台北</text>`;
   return s + '</svg>';
 }
@@ -3243,6 +3258,8 @@ function trLoadMap(){
 let trAddC = false;   // 補登國家輸入框是否打開
 function renderTripPage(){
   const mob = innerWidth < 760;
+  { const ec = D.prefs.extraCountries||[], mv = ec.map(trNormC).filter(c => TR_CITY[c]);   // 舊補登裡其實是城市的，搬到城市
+    if (mv.length){ D.prefs.extraCities = (D.prefs.extraCities||[]).concat(mv); D.prefs.extraCountries = ec.filter(c => !TR_CITY[trNormC(c)]); D.prefs.mt = now(); save(); fbPushPrefs(); } }
   const st = trStats();
   if ((+D.prefs.countries||0) !== st.nC){ D.prefs.countries = st.nC; D.prefs.mt = now(); save(); fbPushPrefs(); }   // 環遊世界目標＝國家數（自動算）
   const tgt = +D.prefs.countriesTarget || 50;
@@ -3265,7 +3282,10 @@ function renderTripPage(){
   const laps = (st.km/40075).toFixed(1);
   const chips = Object.keys(st.cnt).sort((a,b)=> st.cnt[b]-st.cnt[a]).map(c => {
     const extra = st.cnt[c] === 0;
-    return `<span class="tag tr-chip"${extra?` data-rmc="${esc(c)}" title="點一下移除補登"`:''}>${esc(c)}${st.cnt[c]>1?' ×'+st.cnt[c]:''}${extra?' ×':''}</span>`; }).join('');
+    const exC = (D.prefs.extraCountries||[]).includes(c);
+    return `<span class="tag tr-chip"${exC?` data-rmc="${esc(c)}" title="點一下移除補登"`:''}>${esc(c)}${st.cnt[c]>1?' ×'+st.cnt[c]:''}${exC?' ×':''}</span>`; }).join('');
+  const exN = trExCity();
+  const cityChips = Object.keys(exN).map(c => `<span class="tag tr-chip city" data-rmcity="${esc(c)}" title="點一下減一次">${esc(c)}<small>・${esc((TR_CITY[c]||[])[2]||'')}</small>${exN[c]>1?' ×'+exN[c]:''}<i class="tr-x">×</i></span>`).join('');
   $('#tripFoot').innerHTML = `
     <div class="tr-stats">
       <div><small>已踏國家</small><span class="tr-ring"><span class="cpc">${ringSvg(pct,'var(--tv)')}<b>${pct}%</b></span><b class="tr-n">${st.nC}</b><em>／<input type="number" id="ctTgt" value="${tgt}" aria-label="目標國家數"> 國</em></span></div>
@@ -3273,7 +3293,8 @@ function renderTripPage(){
       <div><small>旅行天數</small><b class="tr-n">${st.days}</b><em>天</em></div>
       <div><small>飛行里程</small><b class="tr-n">${st.km >= 10000 ? (st.km/10000).toFixed(1) : Math.round(st.km).toLocaleString()}</b><em>${st.km >= 10000 ? '萬 km' : 'km'}<span class="tr-earth">${st.km >= 10000 ? '・繞地球 '+laps+' 圈' : ''}</span></em></div>
     </div>
-    <div class="tr-chips">${chips}${trAddC ? `<span class="tr-addc"><input id="trCIn" placeholder="國家名稱，例：越南" aria-label="補登國家"><button class="btn" id="trCOk">加入</button></span>` : '<span class="tag tr-chip add" id="trCAdd">＋ 補登國家</span>'}</div>
+    <div class="tr-chips"><b class="tr-cl">國家</b>${chips}</div>
+    <div class="tr-chips"><b class="tr-cl">城市</b>${cityChips}${trAddC ? `<span class="tr-addc"><input id="trCIn" placeholder="城市或國家，例：米蘭、越南" aria-label="補登"><button class="btn" id="trCOk">加入</button></span>` : '<span class="tag tr-chip add" id="trCAdd">＋ 補登城市或國家</span>'}</div>
     <div class="tr-cap">去過的國家塗色，虛線＝從台北飛出去的航線</div>
     <div id="trMap">${trMapSvg(st, mob)}</div>`;
   /* ④ 護照章 */
@@ -3295,9 +3316,14 @@ function renderTripPage(){
   $('#ctTgt').onchange = e => { D.prefs.countriesTarget = +e.target.value||50; D.prefs.mt = now(); save(); fbPushPrefs(); renderTripPage(); };
   const ca = $('#trCAdd'); if (ca) ca.onclick = () => { trAddC = true; renderTripPage(); const i = $('#trCIn'); if (i) i.focus(); };
   const ok = $('#trCOk'); if (ok){ const add = () => { const v = trNormC(($('#trCIn').value||'').trim()); trAddC = false;
-      if (v){ const a = D.prefs.extraCountries = (D.prefs.extraCountries||[]).filter(x => x !== v); a.push(v); D.prefs.mt = now(); save(); fbPushPrefs(); toast('已補登 '+v); }
+      if (v && TR_CITY[v]){ const a = D.prefs.extraCities = (D.prefs.extraCities||[]).slice(); a.push(v); D.prefs.mt = now(); save(); fbPushPrefs();
+        const k = a.filter(x => x === v).length; toast(k > 1 ? v+' 第 '+k+' 次' : '已補登城市 '+v+'（'+TR_CITY[v][2]+'）'); }
+      else if (v){ const a = D.prefs.extraCountries = (D.prefs.extraCountries||[]).filter(x => x !== v); a.push(v); D.prefs.mt = now(); save(); fbPushPrefs(); toast('已補登國家 '+v); }
       renderTripPage(); };
     ok.onclick = add; $('#trCIn').onkeydown = e => { if (e.key === 'Enter') add(); if (e.key === 'Escape'){ trAddC = false; renderTripPage(); } }; }
+  $('#page-trip').querySelectorAll('[data-rmcity]').forEach(n => n.onclick = () => {
+    const a = (D.prefs.extraCities||[]).slice(), i = a.lastIndexOf(n.dataset.rmcity); if (i >= 0) a.splice(i, 1);   // 點一下減一次
+    D.prefs.extraCities = a; D.prefs.mt = now(); save(); fbPushPrefs(); renderTripPage(); });
   $('#page-trip').querySelectorAll('[data-rmc]').forEach(n => n.onclick = () => {
     D.prefs.extraCountries = (D.prefs.extraCountries||[]).filter(x => x !== n.dataset.rmc); D.prefs.mt = now(); save(); fbPushPrefs(); renderTripPage(); });
   if (!WMAP) trLoadMap();
