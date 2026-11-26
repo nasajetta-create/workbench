@@ -447,6 +447,14 @@
   body[data-skin="D"] .dh-ln .v .cpc{width:2.1rem; height:2.1rem;}
   body[data-skin="D"] .dh-ln .v .cpc b{font-size:0;}
   body[data-skin="D"] .dh-ln .s{font-size:.85rem; color:var(--sub); margin-top:.3rem; overflow-wrap:anywhere;}
+  /* W1126-08：首頁小工具捷徑（一個外框＋內部細線分隔） */
+  body[data-skin="D"] .dh-tools{margin-top:1.1rem;}
+  body[data-skin="D"] .dh-tg{display:flex; flex-wrap:wrap; width:fit-content; max-width:100%; gap:1px; background:var(--sep); border:1px solid var(--sep); border-radius:.9rem; overflow:hidden;}
+  body[data-skin="D"] .dh-tl{flex:0 0 13rem; display:flex; align-items:center; gap:.6rem; background:#fff; padding:.8rem 1rem; font-size:1rem; font-weight:700; cursor:pointer; min-width:0;}
+  @media (max-width:760px){ body[data-skin="D"] .dh-tg{width:100%;} body[data-skin="D"] .dh-tl{flex:1 1 9rem;} }
+  body[data-skin="D"] .dh-tl:hover{background:color-mix(in srgb, var(--navy) 6%, #fff);}
+  body[data-skin="D"] .dh-tl .ic{width:1.35em; height:1.35em; color:var(--navy); flex:none;}
+  body[data-skin="D"] .dh-tl small{display:block; font-size:.78rem; font-weight:400; color:var(--sub); margin-top:.1rem;}
 
   /* 公司事務頁 */
   body[data-skin="D"] .cohead{margin:.25rem 0 1.6rem; gap:2.5rem; align-items:flex-end;}
@@ -800,6 +808,7 @@
   <symbol id="i-cloud-sync" viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 0 0 .5-8 6 6 0 0 0-11.4 1.4A3.5 3.5 0 0 0 7 18z"/></symbol>
   <symbol id="i-gcal" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M10 14.5l1.8 1.8 3.4-3.8"/></symbol>
   <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4.5" y="10" width="15" height="10.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol>
+  <symbol id="i-unlock" viewBox="0 0 24 24"><rect x="4.5" y="10" width="15" height="10.5"/><path d="M8 10V7a4 4 0 0 1 7.6-1.7"/><path d="M12 14v3"/></symbol>
   <symbol id="i-db" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7.5" ry="3"/><path d="M4.5 6v12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3V6"/><path d="M4.5 12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3"/></symbol>
   <symbol id="i-backup" viewBox="0 0 24 24"><path d="M12 3v13M7 11l5 5 5-5"/><path d="M4 20h16"/></symbol>
   <symbol id="i-look" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8"/></symbol>
@@ -1323,8 +1332,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 'use strict';
-/* ════════ 艋舺良的工作台 W1126-07（主題 D 設為預設：每台裝置一次性切到 D）／W1126-06（健康頁新版套用到 A/B/C 主題）／W1126-05（設定頁加「小工具・移除 PDF 密碼」入口 pdfunlock.html）／W1126-04（主題 D 健康頁：體重有感版＋記一筆 7 項＋年度健檢；修 .pipe 投標四格）／W1126-03（W1126-02 主題 D＋合併 W0928-02 體重多指標目標值＋達標預估＋BMI 目標自動換算） ════════ */
-const VERSION = 'W1126-07';
+/* ════════ 艋舺良的工作台 W1126-08（首頁加小工具捷徑：PDF 解密）／W1126-07（主題 D 設為預設：每台裝置一次性切到 D）／W1126-06（健康頁新版套用到 A/B/C 主題）／W1126-05（設定頁加「小工具・移除 PDF 密碼」入口 pdfunlock.html）／W1126-04（主題 D 健康頁：體重有感版＋記一筆 7 項＋年度健檢；修 .pipe 投標四格）／W1126-03（W1126-02 主題 D＋合併 W0928-02 體重多指標目標值＋達標預估＋BMI 目標自動換算） ════════ */
+const VERSION = 'W1126-08';
 const GCAL_CLIENT_ID = '654856338073-ukdt5nvtc8riq2010lado0i0n5vuhcfl.apps.googleusercontent.com';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
@@ -3586,6 +3595,9 @@ function dTimelineV(timed, nowH){
   }
   return h + '</div>';
 }
+const TOOLS = [
+  {t:'PDF 解密', s:'移除 PDF 密碼', ic:'i-unlock', href:'pdfunlock.html'}
+];
 function renderDHome(){
   const box = $('#dHome'), t = todayStr(), nd = new Date(), nowH = nd.getHours() + nd.getMinutes()/60;
   const hr = nd.getHours(), hi = (hr<5?'晚安':hr<11?'早安':hr<18?'午安':'晚安') + '，艋舺。下一件事';
@@ -3673,13 +3685,17 @@ function renderDHome(){
   const lines = `<div class="dh-lines">` + [lnSite, lnCase, lnCo, lnLife].map(l =>
     `<div class="dh-ln" data-go="${l.go}"><div class="h"><span><i class="dh-dot" style="background:${l.col};"></i>${l.name}</span>${l.st}</div><div class="v">${l.v}</div><div class="s">${l.s}</div></div>`).join('') + '</div>';
 
-  box.innerHTML = `<div class="dh-top">${next}<div class="dh-card">${odHtml}</div></div>${tl}${week}${lines}`;
+  /* ⑥ 小工具捷徑（W1126-08；新工具加進 TOOLS 即可） */
+  const tools = `<div class="dh-card dh-tools"><div class="dh-lab">小工具</div><div class="dh-tg">` +
+    TOOLS.map(x => `<div class="dh-tl" data-href="${x.href}"><svg class="ic"><use href="#${x.ic}"></use></svg><span>${x.t}<small>${x.s}</small></span></div>`).join('') + '</div></div>';
+  box.innerHTML = `<div class="dh-top">${next}<div class="dh-card">${odHtml}</div></div>${tl}${week}${lines}${tools}`;
 }
 function coComplete(id){
   const c = D.company.find(x => x.id === id); if (!c) return;
   c.done = true; c.pct = 100; c.rv = (c.rv||0) + 1; c.mt = now(); save(); fbPushDoc('company', c); renderAll(); toast('已完成');
 }
 $('#dHome').addEventListener('click', e => {
+  const tl = e.target.closest('[data-href]'); if (tl){ location.href = tl.dataset.href; return; }
   const r = e.target.closest('[data-done]');
   if (r){ if (r.dataset.done === 'co') coComplete(r.dataset.id); else { toggleDone(r.dataset.id); toast('已完成'); } return; }
   const ln = e.target.closest('[data-go]'); if (ln){ go(ln.dataset.go); return; }
