@@ -211,6 +211,26 @@
   .subtabs button{padding:9px 15px; font-size:.88rem; color:var(--sub); border-right:1px solid var(--line); transition:background .12s, color .12s;}
   .subtabs button:hover{background:var(--tint); color:var(--ink);}
   .subtabs button.on{background:var(--ink); color:var(--page); font-weight:700;}
+  .subtabs button small{display:block; font-size:.72rem; font-weight:400; opacity:.85; margin-top:.1rem;}
+  /* W1126-15：案場頁分段 */
+  .projseg{margin-bottom:10px;}
+  .projseg .dw-seg{background:var(--line);}
+  /* W1126-15：公司事務頁「投標」類（沒有進行中投標案時才出現） */
+  .cobid{margin-bottom:14px;}
+  .cobid table{width:100%; border-collapse:collapse; font-size:.9rem;}
+  .cobid th{text-align:left; font-size:.75rem; color:var(--sub); font-weight:600; padding:6px 8px 6px 0; border-bottom:1px solid var(--hair); white-space:nowrap;}
+  .cobid td{padding:9px 8px 9px 0; border-bottom:1px solid var(--hair); vertical-align:middle;}
+  .cobid tr:last-child td{border-bottom:none;}
+  .cobid td.nm{font-weight:700; cursor:pointer; overflow-wrap:anywhere; color:var(--case);}
+  .cobid td.nm:hover{text-decoration:underline;}
+  .cobid td.dt, .cobid td.am{white-space:nowrap; font-variant-numeric:tabular-nums;}
+  .cobid td.am, .cobid th.am{text-align:right; padding-right:0;}
+  .stg{display:inline-block; padding:1px 8px; font-size:.75rem; line-height:1.7; white-space:nowrap; border:1px solid color-mix(in srgb, var(--tc) 38%, var(--card));
+    color:var(--tc); background:color-mix(in srgb, var(--tc) 10%, var(--card));}
+  body[data-skin="D"] .stg{border-radius:.4rem;}
+  .cobid .cofoot{display:flex; justify-content:flex-end; padding-top:8px;}
+  .cobid .coempty{display:flex; align-items:center; gap:12px; flex-wrap:wrap;}
+  .cobid .lnk{color:var(--case); font-size:.85rem; font-weight:700; cursor:pointer;}
   .warnbox{border:1px solid var(--urgent); background:color-mix(in srgb, var(--urgent) 8%, var(--card)); color:var(--urgent); font-size:.82rem; font-weight:700; padding:8px 10px; margin-top:12px;}
   .okbox{border:1px solid color-mix(in srgb, var(--life) 55%, var(--card)); background:color-mix(in srgb, var(--life) 8%, var(--card)); color:var(--life); font-size:.82rem; padding:8px 10px; margin-top:12px;}
   .iform{display:flex; gap:6px; margin-top:10px; flex-wrap:wrap;}
@@ -395,6 +415,10 @@
   body[data-skin="D"] .dh-card{background:#fff; border-radius:1.5rem; padding:1.1rem 1.4rem; box-shadow:0 1px 2px rgba(0,0,0,.03);}
   body[data-skin="D"] .dh-lab{font-size:.85rem; color:var(--sub); font-weight:700; margin-bottom:.55rem;}
   body[data-skin="D"] .dh-lab.red{color:var(--urgent);}
+  body[data-skin="D"] .dh-labr{display:flex; justify-content:space-between; align-items:center; gap:.6rem; margin-bottom:.55rem;}
+  body[data-skin="D"] .dh-labr .dh-lab{margin-bottom:0;}
+  body[data-skin="D"] .dh-wks button{padding:.2rem .7rem; font-size:.8rem;}
+  body[data-skin="D"] .dh-day.past{opacity:.45;}
   body[data-skin="D"] .dh-od{display:flex; align-items:center; gap:.85rem; padding:.7rem 0; border-top:1px solid var(--sep);}
   body[data-skin="D"] .dh-od:first-of-type{border-top:none;}
   body[data-skin="D"] .dh-ring{width:1.45rem; height:1.45rem; border-radius:50%; border:.16rem solid var(--urgent); flex:none; transition:background .15s;}
@@ -432,12 +456,18 @@
   body[data-skin="D"] .dh-dd{font-size:1.5rem; font-weight:800; margin-bottom:.45rem; font-variant-numeric:tabular-nums;}
   body[data-skin="D"] .dh-dd small{font-size:.8rem; color:var(--sub); font-weight:600; margin-left:.3rem;}
   body[data-skin="D"] .dh-dd.t{color:var(--navy);}
+  body[data-skin="D"] .dh-dd{display:flex; flex-wrap:wrap; align-items:center; gap:.3rem .45rem; min-width:0;}
+  body[data-skin="D"] .dh-dd .dn{flex:none; white-space:nowrap;}
+  body[data-skin="D"] .dh-lvs{display:flex; flex-wrap:wrap; justify-content:flex-end; gap:.3rem; margin-left:auto; max-width:100%;}   /* 休假籤靠右，放不下就換行 */
+  body[data-skin="D"] .dh-lv{font-size:.78rem; font-weight:700; line-height:1.4; padding:.1rem .45rem; border-radius:.4rem; border:1px solid color-mix(in srgb, var(--sub) 38%, var(--card)); background:color-mix(in srgb, var(--sub) 10%, var(--card)); color:#5F5E5A; white-space:normal; overflow-wrap:anywhere; max-width:100%; cursor:pointer;}
+  body[data-skin="D"] .dh-lvs.m{display:none;}
   body[data-skin="D"] .dh-chips{display:flex; flex-direction:column; gap:.4rem;}
   body[data-skin="D"] .dh-dim{font-size:.8rem; color:#C7C7CC;}
   /* 四條線 */
   body[data-skin="D"] .dh-lines{display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); background:#fff; border-radius:1.5rem; box-shadow:0 1px 2px rgba(0,0,0,.03);}
   body[data-skin="D"] .dh-ln{padding:1.1rem 1.4rem; border-left:1px solid var(--sep); cursor:pointer; min-width:0;}
   body[data-skin="D"] .dh-ln:first-child{border-left:none;}
+  body[data-skin="D"] .dh-lines.n3{grid-template-columns:repeat(3, minmax(0,1fr));}
   body[data-skin="D"] .dh-ln .h{display:flex; justify-content:space-between; align-items:center; font-size:1rem; font-weight:700; gap:.5rem;}
   body[data-skin="D"] .dh-dot{display:inline-block; width:.55rem; height:.55rem; border-radius:50%; margin-right:.5rem; vertical-align:.08em;}
   body[data-skin="D"] .dh-st{font-size:.75rem; font-weight:700; padding:.15rem .55rem; border-radius:999px; white-space:nowrap;}
@@ -489,10 +519,15 @@
   body[data-skin="D"] .dpb .cpc svg{width:100% !important; height:100% !important; max-width:none;}
   body[data-skin="D"] .dpb .cpc b{font-size:.66rem !important;}
   .me-head h2{font-size:1.9rem; font-weight:800; margin:0 0 1rem;}
-  .me-grid{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:1rem;}
+  .me-grid{display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); gap:1rem; align-items:start; margin-top:.4rem;}
+  .me-col{display:flex; flex-direction:column; gap:1rem; min-width:0;}
   .me-card{background:#fff; border-radius:1.5rem; padding:1.1rem 1.35rem 1.2rem; box-shadow:0 1px 2px rgba(0,0,0,.03); cursor:pointer; min-width:0; transition:transform .12s;}
   .me-card:active{transform:scale(.985);}
-  .me-hd{display:flex; font-size:.9rem; font-weight:700; color:var(--sub); margin-bottom:.55rem;}
+  .me-hd{display:flex; align-items:center; gap:.55rem; font-size:1.08rem; font-weight:800; color:var(--ink); margin-bottom:.7rem;}
+  .me-ic{width:1.9rem; height:1.9rem; border-radius:.55rem; display:inline-flex; align-items:center; justify-content:center; flex:none; color:var(--mc); background:color-mix(in srgb, var(--mc) 12%, var(--card));}
+  .me-ic .ic{width:1.15rem; height:1.15rem;}
+  .me-lk{font-style:normal; display:inline-flex; align-items:center; gap:.2rem; font-size:.72rem; font-weight:700; color:var(--sub); padding:.05rem .4rem; border:1px solid color-mix(in srgb, var(--sub) 38%, var(--card)); background:color-mix(in srgb, var(--sub) 10%, var(--card)); border-radius:.35rem;}
+  .me-lk .ic{width:.8rem; height:.8rem;}
   .me-hd span{margin-left:auto; font-size:1.2rem; line-height:1; color:#C7C7CC;}
   .me-big{font-size:2.6rem; font-weight:800; letter-spacing:-.03em; line-height:1.1; font-variant-numeric:tabular-nums; overflow-wrap:anywhere;}
   .me-big.sm{font-size:1.55rem; letter-spacing:-.01em;}
@@ -518,7 +553,7 @@
   .me-empty{font-size:.9rem; color:var(--sub); padding:.6rem 0;}
   @media (max-width:760px){
     .me-head h2{font-size:1.6rem; margin:.3rem 0 .75rem;}
-    .me-grid{gap:.6rem;}
+    .me-grid{gap:.6rem; grid-template-columns:minmax(0,1fr);} .me-col{gap:.6rem;}
     .me-card{border-radius:1.1rem; padding:.85rem .9rem .9rem;}
     .me-big{font-size:2rem;}
     .me-big.sm{font-size:1.15rem;}
@@ -526,8 +561,8 @@
     .me-li em{display:none;}
     .me-rg.cpc{width:3rem; height:3rem;}
     .me-rg.cpc b{font-size:.68rem;}
-    .me-row{flex-direction:column; align-items:flex-start; gap:.6rem;}
-    .me-rgw{flex-direction:row;}
+    .me-row{gap:1rem;}
+    .me-rgw{flex-direction:column;}
     .me-cd b{font-size:1.7rem;}
     body[data-skin="D"] .dset{width:2.4rem; height:2.4rem; margin-left:auto;}
   }
@@ -576,8 +611,13 @@
     body[data-skin="D"] .dh-chips{flex-direction:row; flex-wrap:wrap; gap:.35rem; flex:1; min-width:0; padding-top:.1rem;}
     body[data-skin="D"] .dh-chip{font-size:.8rem; padding:.3rem .55rem; max-width:100%;}
     body[data-skin="D"] .dh-dim{padding-top:.35rem;}
+    body[data-skin="D"] .dh-dd{display:block;}
+    body[data-skin="D"] .dh-lvs.d{display:none;}
+    body[data-skin="D"] .dh-lvs.m{display:flex; order:9; margin-left:auto;}
     body[data-skin="D"] .dh-lines{grid-template-columns:1fr 1fr; gap:.6rem; background:none; box-shadow:none;}
     body[data-skin="D"] .dh-ln{background:#fff; border-radius:1.25rem; border-left:none; padding:.75rem .85rem;}
+    body[data-skin="D"] .dh-lines.n3{grid-template-columns:1fr 1fr;}
+    body[data-skin="D"] .dh-lines.n3 .dh-ln:last-child{grid-column:span 2;}
     body[data-skin="D"] .dh-ln .h{font-size:.88rem;}
     body[data-skin="D"] .dh-st{font-size:.68rem; padding:.1rem .45rem;}
     body[data-skin="D"] .dh-ln .v{font-size:1.05rem; margin-top:.45rem;}
@@ -1004,7 +1044,7 @@
     <ul class="nav" id="deskNav">
       <li data-page="home" class="on"><svg class="ic"><use href="#i-home"></use></svg>首頁</li>
       <li data-page="cal"><svg class="ic"><use href="#i-cal"></use></svg>行事曆</li>
-      <li data-page="proj"><svg class="ic"><use href="#i-proj"></use></svg>在建工程</li>
+      <li data-page="proj"><svg class="ic"><use href="#i-proj"></use></svg>案場</li>
       <li data-page="bid"><svg class="ic"><use href="#i-bid"></use></svg>投標案</li>
       <li data-page="todo"><svg class="ic"><use href="#i-todo"></use></svg>待辦清單</li>
       <li data-page="fin"><svg class="ic"><use href="#i-fin"></use></svg>財務看板</li>
@@ -1023,7 +1063,7 @@
     <div class="dbar" id="dBar">
       <div class="dhead"><span class="ddate" id="dDate"></span><button class="dset" id="dSet" aria-label="設定・備份" title="設定・備份"><svg class="ic big" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button><button class="dquick" id="dQuick" aria-label="快速記錄">＋<span class="dq-t">&nbsp;快速記錄</span></button></div>
       <nav class="dtabs" id="dTabs">
-        <button data-dt="home">今天</button><button data-dt="proj">工程</button><button data-dt="bid">投標</button><button data-dt="company">公司<b id="dCoBad"></b></button><button data-dt="me">個人</button><button data-dt="cal">行事曆</button>
+        <button data-dt="home">今天</button><button data-dt="proj">案場</button><button data-dt="bid">投標</button><button data-dt="company">公司<b id="dCoBad"></b></button><button data-dt="me">個人</button><button data-dt="cal">行事曆</button>
       </nav>
     </div>
 
@@ -1082,12 +1122,13 @@
       <div id="coBox"></div>
     </section>
 
-    <!-- ═══ 在建工程 ═══ -->
+    <!-- ═══ 案場（W1126-15：原在建工程） ═══ -->
     <section class="page" id="page-proj">
-      <div class="pagehead"><h2>在建工程</h2>
+      <div class="pagehead"><h2>案場</h2>
         <button class="btn stat" id="projEye"><svg class="ic"><use href="#i-eye"></use></svg> 金額</button>
-        <button class="btn pri" id="projAdd">＋ 新增工程</button>
+        <button class="btn pri" id="projAdd">＋ 新增案場</button>
       </div>
+      <div class="projseg" id="projSeg"></div>
       <div class="subtabs" id="projTabs"></div>
       <div id="projDetail"></div>
     </section>
@@ -1114,7 +1155,7 @@
       <div id="finLock" style="display:none;" class="card"><div class="empty"><svg class="ic"><use href="#i-lock"></use></svg> 財務看板已上鎖<div class="iform" style="justify-content:center;"><input type="password" id="finPin" placeholder="輸入 PIN" style="max-width:140px;"><button class="btn pri" id="finUnlock">解鎖</button></div></div></div>
       <div id="finBody">
         <div class="subtabs" id="finTabs">
-          <button data-fsc="all">全部</button><button data-fsc="work">工程</button><button data-fsc="life">個人</button>
+          <button data-fsc="all">全部</button><button data-fsc="work">案場</button><button data-fsc="life">個人</button>
         </div>
         <div style="display:flex; gap:12px; flex-wrap:wrap;">
           <div class="card" style="flex:1; min-width:260px;"><h3>淨資產・財務自由</h3><div class="bd" id="netBox"></div></div>
@@ -1238,7 +1279,7 @@
 <nav class="tabbar" id="mobNav">
   <button data-page="home" class="on"><svg class="ic big"><use href="#i-home"></use></svg>首頁</button>
   <button data-page="cal"><svg class="ic big"><use href="#i-cal"></use></svg>行事曆</button>
-  <button data-page="proj"><svg class="ic big"><use href="#i-proj"></use></svg>在建</button>
+  <button data-page="proj"><svg class="ic big"><use href="#i-proj"></use></svg>案場</button>
   <button data-page="bid"><svg class="ic big"><use href="#i-bid"></use></svg>投標</button>
   <button data-page="set"><svg class="ic big"><use href="#i-more"></use></svg>更多</button>
 </nav>
@@ -1309,7 +1350,7 @@
       <button data-v="ev">行程</button><button data-v="td">待辦</button><button data-v="tx">記帳</button><button data-v="wt">體重</button>
     </div></div>
     <div class="frow" id="mScopeRow"><label>分類</label><div class="chips" id="mScope">
-      <button data-v="site" style="color:var(--site);">在建</button>
+      <button data-v="site" style="color:var(--site);">案場</button>
       <button data-v="case" style="color:var(--case);">投標</button>
       <button data-v="life" style="color:var(--life);">個人</button>
     </div></div>
@@ -1353,8 +1394,8 @@
 
 <div class="mask" id="pmask">
   <div class="modal">
-    <h3 id="pTitle">工程 <button class="x" id="pClose">✕</button></h3>
-    <div class="frow"><label>工程名稱</label><input id="p_name" placeholder="例：大同整修案"></div>
+    <h3 id="pTitle">案場 <button class="x" id="pClose">✕</button></h3>
+    <div class="frow"><label>案場名稱</label><input id="p_name" placeholder="例：大同整修案"></div>
     <div class="frow" style="display:flex; gap:8px;">
       <div style="flex:1;"><label>合約金額</label><input type="number" id="p_contract" placeholder="0"></div>
       <div style="flex:1;"><label>成本預算</label><input type="number" id="p_budget" placeholder="0"></div>
@@ -1404,7 +1445,7 @@
     <div class="frow"><label>估價項目（一行一項：名稱=金額）</label><textarea id="b_items" placeholder="假設工程=50000&#10;泥作工程=120000"></textarea></div>
     <div class="mbtns2">
       <button class="btn" id="bPrint"><svg class="ic"><use href="#i-print"></use></svg> 估價單</button>
-      <button class="btn" id="bWin" style="color:var(--life);"><svg class="ic"><use href="#i-trophy"></use></svg> 得標→轉在建</button>
+      <button class="btn" id="bWin" style="color:var(--life);"><svg class="ic"><use href="#i-trophy"></use></svg> 得標→轉在建案</button>
       <button class="btn del" id="bDel" style="display:none;">刪除</button>
       <button class="btn pri" id="bSave">儲存</button>
     </div>
@@ -1444,7 +1485,7 @@
       <div style="flex:1;"><label>每月幾號</label><input type="number" id="r_day" min="1" max="31" placeholder="5"></div>
     </div>
     <div class="frow"><label>分類</label><div class="chips" id="rScope">
-      <button data-v="site" style="color:var(--site);">工程</button>
+      <button data-v="site" style="color:var(--site);">案場</button>
       <button data-v="life" style="color:var(--life);">個人</button>
     </div></div>
     <div class="frow"><label>入帳方式</label><div class="chips" id="rMode">
@@ -1482,7 +1523,7 @@
     </div>
     <div style="font-size:.75rem; color:var(--sub); margin-bottom:6px;">月付金填 0 的貸款不會自動入帳——卡片上會有「還一筆」，還多少記多少。利息浮動的建議另建固定項目「房貸利息」（待確認）按月記實際利息。</div>
     <div class="frow"><label>分類</label><div class="chips" id="lScope">
-      <button data-v="site" style="color:var(--site);">工程</button>
+      <button data-v="site" style="color:var(--site);">案場</button>
       <button data-v="life" style="color:var(--life);">個人</button>
     </div></div>
     <div class="mbtns">
@@ -1529,8 +1570,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 'use strict';
-/* ════════ 艋舺良的工作台 W1126-11（主題 D 首頁最下方加版號小字）／W1126-10（年度健檢 A～E：今年該做的事・自費建議・已知狀況・紅字白話說明・四年趨勢・部位分組・預約勾選・看診摘要・記錄看診・健檢前提醒・搜尋；新增 D.ckplan→meta/ckplan）／W1126-09（年度健檢超過 4 年：最近 3 年＋更早下拉）／W1126-08（首頁加小工具捷徑：PDF 解密）／W1126-07（主題 D 設為預設：每台裝置一次性切到 D）／W1126-06（健康頁新版套用到 A/B/C 主題）／W1126-05（設定頁加「小工具・移除 PDF 密碼」入口 pdfunlock.html）／W1126-04（主題 D 健康頁：體重有感版＋記一筆 7 項＋年度健檢；修 .pipe 投標四格）／W1126-03（W1126-02 主題 D＋合併 W0928-02 體重多指標目標值＋達標預估＋BMI 目標自動換算） ════════ */
-const VERSION = 'W1126-11';
+/* ════════ 艋舺良的工作台 W1126-17（個人頁：拿掉大標、標題放大加圖示、鎖頭縮小放標題旁、左待辦右三張）／W1126-16（Google 行事曆過期後，點頁面第一下自動續連）／W1126-15（旅程：填出發後回程自動帶入出發日、不能選更早；「工程」改名「案場」，案場頁分段 在建案／已完工；沒有進行中投標案時頂部隱藏「投標」、首頁四格變三格、公司事務頁最上面多「投標」類）／W1126-14（首頁「這一週」可切 週一～週日／從今天起，預設週一，存 prefs.wkStart）／W1126-13（首頁「這一週」：人員休假「休：」拉到日期那一列）／W1126-12（主題 D 首頁「這一週」：沒行程的日子縮窄、有行程的變寬）／W1126-11（主題 D 首頁最下方加版號小字）／W1126-10（年度健檢 A～E：今年該做的事・自費建議・已知狀況・紅字白話說明・四年趨勢・部位分組・預約勾選・看診摘要・記錄看診・健檢前提醒・搜尋；新增 D.ckplan→meta/ckplan）／W1126-09（年度健檢超過 4 年：最近 3 年＋更早下拉）／W1126-08（首頁加小工具捷徑：PDF 解密）／W1126-07（主題 D 設為預設：每台裝置一次性切到 D）／W1126-06（健康頁新版套用到 A/B/C 主題）／W1126-05（設定頁加「小工具・移除 PDF 密碼」入口 pdfunlock.html）／W1126-04（主題 D 健康頁：體重有感版＋記一筆 7 項＋年度健檢；修 .pipe 投標四格）／W1126-03（W1126-02 主題 D＋合併 W0928-02 體重多指標目標值＋達標預估＋BMI 目標自動換算） ════════ */
+const VERSION = 'W1126-17';
 const GCAL_CLIENT_ID = '654856338073-ukdt5nvtc8riq2010lado0i0n5vuhcfl.apps.googleusercontent.com';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
@@ -1662,6 +1703,8 @@ function inScope(it){
 const alive = () => D.items.filter(i => !i.del);
 const aliveP = () => D.projects.filter(p => !p.del);
 const aliveB = () => D.bids.filter(b => !b.del);
+const BID_END = ['won','lost'];                                   // W1126-15：結束狀態（得標／未得標）
+const liveBids = () => aliveB().filter(b => !BID_END.includes(b.stage));   // 進行中的投標案
 
 /* ── 金額打碼 ── */
 function money(v){ return D.settings.showMoney ? 'NT$ ' + Number(v||0).toLocaleString() : 'NT$ ●●●'; }
@@ -1785,10 +1828,10 @@ const CARDS = {
       : '<div class="empty">近兩週沒有個人行程</div>';
     bindLis(el); bindMore(el);
   }},
-  proj: {t:'在建工程', ic:'i-proj', render(el){
+  proj: {t:'在建案', ic:'i-proj', render(el){
     if (D.settings.scope==='life'){ el.innerHTML='<div class="empty">（工作範圍內容）</div>'; return; }
     const ps = aliveP().filter(p => p.status==='active');
-    if (!ps.length){ el.innerHTML = '<div class="empty">尚無在建工程，到「在建工程」頁新增</div>'; return; }
+    if (!ps.length){ el.innerHTML = '<div class="empty">尚無在建案，到「案場」頁新增</div>'; return; }
     el.innerHTML = ps.map(p => {
       const spent = (p.expenses||[]).reduce((s,e)=>s+(+e.amt||0),0);
       const over = p.budget>0 && p.prog>0 && (spent/p.budget*100) > (+p.prog + 5);
@@ -1835,7 +1878,7 @@ const CARDS = {
     el.querySelector('#finEnter').onclick = () => go('fin');
   }}
 };
-const SCOPE_NAME = {site:'在建', case:'投標', life:'個人'};
+const SCOPE_NAME = {site:'案場', case:'投標', life:'個人'};
 function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 /* 顯示用：名稱裡的長帳號（括號＋4 位以上數字）包成 .acct——桌機小字、手機隱藏；資料本身不動 */
 function acctFmt(s){ return esc(s).replace(/([\(（][^\)）]*\d{4,}[^\)）]*[\)）])/g, '<span class="acct">$1</span>'); }
@@ -1879,8 +1922,8 @@ function tileHtml(key){
   if (key==='proj'){
     const ps = aliveP().filter(p => p.status==='active');
     const top = ps[0];
-    return {tk:'在建工程', ic:'i-proj', b: top ? esc1(top.name)+' '+(top.prog||0)+'%' : '無在建',
-      s: ps.length ? ps.length+' 案進行中 ▸' : '到「在建」頁新增 ▸', go:'proj'};
+    return {tk:'在建案', ic:'i-proj', b: top ? esc1(top.name)+' '+(top.prog||0)+'%' : '無在建',
+      s: ps.length ? ps.length+' 案進行中 ▸' : '到「案場」頁新增 ▸', go:'proj'};
   }
   if (key==='bidp'){
     const bs = aliveB().filter(b => !['won','lost'].includes(b.stage));
@@ -2045,20 +2088,39 @@ function renderTodoPage(){
   bindLis($('#page-todo'));
 }
 
-/* ════════ 在建工程頁 ════════ */
+/* ════════ 案場頁（原在建工程頁） ════════ */
 let projSel = null;
 function billStatusNext(s){ return {'待請':'可請','可請':'已請','已請':'入帳','入帳':'待請'}[s] || '待請'; }
+/* W1126-15：分段「在建案／已完工」（已完工＝保固中＋已結案，保固中排前、依保固到期日），切換存 localStorage */
+const PSEG_KEY = 'wb_projSeg';
+let projSeg = (() => { try { return localStorage.getItem(PSEG_KEY) === 'done' ? 'done' : 'active'; } catch(e){ return 'active'; } })();
+function setProjSeg(v){ projSeg = v; try { localStorage.setItem(PSEG_KEY, v); } catch(e){} }
+function projLists(){
+  const act = aliveP().filter(p => p.status === 'active');
+  const wr = aliveP().filter(p => p.status === 'warranty').sort((a,b) => (a.wEnd||'9999') < (b.wEnd||'9999') ? -1 : (a.wEnd||'9999') > (b.wEnd||'9999') ? 1 : 0);
+  const dn = aliveP().filter(p => p.status === 'done').sort((a,b) => (b.mt||0) - (a.mt||0));
+  return {act, fin: wr.concat(dn)};
+}
 function renderProjPage(){
-  const ps = aliveP().filter(p => p.status !== 'done');
-  const doneN = aliveP().filter(p => p.status === 'done').length;
+  const L = projLists();
+  if (projSel){                                   // 從別處指定案場（首頁卡、得標轉入）→自動切到它所在的分段
+    if (L.act.find(p => p.id === projSel)) setProjSeg('active');
+    else if (L.fin.find(p => p.id === projSel)) setProjSeg('done');
+  }
+  const ps = projSeg === 'done' ? L.fin : L.act;
   if (!ps.find(p => p.id === projSel)) projSel = ps.length ? ps[0].id : null;
+  $('#projSeg').innerHTML = `<span class="dw-seg"><button data-pseg="active" class="${projSeg==='active'?'on':''}">在建案 ${L.act.length}</button><button data-pseg="done" class="${projSeg==='done'?'on':''}">已完工 ${L.fin.length}</button></span>`;
+  $('#projSeg').querySelectorAll('[data-pseg]').forEach(b => b.onclick = () => { setProjSeg(b.dataset.pseg); projSel = null; renderProjPage(); });
+  const tabSub = p => p.status === 'warranty' ? `<small>保固至 ${p.wEnd ? esc(p.wEnd) : '未設'}</small>` : p.status === 'done' ? '<small>已結案</small>' : '';
   $('#projTabs').innerHTML = ps.map(p =>
-    `<button class="${p.id===projSel?'on':''}" data-p="${p.id}">${esc(p.name)}${p.status==='warranty'?' ✔':''}</button>`).join('') +
-    (doneN ? `<button style="opacity:.6;">已結案 ${doneN}</button>` : '');
+    `<button class="${p.id===projSel?'on':''}" data-p="${p.id}">${esc(p.name)}${tabSub(p)}</button>`).join('');
+  $('#projTabs').style.display = ps.length ? '' : 'none';
   $('#projTabs').querySelectorAll('button[data-p]').forEach(b => b.onclick = () => { projSel = b.dataset.p; renderProjPage(); });
   const box = $('#projDetail');
   const p = ps.find(x => x.id === projSel);
-  if (!p){ box.innerHTML = '<div class="card"><div class="empty">還沒有工程。按「＋ 新增工程」，或在投標案得標後一鍵轉入。</div></div>'; return; }
+  if (!p){ box.innerHTML = projSeg === 'done'
+      ? '<div class="card"><div class="empty">目前沒有已完工案場。案場狀態改為「保固中」或「已結案」後會出現在這裡。</div></div>'
+      : '<div class="card"><div class="empty">目前無在建案。按「＋ 新增案場」，或在投標案得標後一鍵轉入。</div></div>'; return; }
 
   const spent = (p.expenses||[]).reduce((s,e)=>s+(+e.amt||0),0);
   const inPaid = (p.billing||[]).filter(b=>b.status==='入帳').reduce((s,b)=>s+(+p.contract||0)*(+b.pct||0)/100,0);
@@ -2095,8 +2157,8 @@ function renderProjPage(){
       <div class="bd">
         <div style="font-size:.82rem; display:flex; justify-content:space-between;"><span>實際支出</span><span>${money(spent)}／預算 ${money(p.budget)}</span></div>
         ${pBar(Math.min(100,spendPct), over?'var(--urgent)':'var(--sub)')}
-        ${over ? `<div class="warnbox"><svg class="ic"><use href="#i-warn"></use></svg> 花費進度 ${spendPct}% ＞ 工程進度 ${p.prog||0}%——超支警訊</div>`
-               : `<div class="okbox">花費進度 ${spendPct}%・工程進度 ${p.prog||0}%，正常</div>`}
+        ${over ? `<div class="warnbox"><svg class="ic"><use href="#i-warn"></use></svg> 花費進度 ${spendPct}% ＞ 施工進度 ${p.prog||0}%——超支警訊</div>`
+               : `<div class="okbox">花費進度 ${spendPct}%・施工進度 ${p.prog||0}%，正常</div>`}
         <ul class="list">${(p.expenses||[]).slice(-6).reverse().map((e,ri) => {
           const i = p.expenses.length - 1 - ri;
           return `<li><span>${esc(e.t)}</span><span class="due">${money(e.amt)}</span><button class="btn" style="padding:0 8px; font-size:.75rem;" data-exdel="${i}">✕</button></li>`;
@@ -2137,11 +2199,11 @@ function renderProjPage(){
   });
 }
 
-/* 工程編輯彈窗 */
+/* 案場編輯彈窗 */
 let pEditing = null;
 function openProj(id){
   pEditing = id ? D.projects.find(x => x.id===id) : null;
-  $('#pTitle').firstChild.textContent = pEditing ? '編輯工程 ' : '新增工程 ';
+  $('#pTitle').firstChild.textContent = pEditing ? '編輯案場 ' : '新增案場 ';
   $('#p_name').value = pEditing ? pEditing.name : '';
   $('#p_contract').value = pEditing ? (pEditing.contract||'') : '';
   $('#p_budget').value = pEditing ? (pEditing.budget||'') : '';
@@ -2167,7 +2229,7 @@ $('#pSave').onclick = () => {
   save(); fbPushDoc('projects', p); $('#pmask').classList.remove('on'); renderAll(); toast('已儲存 ✓');
 };
 $('#pDel').onclick = () => {
-  if (pEditing && confirm('刪除這個工程？（墓碑保留可還原）')){
+  if (pEditing && confirm('刪除這個案場？（墓碑保留可還原）')){
     pEditing.del = true; pEditing.rv++; pEditing.mt = now();
     save(); fbPushDoc('projects', pEditing); $('#pmask').classList.remove('on'); renderAll();
   }
@@ -2268,7 +2330,7 @@ $('#bWin').onclick = () => {
     expenses:[], rv:1, mt:now(), del:false};
   D.projects.push(p); projSel = p.id;
   save(); fbPushDoc('bids', b); fbPushDoc('projects', p);
-  $('#bmask').classList.remove('on'); go('proj'); toast('已轉為在建工程，估價金額成為預算基準');
+  $('#bmask').classList.remove('on'); go('proj'); toast('已轉為在建案，估價金額成為預算基準');
 };
 $('#bPrint').onclick = () => {
   const v = bidFromForm();
@@ -2428,7 +2490,7 @@ function renderFinPage(){
       <button class="btn" style="padding:5px 10px; font-size:.85rem; color:var(--sub);" data-pskip="${p.r.id}" data-pmm="${p.mm}" data-pdue="${p.due}">略過</button>
     </div>`).join('') +
     (rs.length ? '<ul class="list">' + rs.map(r =>
-      `<li data-recur="${r.id}" style="${r.on?'':'opacity:.45;'}"><span class="tag ${r.scope==='site'?'site':'life'}">${r.scope==='site'?'工程':'個人'}</span>
+      `<li data-recur="${r.id}" style="${r.on?'':'opacity:.45;'}"><span class="tag ${r.scope==='site'?'site':'life'}">${r.scope==='site'?'案場':'個人'}</span>
        <span class="ttl">${esc(r.name)}<small style="color:var(--sub);">・每月${r.day}日・${r.mode==='auto'?'自動':'待確認'}${r.on?'':'・暫停中'}</small></span>
        <span class="due" style="color:${r.dir==='in'?'var(--life)':'var(--ink)'};">${r.dir==='in'?'+':'−'}${money(r.amt)}</span></li>`).join('') + '</ul>'
      : '<div class="empty">還沒有固定項目——房租、貸款、保險、常態收入都可以掛進來</div>');
@@ -2972,7 +3034,7 @@ function openTrip(id){
   const t = tEditing || {};
   tKind = t.kind || 'near';
   $('#tTitle').firstChild.textContent = tEditing ? '編輯旅程 ' : '新增旅程 ';
-  $('#t_name').value = t.name||''; $('#t_start').value = t.start||''; $('#t_end').value = t.end||'';
+  $('#t_name').value = t.name||''; $('#t_start').value = t.start||''; $('#t_end').value = t.end||''; $('#t_end').min = t.start||'';
   $('#t_year').value = t.year||''; $('#t_budget').value = t.budget||'';
   $('#t_split').value = t.split||''; $('#t_note').value = t.note||''; $('#t_done').checked = !!t.done;
   $('#tDel').style.display = tEditing ? '' : 'none';
@@ -3109,17 +3171,25 @@ function gConnect(interactive){
     scope: 'https://www.googleapis.com/auth/calendar',
     callback: r => {
       if (!r.access_token){ toast('連接失敗'); return; }
-      G().token = r.access_token; G().exp = Date.now() + (r.expires_in||3600)*1000;
-      save(); toast('Google 行事曆已連接 ✓');
+      G().token = r.access_token; G().exp = Date.now() + (r.expires_in||3600)*1000; G().off = false;
+      save(); toast(interactive ? 'Google 行事曆已連接 ✓' : 'Google 行事曆已自動更新');
       gLoadCals().then(gSync);
     }
   });
   tc.requestAccessToken(interactive ? {} : {prompt:''});
 }
 function gDisconnect(){
-  G().token = null; G().exp = 0; G().cache = [];
+  G().token = null; G().exp = 0; G().cache = []; G().off = true;   // 自己中斷＝不自動續
   save(); renderAll(); toast('已中斷連接（資料保留）');
 }
+/* W1126-16：連線過期後，使用者在頁面點第一下就自動續（瀏覽器規定要有點擊才能開 Google 視窗） */
+let gAutoAt = 0;
+function gNeedRenew(){ const g = G(); return !!g && !g.off && g.cals && Object.keys(g.cals).length > 0 && !gOK(); }
+document.addEventListener('pointerdown', () => {
+  if (!gNeedRenew() || Date.now() - gAutoAt < 5*60000) return;
+  if (typeof google === 'undefined' || !google.accounts) return;
+  gAutoAt = Date.now(); gConnect(false);
+}, true);
 async function gLoadCals(){
   if (!gOK()) return;
   try{
@@ -3723,7 +3793,7 @@ document.addEventListener('click', e => {
 const isD = () => document.body.dataset.skin === 'D';
 const CO_CATS = ['主管交辦','人事與考核','教育訓練與簡報','公司專案推動'];
 const CO_COL = {'主管交辦':'#E5484D','人事與考核':'#6E4FD8','教育訓練與簡報':'#2F6FE0','公司專案推動':'#1E7A45'};
-const DSC = {site:'工程', case:'投標', life:'個人'};
+const DSC = {site:'案場', case:'投標', life:'個人'};
 const aliveC = () => D.company.filter(c => !c.del);
 const activeC = () => aliveC().filter(c => !c.done);
 const coOverdue = () => activeC().filter(c => c.due && dayDiff(c.due) < 0);
@@ -3746,7 +3816,9 @@ function renderDBar(){
   $('#dDate').textContent = `${d.getMonth()+1} 月 ${d.getDate()} 日 週${WD[d.getDay()]}`;
   const n = coOverdue().length;
   $('#dCoBad').textContent = n ? String(n) : '';
-  const cur = DT_OF[pageNow] || '';
+  const live = liveBids().length > 0;                                   // W1126-15：沒有進行中投標案→隱藏「投標」入口（人在投標頁也不踢走，改亮「公司」）
+  const bt = $('#dTabs button[data-dt="bid"]'); if (bt) bt.style.display = live ? '' : 'none';
+  const cur = (!live && pageNow === 'bid') ? 'company' : (DT_OF[pageNow] || '');
   $$('#dTabs button').forEach(b => b.classList.toggle('on', b.dataset.dt === cur));
   $('#dSet').classList.toggle('on', pageNow === 'set');
 }
@@ -3860,19 +3932,28 @@ function renderDHome(){
     (timed.length || allday.length ? '' : `<div class="dh-calm" style="padding-top:0;">今天沒有排定時間的行程</div>`) +
     dTimelineH(timed, nowH) + dTimelineV(timed, nowH) + '</div>';
   /* ④ 這一週（今天起七天） */
-  let wk = '';
-  for (let i = 0; i < 7; i++){
-    const dd = new Date(); dd.setHours(0,0,0,0); dd.setDate(dd.getDate() + i);
-    const ds = ymd(dd), its = dDayItems(ds);
-    wk += `<div class="dh-day"><div class="dh-dd${i===0?' t':''}">${dd.getDate()}<small>${i===0?'今天':WD[dd.getDay()]}</small></div><div class="dh-chips">` +
-      (its.length ? its.map(x => `<span class="dh-chip sc-${scKey(x)}" ${dItemAttrs(x)} title="${esc((x.time?x.time+' ':'')+x.title)}">${x.time?`<small>${esc(x.time)}</small>`:''}${esc(x.title)}</span>`).join('') : '<span class="dh-dim">—</span>') +
+  let wk = ''; const wkCols = [];
+  const wkMon = (D.prefs && D.prefs.wkStart) !== 'today';                 // W1126-14：預設週一～週日，可切「從今天起」
+  const wk0 = new Date(); wk0.setHours(0,0,0,0);
+  const wkOff = wkMon ? -((wk0.getDay() + 6) % 7) : 0;                     // 週一＝往回幾天
+  for (let j = 0; j < 7; j++){
+    const dd = new Date(wk0); dd.setDate(dd.getDate() + wkOff + j);
+    const i = Math.round((dd - wk0) / 864e5);                              // 0＝今天，負數＝已過
+    const ds = ymd(dd), all = dDayItems(ds);
+    const isLv = x => /^休\s*[：:]/.test(String(x.title||''));            // W1126-13：人員休假（標題「休：」開頭）拉到日期那一列
+    const lvs = all.filter(isLv), its = all.filter(x => !isLv(x));
+    const lvNames = lvs.map(x => String(x.title).replace(/^休\s*[：:]\s*/, '')).join('、');   // 同一天多人＝同一格
+    const lvH = cls => lvs.length ? `<span class="dh-lvs ${cls}"><span class="dh-lv" ${dItemAttrs(lvs[0])} title="休：${esc(lvNames)}">休 ${esc(lvNames)}</span></span>` : '';
+    wkCols.push(all.length && i >= 0 ? 'minmax(0,1.6fr)' : 'minmax(5.4rem,.4fr)');   /* 已過的日子一律窄 */   // W1126-12：沒行程的日子縮窄，有行程的變寬
+    wk += `<div class="dh-day${i<0?' past':''}"><div class="dh-dd${i===0?' t':''}"><span class="dn">${dd.getDate()}<small>${i===0?'今天':WD[dd.getDay()]}</small></span>${lvH('d')}</div><div class="dh-chips">${lvH('m')}` +
+      (its.length ? its.map(x => `<span class="dh-chip sc-${scKey(x)}" ${dItemAttrs(x)} title="${esc((x.time?x.time+' ':'')+x.title)}">${x.time?`<small>${esc(x.time)}</small>`:''}${esc(x.title)}</span>`).join('') : (lvs.length ? '' : '<span class="dh-dim">—</span>')) +
       '</div></div>';
   }
-  const week = `<div class="dh-card dh-sec"><div class="dh-lab">這一週</div><div class="dh-wk">${wk}</div></div>`;
+  const week = `<div class="dh-card dh-sec"><div class="dh-labr"><div class="dh-lab">這一週</div><span class="dw-seg dh-wks"><button data-wks="mon" class="${wkMon?'on':''}">週一～週日</button><button data-wks="today" class="${wkMon?'':'on'}">從今天起</button></span></div><div class="dh-wk"${wkCols.some(c => c.includes('1.6fr')) ? ` style="grid-template-columns:${wkCols.join(' ')};"` : ''}>${wk}</div></div>`;
   /* ⑤ 四條線 */
   const st = n => n ? `<span class="dh-st bad">${n} 件逾期</span>` : '<span class="dh-st ok">正常</span>';
   const odBy = sc => alive().filter(i => i.kind==='td' && !i.done && i.date && dayDiff(i.date) < 0 && i.scope === sc).length;
-  // 工程
+  // 案場
   const ps = aliveP().filter(p => p.status==='active');
   let lnSite;
   if (ps.length){
@@ -3883,11 +3964,11 @@ function renderDHome(){
     const bl = (p.billing||[]).map((b,i) => Object.assign({i}, b)).filter(b => b.due && b.status !== '入帳').sort((a,b) => a.due < b.due ? -1 : 1)[0];
     const sub = [sp!=null ? '支出 '+sp+'%' : '', bl ? mdS(bl.due)+' 第 '+(bl.i+1)+' 期請款' : '', ps.length>1 ? '另 '+(ps.length-1)+' 案' : ''].filter(Boolean).join('，');
     const n = odBy('site');
-    lnSite = {go:'proj', name:'工程', col:'#E07B2A', st: over ? '<span class="dh-st bad">超支</span>' : st(n),
+    lnSite = {go:'proj', name:'案場', col:'#E07B2A', st: over ? '<span class="dh-st bad">超支</span>' : st(n),
       v:`<span class="cpc">${ringSvg(p.prog, over ? 'var(--urgent)' : 'var(--navy)')}<b>${p.prog||0}%</b></span><span>${esc(p.name)} ${p.prog||0}%</span>`, s: sub || '進行中'};
-  } else lnSite = {go:'proj', name:'工程', col:'#E07B2A', st:st(odBy('site')), v:'無在建工程', s:'到工程頁新增'};
+  } else lnSite = {go:'proj', name:'案場', col:'#E07B2A', st:st(odBy('site')), v:'無在建案', s:'到案場頁新增'};
   // 投標
-  const bs = aliveB().filter(b => !['won','lost'].includes(b.stage));
+  const bs = liveBids();
   const closes = bs.filter(b => b.dates && b.dates.close && dayDiff(b.dates.close) >= 0).sort((a,b) => a.dates.close < b.dates.close ? -1 : 1);
   let lnCase;
   if (closes.length){
@@ -3903,8 +3984,10 @@ function renderDHome(){
   const lnLife = {go:'set', name:'個人', col:'#2FA35E', st:st(odBy('life')),
     v: le ? dWhen(le.date) + ' ' + esc(le.title) : '近期沒有個人行程',
     s: tr ? esc(tr.name) + ' ' + dayDiff(tr.start) + ' 天後出發' : '沒有排定的旅程'};
-  const lines = `<div class="dh-lines">` + [lnSite, lnCase, lnCo, lnLife].map(l =>
-    `<div class="dh-ln" data-go="${l.go}"><div class="h"><span><i class="dh-dot" style="background:${l.col};"></i>${l.name}</span>${l.st}</div><div class="v">${l.v}</div><div class="s">${l.s}</div></div>`).join('') + '</div>';
+  if (!bs.length) lnCo.s2 = '投標：目前無進行中案件';                       // W1126-15：沒有進行中投標案→投標收進公司那格
+  const lnAll = bs.length ? [lnSite, lnCase, lnCo, lnLife] : [lnSite, lnCo, lnLife];
+  const lines = `<div class="dh-lines${lnAll.length === 3 ? ' n3' : ''}">` + lnAll.map(l =>
+    `<div class="dh-ln" data-go="${l.go}"><div class="h"><span><i class="dh-dot" style="background:${l.col};"></i>${l.name}</span>${l.st}</div><div class="v">${l.v}</div><div class="s">${l.s}</div>${l.s2 ? `<div class="s">${l.s2}</div>` : ''}</div>`).join('') + '</div>';
 
   /* ⑥ 小工具捷徑（W1126-08；新工具加進 TOOLS 即可） */
   const tools = `<div class="dh-card dh-tools"><div class="dh-lab">小工具</div><div class="dh-tg">` +
@@ -3916,6 +3999,8 @@ function coComplete(id){
   c.done = true; c.pct = 100; c.rv = (c.rv||0) + 1; c.mt = now(); save(); fbPushDoc('company', c); renderAll(); toast('已完成');
 }
 $('#dHome').addEventListener('click', e => {
+  const ws = e.target.closest('[data-wks]');
+  if (ws){ D.prefs.wkStart = ws.dataset.wks; D.prefs.mt = now(); save(); fbPushPrefs(); renderAll(); return; }   // W1126-14
   const tl = e.target.closest('[data-href]'); if (tl){ location.href = tl.dataset.href; return; }
   const r = e.target.closest('[data-done]');
   if (r){ if (r.dataset.done === 'co') coComplete(r.dataset.id); else { toggleDone(r.dataset.id); toast('已完成'); } return; }
@@ -3956,15 +4041,13 @@ function renderMePage(){
     const late = i.date && i.date < t;
     return `<div class="me-li"><i class="me-ck"></i><span>${esc(i.title)}</span>${i.date?`<em class="${late?'late':''}">${late?'逾期':dWhen(i.date)}</em>`:''}</div>`;
   }).join('');
-  const cTodo = `<div class="me-card" data-me="todo"><div class="me-hd">待辦<span>›</span></div>
+  const cTodo = `<div class="me-card me-todo" data-me="todo"><div class="me-hd"><i class="me-ic" style="--mc:var(--case);"><svg class="ic"><use href="#i-todo"></use></svg></i>待辦<span>›</span></div>
     <div class="me-big">${dueN}<small>件今天到期</small></div>
     <div class="me-sub">未完成共 ${tds.length} 件</div>
     ${tdRows ? `<div class="me-list">${tdRows}</div>` : '<div class="me-empty">沒有未完成待辦</div>'}</div>`;
   /* ② 財務：維持「首頁不顯示金額」規則，只當入口 */
   const nPend = pendingRecurs().length;
-  const cFin = `<div class="me-card" data-me="fin"><div class="me-hd">財務<span>›</span></div>
-    <div class="me-lock"><svg class="ic big"><use href="#i-lock"></use></svg></div>
-    <div class="me-big sm">財務看板</div>
+  const cFin = `<div class="me-card" data-me="fin"><div class="me-hd"><i class="me-ic" style="--mc:var(--soon);"><svg class="ic"><use href="#i-fin"></use></svg></i>財務<em class="me-lk"><svg class="ic"><use href="#i-lock"></use></svg>已上鎖</em><span>›</span></div>
     <div class="me-sub">${nPend ? `<b class="warn">${nPend} 筆固定收支待確認</b>` : '點進去看金額'}</div></div>`;
   /* ③ 健康 */
   const ws = D.weights.filter(w => !w.del && w.kg).sort((a,b)=> a.date<b.date?-1:1);
@@ -3972,7 +4055,7 @@ function renderMePage(){
   const m30 = ws.filter(w => w.date >= ymd(new Date(Date.now()-30*86400000)));
   const d30 = (cur && m30.length>1) ? (cur.kg - m30[0].kg) : null;
   const exN = exerciseWeekCount(), exT = (D.prefs.health && D.prefs.health.exWeek) || 3;
-  const cHealth = `<div class="me-card" data-me="health"><div class="me-hd">健康<span>›</span></div>
+  const cHealth = `<div class="me-card" data-me="health"><div class="me-hd"><i class="me-ic" style="--mc:var(--life);"><svg class="ic"><use href="#i-health"></use></svg></i>健康<span>›</span></div>
     <div class="me-row"><div class="me-rgw"><span class="cpc me-rg">${ringSvg(Math.min(100, exN/exT*100), 'var(--life)')}<b>${exN}/${exT}</b></span><small>本週運動</small></div>
     <div><div class="me-sub">最近體重</div><div class="me-big sm">${cur ? cur.kg + '<small>kg</small>' : '—'}</div>
     ${d30===null ? '' : `<div class="me-sub">30 天 ${d30>0?'+':''}${d30.toFixed(1)} kg</div>`}</div></div></div>`;
@@ -3987,8 +4070,8 @@ function renderMePage(){
       <div class="me-cd">${n>0 ? `<b>${n}</b><span>天後出發</span>` : '<b class="sm">旅行中</b>'}<span>${mdS(nx.start)}${nx.end?'～'+mdS(nx.end):''}</span></div>
       ${n2 ? `<div class="me-li plain"><span>之後：${esc(n2.name)}</span><em>${mdS(n2.start)}</em></div>` : ''}`;
   } else tripIn = '<div class="me-empty">還沒有近期旅程</div>';
-  const cTrip = `<div class="me-card" data-me="trip"><div class="me-hd">旅遊<span>›</span></div>${tripIn}</div>`;
-  $('#meBox').innerHTML = `<div class="me-head"><h2>個人</h2></div><div class="me-grid">${cTodo}${cFin}${cHealth}${cTrip}</div>`;
+  const cTrip = `<div class="me-card" data-me="trip"><div class="me-hd"><i class="me-ic" style="--mc:var(--co);"><svg class="ic"><use href="#i-trip"></use></svg></i>旅遊<span>›</span></div>${tripIn}</div>`;
+  $('#meBox').innerHTML = `<div class="me-grid">${cTodo}<div class="me-col">${cHealth}${cFin}${cTrip}</div></div>`;   // W1126-17：拿掉大標；左待辦、右三張
   $$('#meBox [data-me]').forEach(n => n.onclick = () => go(n.dataset.me));
 }
 function coRow(c){
@@ -4008,14 +4091,35 @@ function renderCompanyPage(){
   }).join('');
   const done = aliveC().filter(c => c.done).sort((a,b) => (b.mt||0) - (a.mt||0));
   $('#coBox').innerHTML = `<div class="cohead">
-      <div class="cotitle"><div class="cokick">公司事務</div><h2><span class="cot-d">${CO_CATS.length} 類・${act.length} 件</span><span class="cot-m">公司事務</span></h2></div>
+      <div class="cotitle"><div class="cokick">公司事務</div><h2><span class="cot-d">${CO_CATS.length + (liveBids().length ? 0 : 1)} 類・${act.length} 件</span><span class="cot-m">公司事務</span></h2></div>
       <div class="cosum"><div>進行中<strong>${act.length}</strong></div><div class="${od?'r':''}">逾期<strong>${od}</strong></div><div>本週到期<strong>${wk}</strong></div></div>
       <button class="btn pri coadd" id="coAdd">＋ 新增事務</button></div>
-    <div class="cogrid">${cats}</div>` +
+    ${coBidHtml()}<div class="cogrid">${cats}</div>` +
     (done.length ? `<div class="card codone"><div class="morelnk" id="coDoneTg">已完成 ${done.length} 件 ${coDoneOpen?'▾':'▸'}</div>${coDoneOpen ? done.map(coRow).join('') : ''}</div>` : '');
   $('#coAdd').onclick = () => openCo(null);
   const tg = $('#coDoneTg'); if (tg) tg.onclick = () => { coDoneOpen = !coDoneOpen; renderCompanyPage(); };
   $$('#coBox [data-co]').forEach(n => n.onclick = () => openCo(n.dataset.co));
+  $$('#coBox [data-cobid]').forEach(n => n.onclick = () => { const id = n.dataset.cobid; go('bid'); openBid(id); });
+  const bl = $('#coBidGo'); if (bl) bl.onclick = () => go('bid');
+  const ba = $('#coBidAdd'); if (ba) ba.onclick = () => openBid(null);
+}
+/* W1126-15：沒有進行中投標案時，公司事務頁最上面多一類「投標」（全部投標案，最近的在前，最多 5 筆） */
+const STAGE_COL = {prep:'var(--case)', est:'var(--case)', sub:'var(--soon)', open:'var(--soon)', won:'var(--life)', lost:'var(--sub)'};
+function bidNextDate(b){
+  const t = todayStr(), ds = b.dates || {};
+  const fu = Object.keys(BIDLAB).filter(k => ds[k] && ds[k] >= t).sort((x,y) => ds[x] < ds[y] ? -1 : ds[x] > ds[y] ? 1 : 0)[0];
+  return fu ? mdS(ds[fu]) + ' ' + BIDLAB[fu] : '—';
+}
+function coBidHtml(){
+  if (liveBids().length) return '';                                      // 有進行中案件→頂部有「投標」入口，這裡不重複
+  const all = aliveB().slice().sort((a,b) => (b.mt||0) - (a.mt||0));
+  const head = `<h3><i class="catic">投</i>投標<span class="cocnt">${all.length ? '共 ' + all.length + ' 案・目前無進行中案件' : ''}</span></h3>`;
+  if (!all.length) return `<div class="card cocat cobid" style="--cc:#2F6FE0;">${head}<div class="coempty"><span>目前無投標案</span><button class="btn" id="coBidAdd">＋ 新增投標案</button></div></div>`;
+  const rows = all.slice(0, 5).map(b => `<tr><td class="nm" data-cobid="${esc(b.id)}">${esc(b.name)}</td>` +
+    `<td><span class="stg" style="--tc:${STAGE_COL[b.stage] || 'var(--sub)'};">${STAGE_NAME[b.stage] || esc(b.stage || '—')}</span></td>` +
+    `<td class="dt">${bidNextDate(b)}</td><td class="am">${money(b.amt)}</td></tr>`).join('');
+  return `<div class="card cocat cobid" style="--cc:#2F6FE0;">${head}<table><thead><tr><th>案名</th><th>階段</th><th>下一個日期</th><th class="am">標價</th></tr></thead><tbody>${rows}</tbody></table>` +
+    `<div class="cofoot"><span class="lnk" id="coBidGo">到投標頁 ›</span></div></div>`;
 }
 let cEditing = null, cCat = CO_CATS[0];
 function syncCoModal(){ $$('#cCat button').forEach(b => b.classList.toggle('on', b.dataset.v === cCat)); }
@@ -4934,6 +5038,11 @@ function renderAll(){
   const vh = $('#vtagHome'); if (vh) vh.textContent = vt;   // W1126-11：主題 D 首頁最下方小字
   applyAuthUI();
 }
+(function tripDateBind(){   // W1126-15：填了出發，回程自動帶入出發日、不能選更早
+  const st = $('#t_start'), en = $('#t_end'); if (!st || !en) return;
+  const sync = () => { en.min = st.value || ''; if (st.value && (!en.value || en.value < st.value)) en.value = st.value; };
+  st.addEventListener('change', sync); st.addEventListener('input', sync);
+})();
 renderAll();
 fetchWX();
 applyLock();
