@@ -610,11 +610,16 @@
   .pipe .st span{display:block; font-size:.75rem; color:var(--sub); white-space:nowrap;}
   .pipe .st.hot b{color:var(--urgent);}
 
-  /* ═══ W1126-04：主題 D 健康頁（體重有感版＋年度健檢） ═══ */
-  .dwonly{display:none;}
-  body[data-skin="D"] .dwonly{display:block;}
-  body[data-skin="D"] #page-health.dwmode #whCard{display:none;}
-  body[data-skin="D"] #page-health.dwmode.dwtgt #whCard{display:block;}
+  /* ═══ W1126-04：健康頁新版（體重有感版＋年度健檢）；W1126-06 起 A/B/C/D 四個主題都用 ═══ */
+  .dwonly{display:block;}
+  #page-health.dwmode #whCard{display:none;}
+  #page-health.dwmode.dwtgt #whCard{display:block;}
+  body:not([data-skin="D"]){--navy:var(--case); --gold:var(--soon); --sep:color-mix(in srgb, var(--line) 55%, var(--card));}
+  body:not([data-skin="D"]) .dw-card{border:1px solid var(--line); box-shadow:none;}
+  body:not([data-skin="D"]) :is(.dw-card,.dw-six,.dw-wk,.dw-seg,.dw-seg button,.ck-list,.ws-pm,.dw-add,.ck-up,.ws-btns .btn,#ckTxt,.ck-pv,.ws-grab,.dw-tg .btn){border-radius:0;}
+  body:not([data-skin="D"]) .dw-add{display:none !important;}
+  .ws-kg input::-webkit-inner-spin-button, .ws-kg input::-webkit-outer-spin-button, .ws-row input::-webkit-inner-spin-button, .ws-row input::-webkit-outer-spin-button{-webkit-appearance:none; margin:0;}
+  .ws-kg input, .ws-row input{-moz-appearance:textfield; appearance:textfield;}
   .dw-card{background:var(--card); border-radius:1.25rem; padding:1.1rem 1.3rem; margin-bottom:.9rem; box-shadow:0 1px 2px rgba(0,0,0,.03);}
   .dw-h{display:flex; align-items:center; justify-content:space-between; gap:.6rem; margin-bottom:.6rem; flex-wrap:wrap;}
   .dw-h b{font-size:1.05rem; font-weight:800;}
@@ -635,20 +640,23 @@
   .dw-tg .t2{font-size:.88rem; color:var(--sub); margin-top:.2rem;}
   .dw-tg .btn{margin-left:auto;}
   /* ② 體組成六格：一個外框＋內部細線 */
+  .dw-sixw{container-type:inline-size;}
+  @container (max-width:66rem){ .dw-six{grid-template-columns:repeat(3, minmax(0,1fr)) !important;} }
+  @container (max-width:34rem){ .dw-six{grid-template-columns:repeat(2, minmax(0,1fr)) !important;} }
   .dw-six{display:grid; grid-template-columns:repeat(6, minmax(0,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:1rem; overflow:hidden;}
-  .dw-cell{background:var(--card); padding:.9rem .9rem; display:flex; align-items:center; gap:.7rem; cursor:pointer; min-width:0; text-align:left; color:inherit;}
-  .dw-cell:hover{background:color-mix(in srgb, var(--navy) 3%, #fff);}
-  .dw-cell.on{background:color-mix(in srgb, var(--navy) 7%, #fff);}
+  .dw-cell{background:var(--card); padding:.9rem .8rem; display:flex; align-items:center; gap:.6rem; cursor:pointer; min-width:0; text-align:left; color:inherit;}
+  .dw-cell:hover{background:color-mix(in srgb, var(--navy) 3%, var(--card));}
+  .dw-cell.on{background:color-mix(in srgb, var(--navy) 7%, var(--card));}
   .dw-cell .rg{width:2.6rem; height:2.6rem; flex:none;}
   .dw-cell .rg svg{width:100%; height:100%; display:block;}
   .dw-cell .lb{font-size:.9rem; color:var(--sub); font-weight:700;}
   .dw-cell .vl{font-size:1.6rem; font-weight:800; line-height:1.15; font-variant-numeric:tabular-nums; white-space:nowrap;}
-  .dw-cell .vl small{font-size:.85rem; font-weight:700; margin-left:.1rem;}
+  .dw-cell .vl small{font-size:.75rem; font-weight:700; margin-left:.1rem;}
   .dw-cell .dt{font-size:.88rem; font-weight:700; font-variant-numeric:tabular-nums;}
   /* ③ 有感版 */
   .dw-seg{display:inline-flex; background:var(--page); border-radius:.75rem; padding:.2rem;}
   .dw-seg button{padding:.35rem .95rem; border-radius:.6rem; font-size:.92rem; font-weight:700; color:var(--sub);}
-  .dw-seg button.on{background:#fff; color:var(--ink); box-shadow:0 1px 2px rgba(0,0,0,.08);}
+  .dw-seg button.on{background:var(--card); color:var(--ink); box-shadow:0 1px 2px rgba(0,0,0,.08);}
   .dw-feel{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:2rem; align-items:start;}
   .dw-say{font-size:2.3rem; font-weight:800; line-height:1.2;}
   .dw-say em{font-style:normal;}
@@ -657,7 +665,7 @@
   .dw-road{position:relative; height:3.4rem; margin:.9rem .6rem 0;}
   .dw-road .ln{position:absolute; left:0; right:0; top:.75rem; border-top:2px dashed var(--line);}
   .dw-road .dn{position:absolute; left:0; top:.7rem; height:3px; background:var(--life);}
-  .dw-road .pt{position:absolute; top:.25rem; width:1.05rem; height:1.05rem; border-radius:50%; margin-left:-.52rem; background:#fff; border:3px solid var(--life);}
+  .dw-road .pt{position:absolute; top:.25rem; width:1.05rem; height:1.05rem; border-radius:50%; margin-left:-.52rem; background:var(--card); border:3px solid var(--life);}
   .dw-road .pt.now{background:var(--life);}
   .dw-road .pt.goal{border-color:var(--gold); width:1.35rem; height:1.35rem; margin-left:-.68rem; top:.1rem;}
   .dw-road .lb{position:absolute; top:1.65rem; transform:translateX(-50%); font-size:.85rem; white-space:nowrap; font-weight:700; color:var(--sub);}
@@ -668,7 +676,7 @@
   .dw-wkh b{font-size:1rem; font-weight:800;}
   .dw-wkh span{font-size:.92rem; font-weight:800;}
   .dw-wk{display:grid; grid-template-columns:repeat(8, minmax(0,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:.8rem; overflow:hidden;}
-  .dw-wk div{background:#fff; text-align:center; padding:.45rem .1rem; min-width:0;}
+  .dw-wk div{background:var(--card); text-align:center; padding:.45rem .1rem; min-width:0;}
   .dw-wk small{display:block; font-size:.75rem; color:var(--sub); font-variant-numeric:tabular-nums;}
   .dw-wk b{display:block; font-size:.98rem; font-weight:800; font-variant-numeric:tabular-nums; white-space:nowrap;}
   .dw-links{display:flex; justify-content:flex-end; gap:1.2rem; margin-top:.8rem;}
@@ -681,7 +689,7 @@
   .dw-tbl th{font-size:.9rem; color:var(--sub); font-weight:700; padding:.55rem .3rem; text-align:center; border-bottom:1px solid var(--line);}
   .dw-tbl td{padding:.75rem .3rem; text-align:center; border-bottom:1px solid var(--sep);}
   .dw-tbl tbody tr{cursor:pointer;}
-  .dw-tbl tbody tr:hover td{background:color-mix(in srgb, var(--navy) 4%, #fff);}
+  .dw-tbl tbody tr:hover td{background:color-mix(in srgb, var(--navy) 4%, var(--card));}
   .dw-tbl td.k{font-weight:800;}
   .dw-more{display:block; margin:.6rem auto 0; font-size:.9rem; font-weight:700; color:var(--navy);}
   .dw-add{display:none;}
@@ -697,7 +705,7 @@
   .ws-pm{width:3.4rem; height:3.4rem; border-radius:50%; background:var(--page); font-size:1.7rem; font-weight:500; flex:none; display:flex; align-items:center; justify-content:center;}
   .ws-pm.s{width:2.5rem; height:2.5rem; font-size:1.25rem;}
   .ws-pm:active{transform:scale(.94);}
-  body[data-skin="D"] .ws-kg input{width:10.5rem; font-size:3.6rem; font-weight:800; text-align:center; border:none; background:transparent; padding:0; font-variant-numeric:tabular-nums;}
+  .ws-kg input{width:10.5rem; font-size:3.6rem; font-weight:800; text-align:center; border:none; background:transparent; padding:0; font-variant-numeric:tabular-nums;}
   .ws-kg span{font-size:1.2rem; font-weight:700; margin-left:-.6rem;}
   .ws-tip{text-align:center; font-size:.82rem; color:var(--sub); margin:.2rem 0 .6rem;}
   .ws-sec{display:flex; justify-content:space-between; font-size:.95rem; font-weight:800; padding:.5rem 0; border-bottom:1px solid var(--line);}
@@ -705,7 +713,7 @@
   .ws-row{display:flex; align-items:center; gap:.5rem; padding:.42rem 0; border-bottom:1px solid var(--sep);}
   .ws-row label{flex:1; font-size:1rem; font-weight:700; margin:0;}
   .ws-row label small{display:block; font-size:.72rem; color:var(--sub); font-weight:600;}
-  body[data-skin="D"] .ws-row input{width:5.4rem; text-align:center; font-size:1.2rem; font-weight:800; border:none; background:transparent; padding:.2rem 0; font-variant-numeric:tabular-nums;}
+  .ws-row input{width:5.4rem; text-align:center; font-size:1.2rem; font-weight:800; border:none; background:transparent; padding:.2rem 0; font-variant-numeric:tabular-nums;}
   .ws-row .u{width:2.2rem; font-size:.8rem; color:var(--sub); margin-left:-.4rem;}
   .ws-btns{display:flex; gap:.6rem; margin-top:1rem;}
   .ws-btns .btn{flex:1; padding:.85rem; font-size:1.05rem;}
@@ -1315,8 +1323,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 'use strict';
-/* ════════ 艋舺良的工作台 W1126-05（設定頁加「小工具・移除 PDF 密碼」入口 pdfunlock.html）／W1126-04（主題 D 健康頁：體重有感版＋記一筆 7 項＋年度健檢；修 .pipe 投標四格）／W1126-03（W1126-02 主題 D＋合併 W0928-02 體重多指標目標值＋達標預估＋BMI 目標自動換算） ════════ */
-const VERSION = 'W1126-05';
+/* ════════ 艋舺良的工作台 W1126-06（健康頁新版套用到 A/B/C 主題）／W1126-05（設定頁加「小工具・移除 PDF 密碼」入口 pdfunlock.html）／W1126-04（主題 D 健康頁：體重有感版＋記一筆 7 項＋年度健檢；修 .pipe 投標四格）／W1126-03（W1126-02 主題 D＋合併 W0928-02 體重多指標目標值＋達標預估＋BMI 目標自動換算） ════════ */
+const VERSION = 'W1126-06';
 const GCAL_CLIENT_ID = '654856338073-ukdt5nvtc8riq2010lado0i0n5vuhcfl.apps.googleusercontent.com';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
@@ -2507,10 +2515,9 @@ function renderHealthPage(){
   $('#healthBody').style.display = locked ? 'none' : '';
   if (locked) return;
   /* W1126-04：主題 D 用新版體重頁＋年度健檢；舊體重卡收起，按「改目標」才展開 */
-  $('#page-health').classList.toggle('dwmode', isD());
-  if (!isD()) $('#page-health').classList.remove('dwtgt');
-  $('#whAdd').textContent = isD() ? '＋ 記一筆' : '＋ 記體重';
-  if (isD()){ renderDWeight(); renderCheckup(); }
+  $('#page-health').classList.add('dwmode');   /* W1126-06：四個主題都用新版 */
+  $('#whAdd').textContent = '＋ 記一筆';
+  renderDWeight(); renderCheckup();
   /* ── 【53】體重・體組成（W0928：多指標目標＋達標預估） ── */
   const avail = whAvail();
   if (!avail.includes(whMetric)) whMetric = 'kg';
@@ -3105,7 +3112,7 @@ async function renderPush(){
 /* ── 快速記錄／編輯 ── */
 let mEdit = null, mEditTx = null, mKind = 'ev', mScope = 'life', mDir = 'out', mTax = 'biz';
 function openAdd(kind, date){
-  if (kind === 'wt' && isD() && typeof openWs === 'function'){ openWs(date); return; }   /* W1126-04 */
+  if (kind === 'wt' && typeof openWs === 'function'){ openWs(date); return; }   /* W1126-04 */
   mEdit = null; mEditTx = null; mKind = kind || 'ev'; mTax = 'biz';
   $('#mTitle').firstChild.textContent = '快速記錄 ';
   $('#mText').value = ''; $('#mDate').value = date || todayStr(); $('#mTime').value = '';
@@ -3881,7 +3888,7 @@ function renderDWeight(){
       <span class="vl" style="display:block;">${last ? dwNum(m, last[m]) + `<small>${dwU(m)}</small>` : '<span class="dw-mute">—</span>'}</span>
       <span class="dt" style="display:block;">${last && prev ? dwDelta(m, last[m] - prev[m]) : '&nbsp;'}</span></span></button>`;
   }).join('');
-  const six = `<div class="dw-card"><div class="dw-six">${cells}</div></div>`;
+  const six = `<div class="dw-card"><div class="dw-sixw"><div class="dw-six">${cells}</div></div></div>`;
   /* ③ 有感版 */
   const m = dwM, MU = DW_M[m];
   const ser = whSeries(m), last = ser[ser.length-1];
