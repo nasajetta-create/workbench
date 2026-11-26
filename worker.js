@@ -1,4 +1,7 @@
-/* 艋舺良的工作台 — 每朝簡報＋自動備份＋Notion 鏡像＋G95 報告 Worker（WK0817-03c）
+/* 艋舺良的工作台 — 每朝簡報＋自動備份＋Notion 鏡像＋G95 報告＋健檢前提醒 Worker（WK1126-01）
+ * WK1126-01 變更：新增健檢前一天提醒。cron "0 12 * * *"（UTC）＝台北 20:00；讀 Firestore meta/ckplan.nextDate，
+ *   等於台北明天就推播「明天健檢」＋準備事項。測試端點 /ckremind?key=<TEST_KEY>（不看日期，強制送一次）。
+ *   App 端 W1126-10 起在健檢卡「下次健檢日期」設定。加密段未改。
  * WK0811-02 變更：自動備份補上 W0811 新增的 recurs（固定收支）、loans（貸款）集合。
  * WK0811-03 變更：自動備份補上健康管理的 bp（血壓）、allergy（藥物過敏）集合。
  * cron: "0 23 * * *" = 台北 07:00 每朝簡報（Web Push 直接推到工作台 App）
@@ -36,6 +39,7 @@ export default {
     else if (event.cron === '0 19 * * *') await backup(env);
     else if (event.cron === '0 15 * * *') await notionSync(env);
     else if (/^30 23 /.test(event.cron)) await g95Report(env);   // 台北一三五 07:30（儀表板存的是 SUN,TUE,THU 寫法·用前綴比對最穩）
+    else if (event.cron === '0 12 * * *') await ckRemind(env);   // WK1126-01 台北 20:00 健檢前一天提醒
   },
   async fetch(req, env){
     const url = new URL(req.url);
@@ -46,6 +50,7 @@ export default {
       if (url.pathname === '/ping'){ return new Response(await ping(env)); }
       if (url.pathname === '/notion'){ return new Response(await notionSync(env)); }
       if (url.pathname === '/g95report'){ return new Response(await g95Report(env)); }
+      if (url.pathname === '/ckremind'){ return new Response(await ckRemind(env, true)); }
       if (url.pathname === '/g95zdebug'){   // WK0817-03b 偵錯用：看快照資料形狀·不寄信不推播
         const tok = await gToken(env); const {S, snapDate} = await g95Snap(tok);
         const rows = (S.rows || []); const z0 = (S.zones || [])[0] || null;
@@ -58,7 +63,7 @@ export default {
         return new Response(page || '報告尚未產生：等下一次排程發送，或先呼叫 /g95report 產生一份。',
           {status: page ? 200 : 404, headers: {'Content-Type': 'text/html; charset=utf-8'}});
       }
-      return new Response('ok（/brief、/backup、/ping、/notion、/g95report 或 /g95view）');
+      return new Response('ok（/brief、/backup、/ping、/notion、/g95report、/g95view 或 /ckremind）');
     }catch(e){ return new Response('錯誤：' + e.message, {status:500}); }
   }
 };
@@ -240,6 +245,26 @@ async function brief(env){
   const d = new Date(tpe() + 'T00:00:00Z');
   const msg = `${+today.slice(5,7)}/${+today.slice(8,10)}（${WD[d.getUTCDay()]}）\n` + L.join('\n');
   const how = await pushAll(env, tok, '早安，艋舺 👋 每朝簡報', msg);
+  return '推播結果：' + how + '\n\n' + msg;
+}
+
+/* ══════════ WK1126-01 健檢前一天提醒（台北 20:00） ══════════ */
+async function readDoc(tok, path){
+  const r = await fetch(`${FS}/${path}`, {headers:{Authorization:'Bearer ' + tok}});
+  if (!r.ok) return null;
+  const j = await r.json();
+  return j && j.fields ? dec(j.fields) : null;
+}
+const CK_PREP = ['禁食：晚上 12 點後不吃不喝', '早上的血壓藥先問診所要不要吃', '打開工作台「預約用勾選清單」確認加做項目', '帶健保卡和看診用摘要', '做腸胃鏡要有人接送'];
+async function ckRemind(env, force){
+  const tok = await gToken(env);
+  const plan = await readDoc(tok, 'meta/ckplan');
+  const nd = plan && typeof plan.nextDate === 'string' ? plan.nextDate : '';
+  const tmr = tpe(new Date(Date.now() + 86400000));
+  if (!force && nd !== tmr) return '不用提醒：下次健檢日 ' + (nd || '未設定') + '，台北明天 ' + tmr;
+  const d = nd || tmr;
+  const msg = (nd ? `${+d.slice(5,7)}/${+d.slice(8,10)} ` : '') + '準備事項：\n' + CK_PREP.map((s, i) => (i + 1) + '. ' + s).join('\n');
+  const how = await pushAll(env, tok, '明天健檢', msg);
   return '推播結果：' + how + '\n\n' + msg;
 }
 

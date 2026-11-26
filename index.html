@@ -786,6 +786,168 @@
     .ck-sum .s{font-size:1.8rem;}
     .ck-tbl th, .ck-tbl td{padding-left:.6rem; padding-right:.6rem;}
   }
+  /* ═══ W1126-10：年度健檢 A～E ═══ */
+  body{--ckgold:#A87A10;}
+  body:not([data-skin="D"]){--ckgold:var(--soon);}
+  body:not([data-skin="D"]) :is(.ck-tg,.ck-btn,.ck-todo,.ck-payw,.ck-trg,.ck-tools,.ck-rem,.ck-exb,.ck-q,.ck-sr,.ck-wide,.ck-pk,.ck-pks){border-radius:0;}
+  .ck-tg{--x:var(--sub); display:inline-block; font-size:.75rem; font-weight:700; line-height:1.55; padding:0 .45rem; border:1px solid color-mix(in srgb, var(--x) 38%, var(--card)); color:var(--x); background:color-mix(in srgb, var(--x) 10%, var(--card)); border-radius:.4rem; white-space:nowrap; vertical-align:.08em;}
+  .ck-tg + .ck-tg{margin-left:.3rem;}
+  /* C 已知狀況 */
+  .ck-tags{display:flex; flex-wrap:wrap; align-items:center; gap:.4rem; margin:.9rem 0 .2rem;}
+  .ck-tags .lb{font-size:.82rem; color:var(--sub); font-weight:700; margin-right:.1rem;}
+  .ck-tags .ck-tg{font-size:.85rem; padding:.15rem .6rem; cursor:pointer; margin:0;}
+  .ck-tags .ck-tg.add{border-style:dashed; background:transparent; --x:var(--sub);}
+  .ck-tagf{display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.5rem;}
+  .ck-tagf input{flex:1 1 10rem; min-width:0; width:auto; border-radius:.6rem; padding:.4rem .6rem; font-size:.92rem;}
+  /* 區段（可收合） */
+  .ck-sd{margin-top:1.3rem;}
+  .ck-sd > summary{display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; list-style:none; cursor:pointer; margin-bottom:.7rem;}
+  .ck-sd > summary::-webkit-details-marker{display:none;}
+  .ck-sd > summary .h{font-size:1.15rem; font-weight:800;}
+  .ck-sd > summary .p{margin-left:auto; white-space:nowrap; font-size:.85rem; color:var(--sub); font-weight:700; font-variant-numeric:tabular-nums;}
+  .ck-sd > summary .ic{color:var(--sub); transition:transform .15s;}
+  .ck-sd[open] > summary .ic{transform:rotate(90deg);}
+  /* A 今年該做的事 */
+  .ck-todo{border:1px solid var(--line); border-radius:1rem; overflow:hidden;}
+  .ck-tr{display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:.9rem; align-items:center; padding:1.05rem 1rem; border-top:1px solid var(--sep); line-height:1.6;}
+  .ck-tr:first-child{border-top:none;}
+  .ck-no{width:1.75rem; height:1.75rem; border-radius:50%; background:var(--navy); color:#fff; display:flex; align-items:center; justify-content:center; font-size:.85rem; font-weight:800; flex:none; align-self:start; margin-top:.1rem;}
+  .ck-tr .t{font-size:1rem; font-weight:800;}
+  .ck-tr .w{font-size:.85rem; color:var(--sub); margin-top:.15rem;}
+  .ck-tr .w .ck-tg{margin-right:.4rem;}
+  .ck-btns{display:flex; flex-wrap:nowrap; gap:.4rem; align-items:center;}
+  .ck-btn{border:1px solid var(--line); border-radius:.6rem; padding:.35rem .75rem; font-size:.85rem; font-weight:700; background:var(--card); color:var(--ink); white-space:nowrap;}
+  .ck-btn.pri{color:var(--navy); border-color:color-mix(in srgb, var(--navy) 45%, var(--card)); background:color-mix(in srgb, var(--navy) 8%, var(--card));}
+  .ck-done{font-size:.85rem; font-weight:800; color:var(--life); white-space:nowrap;}
+  .ck-tr.skip{background:var(--tint);}
+  .ck-tr.skip .m, .ck-tr.skip .ck-no{opacity:.45;}
+  /* B 自費建議 */
+  .ck-payw{border:1px solid var(--navy); border-radius:.9rem; overflow:hidden;}
+  .ck-payw.sk{border-color:var(--line);}
+  .ck-gap{height:1.1rem;}
+  .ck-pay{width:100%; table-layout:fixed; border-collapse:collapse; font-size:.85rem; font-variant-numeric:tabular-nums; line-height:1.45;}
+  .ck-pay th, .ck-pay td{padding:.5rem .45rem; border-top:1px solid var(--sep); border-left:1px solid var(--sep); vertical-align:top; overflow-wrap:anywhere; text-align:left;}
+  .ck-pay tr > :first-child{border-left:none;}
+  .ck-pay thead th{border-top:none; font-size:.75rem; color:var(--sub); font-weight:700; background:var(--page);}
+  .ck-pay .w1{width:2.9rem;} .ck-pay .w2{width:24%;} .ck-pay .w3{width:4rem;} .ck-pay .w4{width:3.6rem;} .ck-pay .w5{width:3.6rem;}
+  .ck-pay .c{text-align:center;} .ck-pay .r{text-align:right;}
+  .ck-pay td.c, .ck-pay td.r{overflow-wrap:normal; white-space:nowrap;}
+  .ck-pay .ry{display:none; font-size:.74rem; color:var(--sub); margin-top:.15rem; line-height:1.45;}
+  .ck-pay td.y{color:var(--sub); font-size:.8rem;}
+  .ck-pay tr.g td{background:color-mix(in srgb, var(--navy) 8%, var(--card)); color:var(--navy); font-weight:800; font-size:.9rem;}
+  .ck-pay tr.tot td{background:var(--navy); color:#fff; font-weight:800; border-top:none;}
+  .ck-pay tr.tot .tt{display:flex; justify-content:space-between; align-items:center; gap:.8rem;}
+  .ck-pay tr.tot .v{display:flex; flex-direction:column; align-items:flex-end; text-align:right; line-height:1.5;}
+  .ck-pay tr.tot .v span:first-child{font-size:1rem;}
+  .ck-pay tr.tot .v span:last-child{font-size:.82rem; font-weight:700;}
+  .ck-payw.sk .ck-pay tr.g td{background:var(--tint2); color:var(--sub);}
+  .ck-payw.sk .ck-pay td{background:var(--tint); color:var(--sub);}
+  .ck-note{margin:.7rem 0 0 1.1rem; font-size:.78rem; color:var(--sub); line-height:1.6;}
+  .ck-wide{display:flex; align-items:center; justify-content:center; gap:.4rem; width:100%; margin-top:.8rem; padding:.7rem; border:1px solid color-mix(in srgb, var(--navy) 45%, var(--card)); border-radius:.8rem; color:var(--navy); font-weight:800; font-size:.95rem; background:color-mix(in srgb, var(--navy) 6%, var(--card));}
+  /* E7 提醒 */
+  .ck-rem{margin:1rem 0 0; border:1px solid color-mix(in srgb, var(--urgent) 40%, var(--card)); background:color-mix(in srgb, var(--urgent) 6%, var(--card)); border-radius:1rem; padding:.8rem 1rem;}
+  .ck-rem .h{display:flex; align-items:center; gap:.4rem; font-weight:800; color:var(--urgent); font-size:1rem;}
+  .ck-rem ol{margin:.4rem 0 0 1.3rem; font-size:.9rem; line-height:1.7;}
+  /* E1 趨勢 */
+  .ck-trg{display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:1rem; overflow:hidden;}
+  .ck-trc{background:var(--card); padding:.75rem .8rem; min-width:0;}
+  .ck-trc .h{display:flex; justify-content:space-between; align-items:center; gap:.3rem; flex-wrap:wrap; font-size:.88rem; font-weight:800;}
+  .ck-trc svg{display:block; width:100%; height:auto; margin:.35rem 0 .2rem;}
+  .ck-trc .vs{display:grid; grid-template-columns:repeat(var(--n), minmax(0,1fr)); text-align:center; font-size:.7rem; color:var(--sub); font-variant-numeric:tabular-nums;}
+  .ck-trc .vs b{display:block; font-size:.85rem; color:var(--ink);}
+  .ck-trc .vs b.dw-bad{color:var(--urgent);}
+  .ck-trc .lim{font-size:.7rem; color:var(--sub); margin-top:.25rem;}
+  .ck-trc .nd{font-size:.85rem; color:var(--sub); padding:1.6rem 0; text-align:center;}
+  /* E8 搜尋 */
+  .ck-q{display:flex; align-items:center; gap:.5rem; border:1px solid var(--line); border-radius:.8rem; padding:0 .7rem; background:var(--card); color:var(--sub);}
+  .ck-q input{border:none; background:transparent; padding:.6rem 0; font-size:.95rem; min-width:0; flex:1;}
+  .ck-q input:focus{outline:none;}
+  .ck-sr{margin-top:.6rem; border:1px solid var(--line); border-radius:1rem; overflow:hidden;}
+  .ck-sri{padding:.7rem .9rem; border-top:1px solid var(--sep);}
+  .ck-sri:first-child{border-top:none;}
+  .ck-sri .n{font-weight:800; margin-bottom:.3rem;}
+  .ck-sri .ck-tbl th, .ck-sri .ck-tbl td{padding-left:.4rem; padding-right:.4rem;}
+  .ck-sr0{font-size:.85rem; color:var(--sub); padding:.6rem .2rem;}
+  .ck-sr .ck-sr0{padding:.6rem .9rem; border-top:1px solid var(--sep);}
+  /* D＋E2＋E6 紅字分組 */
+  .ck-sec small{font-size:.78rem; color:var(--sub); font-weight:600; margin-left:.5rem;}
+  .ck-gh{display:flex; align-items:baseline; gap:.5rem; padding:.45rem 1rem; background:var(--tint); border-top:1px solid var(--line); font-size:.85rem; font-weight:800; color:var(--sub);}
+  .ck-gh:first-child{border-top:none;}
+  .ck-gh small{font-weight:600;}
+  .ck-gh em{font-style:normal; margin-left:auto; font-weight:600;}
+  .ck-bad .ck-it{border-top:1px solid var(--sep);}
+  .ck-bad .ck-gh + .ck-it, .ck-bad .ck-gh + .ck-bi > .ck-it{border-top:none;}
+  .ck-bi{border-top:1px solid var(--sep);}
+  .ck-gh + .ck-bi{border-top:none;}
+  .ck-bi > summary{list-style:none; cursor:pointer;}
+  .ck-bi > summary::-webkit-details-marker{display:none;}
+  .ck-bi > .ck-it{border-top:none;}
+  .ck-bad .mm{min-width:0; flex:1;}
+  .ck-bad .tgs{margin-top:.2rem;}
+  .ck-bad .tv{font-size:.9rem; font-weight:700; color:var(--urgent); margin-top:.2rem; line-height:1.5;}
+  .ck-bad .ic.ex{color:var(--sub); transition:transform .15s; flex:none;}
+  .ck-bi[open] .ic.ex{transform:rotate(90deg);}
+  .ck-exw{padding:0 1rem .8rem;}
+  .ck-exb{background:var(--tint); border-radius:.6rem; padding:.55rem .75rem; font-size:.85rem; line-height:1.6;}
+  .ck-exb + .ck-exb{margin-top:.4rem;}
+  .ck-exb .k{font-weight:800; margin-bottom:.15rem;}
+  .ck-exb .row{display:grid; grid-template-columns:2.75rem minmax(0,1fr); gap:.4rem;}
+  .ck-exb .row b{color:var(--sub); font-weight:700;}
+  .ck-sri .ck-exb{margin-top:.5rem;}
+  .ck-disc{font-size:.75rem; color:var(--sub); margin-top:.5rem;}
+  /* 工具列＋看診紀錄 */
+  .ck-tools{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:1rem; overflow:hidden; margin-top:1.2rem;}
+  .ck-tools button{background:var(--card); padding:.8rem .4rem; font-size:.88rem; font-weight:800; color:var(--navy); display:flex; flex-direction:column; align-items:center; gap:.25rem; min-width:0;}
+  .ck-tools button small{font-size:.75rem; color:var(--sub); font-weight:600;}
+  .ck-vt td.y{white-space:normal; text-align:left;}
+  .ck-vt th, .ck-vt td{text-align:left;}
+  .ck-x{color:var(--urgent); font-size:.8rem; text-decoration:underline; white-space:nowrap;}
+  /* 彈窗 */
+  .ck-dtm{max-width:360px;}
+  .ck-pkm{max-width:480px;}
+  .ck-pkl{border:1px solid var(--line); border-radius:.8rem; overflow:hidden;}
+  .ck-pkg{padding:.4rem .8rem; font-size:.82rem; font-weight:800; color:var(--navy); background:color-mix(in srgb, var(--navy) 8%, var(--card));}
+  .ck-pkg.sk{color:var(--sub); background:var(--tint2); border-top:1px solid var(--line);}
+  .ck-pk{display:grid; grid-template-columns:auto 2.4rem minmax(0,1fr) auto; gap:.6rem; align-items:center; padding:.55rem .8rem; border-top:1px solid var(--sep); font-size:.92rem; cursor:pointer;}
+  .ck-pkg + .ck-pk{border-top:none;}
+  .ck-pk input{width:1.1rem; height:1.1rem; padding:0; margin:0;}
+  .ck-pk .c{font-weight:800; color:var(--sub);}
+  .ck-pk .f{font-variant-numeric:tabular-nums; font-weight:700;}
+  .ck-pks{margin-top:.8rem; border:1px solid var(--line); border-radius:.8rem; padding:.5rem .8rem; font-variant-numeric:tabular-nums;}
+  .ck-pks .r{display:flex; justify-content:space-between; gap:.6rem; padding:.2rem 0; font-size:.92rem;}
+  .ck-pks .r.s{font-size:.82rem; color:var(--sub);}
+  .ck-pks .r.t{border-top:1px solid var(--sep); margin-top:.2rem; padding-top:.4rem; font-size:1.05rem; font-weight:800; color:var(--navy);}
+  .ck-smm{max-width:720px;}
+  .ck-smb{font-size:.9rem; line-height:1.55;}
+  .ck-smb .cks-h{display:flex; justify-content:space-between; align-items:baseline; gap:.6rem; flex-wrap:wrap; font-size:1rem; margin-bottom:.6rem;}
+  .ck-smb .cks-h .d{font-size:.8rem; color:var(--sub);}
+  .ck-smb .cks-s{font-weight:800; margin:.9rem 0 .35rem; color:var(--navy);}
+  .ck-smb .cks-t{width:100%; border-collapse:collapse; border:1px solid var(--line); font-variant-numeric:tabular-nums;}
+  .ck-smb .cks-t th, .ck-smb .cks-t td{border-top:1px solid var(--sep); border-left:1px solid var(--sep); padding:.35rem .5rem; text-align:left; vertical-align:top; overflow-wrap:anywhere;}
+  .ck-smb .cks-t th{background:var(--page); font-weight:700; color:var(--sub); font-size:.8rem; width:5.2rem;}
+  .ck-smb .cks-k th, .ck-smb .cks-k td{text-align:center; width:auto;}
+  .ck-smb .cks-k td:first-child{text-align:left;}
+  .ck-smb td.yr{width:3.4rem; font-weight:800;}
+  .ck-smb .bad{color:var(--urgent); font-weight:800;}
+  .ck-smb .cks-f{font-size:.75rem; color:var(--sub); margin-top:.6rem;}
+  .ck-vsm{max-width:480px;}
+  .ck-vg{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:.6rem;}
+  #ckVsNote{width:100%; font-family:inherit; font-size:.95rem; border:1px solid var(--line); background:var(--page); color:var(--ink); padding:.5rem .6rem;}
+  @media (max-width:760px){
+    .ck-trg{grid-template-columns:repeat(2, minmax(0,1fr));}
+    .ck-tr{gap:.65rem; padding:1rem .75rem;}
+    .ck-btn{padding:.35rem .6rem;}
+    .ck-pay{font-size:.78rem; table-layout:auto;}
+    .ck-pay .lt, .ck-pay td.y, .ck-pay th.yh{display:none;}
+    .ck-pay .ry{display:block;}
+    .ck-pay th, .ck-pay td{padding:.5rem .4rem;}
+    .ck-pay .w1{width:2.5rem;} .ck-pay .w2{width:auto;} .ck-pay .w3{width:3.7rem;} .ck-pay .w5{width:3.5rem;}
+    .ck-tr{grid-template-columns:auto minmax(0,1fr); row-gap:.55rem;}
+    .ck-tr .ck-btns{grid-column:2; justify-content:flex-start;}
+    .ck-sd > summary .p{font-size:.8rem;}
+    .ck-tools button{font-size:.8rem;}
+    .ck-exw{padding:0 .75rem .75rem;}
+  }
 </style>
 </head>
 <body data-skin="A">
@@ -824,6 +986,8 @@
   <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M7 3h10v6a5 5 0 0 1-10 0z"/><path d="M7 5H4v2a3 3 0 0 0 3 3M17 5h3v2a3 3 0 0 1-3 3"/><path d="M12 14v4M8 21h8M9.5 18h5v3h-5z"/></symbol>
   <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.6 8-8 9.5C7.6 20 4 17 4 12V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></symbol>
   <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></symbol>
+  <symbol id="i-steth" viewBox="0 0 24 24"><path d="M5 3v6a5 5 0 0 0 10 0V3"/><path d="M10 14v2a5 5 0 0 0 10 0v-2"/><circle cx="20" cy="12" r="2"/></symbol>
   <symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
   <!-- 天氣 -->
   <symbol id="w-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.2v2.6M12 19.2v2.6M2.2 12h2.6M19.2 12h2.6M5.3 5.3l1.9 1.9M16.8 16.8l1.9 1.9M18.7 5.3l-1.9 1.9M7.2 16.8l-1.9 1.9"/></symbol>
@@ -1108,6 +1272,35 @@
   <div class="ck-pv" id="ckPv" style="display:none;"></div>
   <div class="ws-btns"><button class="btn" id="ckChk">看預覽</button><button class="btn pri" id="ckOk" disabled>確認存檔</button></div>
 </div></div>
+<!-- W1126-10：年度健檢 選日期／勾選清單／看診摘要／記錄看診 -->
+<div class="mask" id="ckDtMask"><div class="modal ck-dtm" role="dialog" aria-label="選日期">
+  <h3><span id="ckDtT">選日期</span><button class="x" id="ckDtX" aria-label="關閉"><svg class="ic"><use href="#i-close"></use></svg></button></h3>
+  <div class="frow"><input type="date" id="ckDtIn"></div>
+  <div class="ws-btns"><button class="btn del" id="ckDtClr">清除</button><button class="btn" id="ckDtNo">取消</button><button class="btn pri" id="ckDtOk">確定</button></div>
+</div></div>
+<div class="mask" id="ckPkMask"><div class="modal ck-pkm" role="dialog" aria-label="預約用勾選清單">
+  <h3>預約用勾選清單<button class="x" id="ckPkX" aria-label="關閉"><svg class="ic"><use href="#i-close"></use></svg></button></h3>
+  <div class="ck-pkl" id="ckPkL"></div>
+  <div class="ck-pks" id="ckPkS"></div>
+  <div class="ws-btns"><button class="btn" id="ckPkDef">恢復預設勾選</button></div>
+</div></div>
+<div class="mask" id="ckSmMask"><div class="modal ck-smm" role="dialog" aria-label="看診用摘要">
+  <h3>看診用摘要<button class="x" id="ckSmX" aria-label="關閉"><svg class="ic"><use href="#i-close"></use></svg></button></h3>
+  <div class="ck-smb" id="ckSmB"></div>
+  <div class="ws-btns"><button class="btn" id="ckSmClose">關閉</button><button class="btn pri" id="ckSmPdf"><svg class="ic"><use href="#i-print"></use></svg> 匯出 PDF</button></div>
+</div></div>
+<div class="mask" id="ckVsMask"><div class="modal ck-vsm" role="dialog" aria-label="記錄看診">
+  <h3>記錄看診<button class="x" id="ckVsX" aria-label="關閉"><svg class="ic"><use href="#i-close"></use></svg></button></h3>
+  <div class="ck-vg">
+    <div class="frow"><label for="ckVsDate">看診日期</label><input type="date" id="ckVsDate"></div>
+    <div class="frow"><label for="ckVsDept">科別</label><select id="ckVsDept"></select></div>
+  </div>
+  <div class="frow"><label for="ckVsNote">醫師怎麼說</label><textarea id="ckVsNote" rows="3" placeholder="例：杯盤比正常範圍，一年後再追"></textarea></div>
+  <div class="frow"><label for="ckVsRef">對應項目</label><select id="ckVsRef"></select></div>
+  <div class="frow"><label for="ckVsAct">建議怎麼變</label><select id="ckVsAct"></select></div>
+  <div class="frow" id="ckVsFuR" style="display:none;"><label for="ckVsFu">回診日期（會加進待辦）</label><input type="date" id="ckVsFu"></div>
+  <div class="ws-btns"><button class="btn" id="ckVsNo">取消</button><button class="btn pri" id="ckVsOk">存檔</button></div>
+</div></div>
 <div class="mask" id="mask">
   <div class="modal">
     <h3 id="mTitle">快速記錄 <button class="x" id="mClose">✕</button></h3>
@@ -1335,8 +1528,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 'use strict';
-/* ════════ 艋舺良的工作台 W1126-09（年度健檢超過 4 年：最近 3 年＋更早下拉）／W1126-08（首頁加小工具捷徑：PDF 解密）／W1126-07（主題 D 設為預設：每台裝置一次性切到 D）／W1126-06（健康頁新版套用到 A/B/C 主題）／W1126-05（設定頁加「小工具・移除 PDF 密碼」入口 pdfunlock.html）／W1126-04（主題 D 健康頁：體重有感版＋記一筆 7 項＋年度健檢；修 .pipe 投標四格）／W1126-03（W1126-02 主題 D＋合併 W0928-02 體重多指標目標值＋達標預估＋BMI 目標自動換算） ════════ */
-const VERSION = 'W1126-09';
+/* ════════ 艋舺良的工作台 W1126-10（年度健檢 A～E：今年該做的事・自費建議・已知狀況・紅字白話說明・四年趨勢・部位分組・預約勾選・看診摘要・記錄看診・健檢前提醒・搜尋；新增 D.ckplan→meta/ckplan）／W1126-09（年度健檢超過 4 年：最近 3 年＋更早下拉）／W1126-08（首頁加小工具捷徑：PDF 解密）／W1126-07（主題 D 設為預設：每台裝置一次性切到 D）／W1126-06（健康頁新版套用到 A/B/C 主題）／W1126-05（設定頁加「小工具・移除 PDF 密碼」入口 pdfunlock.html）／W1126-04（主題 D 健康頁：體重有感版＋記一筆 7 項＋年度健檢；修 .pipe 投標四格）／W1126-03（W1126-02 主題 D＋合併 W0928-02 體重多指標目標值＋達標預估＋BMI 目標自動換算） ════════ */
+const VERSION = 'W1126-10';
 const GCAL_CLIENT_ID = '654856338073-ukdt5nvtc8riq2010lado0i0n5vuhcfl.apps.googleusercontent.com';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
@@ -1368,6 +1561,7 @@ function blank(){ return {
   recurs: [],                      // {id,name,amt,dir,scope,day,mode:'auto'|'conf',tax,on,start:'YYYY-MM',rv,mt,del}
   loans: [],                       // {id,name,remain,monthly,day,paid,total,scope,start:'YYYY-MM',rv,mt,del}
   weights: [],                     // {id,kg,date,tm,fat,muscle,visceral,bmi,bmr,bodyAge,rv,mt,del}（W1126-04 加 bmr/bodyAge/bmi/tm）
+  ckplan: ckPlanFix({}),           // W1126-10 年度健檢規劃（今年該做的事狀態、已知狀況標籤、勾選、看診紀錄、下次健檢日）→ meta/ckplan
   checkups: [],                    // W1126-04 年度健檢 {id,year,date,clinic,items:[{cat,name,val,unit,lo,hi,ref,flag}],rv,mt,del}
   trips: [],                       // {id,kind:'near'|'wish',name,start,end,year,budget,split,note,done,rv,mt,del}
   notes: [],                       // {id,txt,tag,pin,rv,mt,del}
@@ -1376,12 +1570,25 @@ function blank(){ return {
   settings: {skin:'D', skinV:1, fs:'m', scope:'all', order:DEF_ORDER.slice(), folded:{}, showMoney:false, pin:null, lockApp:true, lockMoney:false},
   ver: 1
 };}
+/* W1126-10：年度健檢規劃預設值（函式宣告會提升，load() 時就能用） */
+function ckPlanFix(p){
+  p = (p && typeof p === 'object') ? p : {};
+  if (!p.todo || typeof p.todo !== 'object') p.todo = {};
+  if (!Array.isArray(p.tags)) p.tags = [{id:'t1', t:'地中海型貧血帶因', k:'gray'}, {id:'t2', t:'易安穩 5/160', k:'blue'}, {id:'t3', t:'冠脂妥 10', k:'blue'}];
+  if (!p.nextOv || typeof p.nextOv !== 'object') p.nextOv = {};
+  if (!Array.isArray(p.visits)) p.visits = [];
+  if (!Array.isArray(p.picks)) p.picks = null;
+  if (typeof p.nextDate !== 'string') p.nextDate = '';
+  if (!p.mt) p.mt = 0;
+  return p;
+}
 function load(){
   let d = null;
   try{ const r = localStorage.getItem(KEY); if(r) d = JSON.parse(r); }
   catch(e){ /* 私隱模式或預覽環境 */ }
   d = d || mem || blank();
   ['projects','bids','clients','txs','weights','trips','notes','recurs','loans','bp','allergy','company','checkups'].forEach(k => { if(!Array.isArray(d[k])) d[k] = []; });
+  d.ckplan = ckPlanFix(d.ckplan);   /* W1126-10 */
   d.prefs = d.prefs || {};
   d.prefs.health = Object.assign({bpSys:130, bpDia:80, exWeek:3}, (d.prefs||{}).health||{});
   d.prefs = Object.assign({netBase:0, goalMoney:0, countries:0, countriesTarget:50, weightTarget:0, whTargets:{fat:0, muscle:0, visceral:0, bmi:0}, whStart:{}, mt:0}, d.prefs||{});
@@ -3397,6 +3604,7 @@ function fbPushAll(){
   D.txs.forEach(fbPushTx);
   D.weights.forEach(w => fbPushDoc('weights', w));
   (D.checkups||[]).forEach(c => fbPushDoc('checkups', c));
+  fbPushCkplan();                   // W1126-10：遠端較新就不蓋
   D.trips.forEach(t => fbPushDoc('trips', t));
   D.notes.forEach(n => fbPushDoc('notes', n));
   D.recurs.forEach(r => fbPushDoc('recurs', r));
@@ -3468,6 +3676,15 @@ function fbStart(){
     }
   }, e => console.warn('snap', e));
   fbSubs.push(ug);
+  const uck = fbDb.collection('meta').doc('ckplan').onSnapshot(doc => {   // W1126-10 年度健檢規劃
+    const d = doc.data();
+    if (d && (d.mt||0) > ((D.ckplan||{}).mt||0)){
+      D.ckplan = ckPlanFix(d);
+      try{ localStorage.setItem(KEY, JSON.stringify(D)); }catch(e){ mem = D; }
+      renderAll();
+    }
+  }, e => console.warn('snap', e));
+  fbSubs.push(uck);
   fbPushAll();                      // 本機較新的推上去（set 冪等）
   const today = todayStr();          // 每日還原點
   const ref = fbDb.collection('snaps').doc(today);
@@ -4116,6 +4333,357 @@ function ckRef(it){
 }
 function ckOff(it, v){ v = +v; if (isNaN(v)) return 0; return whHas(it.hi) && v > +it.hi ? v - +it.hi : whHas(it.lo) && v < +it.lo ? +it.lo - v : 0; }
 function ckVal(it){ return it.val == null || it.val === '' ? '—' : esc(String(it.val)); }
+/* ════════ W1126-10：年度健檢 A～E ════════
+ * A 今年該做的事／B 自費建議／C 已知狀況／D 紅字白話／E1 趨勢 E2 分組 E3 勾選 E4 摘要 E5 看診 E6 新・連續 E7 健檢提醒 E8 搜尋
+ * 同步：D.ckplan（整份一筆，Firestore meta/ckplan，mt 新者勝）；待辦／行程走 D.items（items_YYYY）
+ */
+const CK_TARGET = 2027;
+const CK_WHEN = {
+  near:  {t:'近期',        c:'var(--urgent)'},
+  visit: {t:'下次回診',    c:'var(--navy)'},
+  ck:    {t:'2027 健檢',   c:'var(--ckgold)'},
+  after: {t:'2027 健檢後', c:'var(--sub)'}
+};
+const CK_TODO = [
+  {k:'eye',   t:'掛眼科',                 w:'near',  why:'眼底杯盤比偏高（2023、2025、2026）', dept:'眼科', codes:['C2']},
+  {k:'gi',    t:'問腸胃科要不要複查胃鏡', w:'near',  why:'2025 LA-B 逆流性食道炎；順便問尿膽素原 1+（2024、2026）', dept:'腸胃科', codes:['A1']},
+  {k:'endo',  t:'掛新陳代謝科',           w:'near',  why:'甲狀腺結節（2025 囊腫 → 2026 右側結節 0.26 公分）＋空腹血糖 110', dept:'新陳代謝科', codes:['H1','H2']},
+  {k:'urine', t:'複驗尿蛋白＋微量白蛋白', w:'visit', why:'2026 尿蛋白 1+', dept:'腎臟科', codes:[]},
+  {k:'ck27',  t:'2027 健檢加做',          w:'ck',    why:'見下方自費建議', dept:'', codes:[]},
+  {k:'pros',  t:'看攝護腺結果',           w:'after', why:'攝護腺肥大＋鈣化連續 4 年（2023～2026），2026 從輕微肥大變肥大；之前有頻尿、夜尿、尿流細就先看泌尿科', dept:'泌尿科', codes:['E8']}
+];
+/* 自費項目：next＝建議下次做的年份；next ≤ CK_TARGET 進「要做」，否則「可跳過」；同 grp 取最早年份 */
+const CK_PAY = [
+  {c:'C2', n:'OCT 光學斷層',         fee:1800,  last:null, next:2027, why:'眼底杯盤比偏高；看完眼科可能改成可跳過'},
+  {c:'E5', n:'Cyfra21-1',            fee:1000,  last:2026, next:2027, why:'2026 為 3.51 偏高'},
+  {c:'E8', n:'PSA',                  fee:800,   last:2026, next:2027, why:'攝護腺肥大，每年追蹤（2023 0.6、2024 0.8、2026 1.0）'},
+  {c:'F1', n:'心臟超音波',           fee:2800,  last:null, next:2027, why:'高血壓用藥，估計'},
+  {c:'F2', n:'頸動脈超音波',         fee:1800,  last:null, next:2027, why:'高血壓＋血脂用藥，估計'},
+  {c:'F8', n:'LDH、CPK',             fee:500,   last:null, next:2027, why:'服冠脂妥，看肌肉指數'},
+  {c:'H1', n:'胰島素＋阻抗',         fee:1000,  last:null, next:2027, why:'空腹血糖 110'},
+  {c:'H2', n:'醣化血色素',           fee:600,   last:null, next:2027, why:'空腹血糖 110'},
+  {c:'A1', n:'胃鏡＋大腸鏡＋麻醉',   fee:15000, last:2025, next:2028, why:'估計，先問腸胃科（胃腸鏡一定一起做）', grp:'gi'},
+  {c:'F3', n:'ABI',                  fee:1200,  last:2025, next:2028, why:'估計'},
+  {c:'T2', n:'帶狀疱疹疫苗 2 劑',    fee:18000, last:null, next:2029, why:'疾管署：滿 50 歲'},
+  {c:'N9', n:'骨密度',               fee:3600,  last:2026, next:2049, why:'骨鬆學會：男性 70 歲'}
+];
+/* 滿額折扣規則（以後要加就加一筆）：代號開頭 pre 的小計 ≥ min → 該小計 × rate */
+const CK_DISC = [
+  {pre:'F', min:5000, rate:0.8, t:'F 類滿 5,000 打 8 折'}
+];
+const CK_DEPTS = ['眼科','腸胃科','新陳代謝科','腎臟科','泌尿科','心臟科','其他'];
+const CK_ACTS = ['沒事','每年回診','開始治療','要再檢查'];
+const CK_PREP = ['禁食：晚上 12 點後不吃不喝','早上的血壓藥先問診所要不要吃','打開「預約用勾選清單」確認加做項目','帶健保卡和看診用摘要','做腸胃鏡要有人接送'];
+const CK_ME = {name:'劉奕良', born:1979};
+const CK_NOTE = ['尿液微量白蛋白不在價目表上，要問診所','服易安穩要確認套餐有驗鉀和腎功能','價格依內湖健康管理診所 115 年版價目表'];
+
+/* D 紅字白話說明：n＝名稱比對、v＝（文字型結果）內容比對；known＝已知原因（地中海型貧血帶因） */
+const CK_EXP = [
+  {n:/腰圍/, nm:'腰圍', what:'肚子一圈的長度，男生標準 90 公分以內。', mean:'超過代表肚子脂肪多，血壓、血糖、血脂容易一起出問題。', todo:'少吃宵夜和含糖飲料，每週運動 3 次；每月量一次腰圍。'},
+  {n:/BMI|^體重/, nm:'體重', what:'體重和身高換算出來的胖瘦程度。', mean:'偏高時心血管、脂肪肝、膝蓋負擔都會變大。', todo:'先以減 5% 體重為目標，配合工作台記體重追蹤。'},
+  {n:/收縮壓|舒張壓|血壓/, nm:'血壓', what:'心臟打血時（收縮壓）和放鬆時（舒張壓）血管受到的壓力。', mean:'你有在吃易安穩，數字偏高代表藥效或生活習慣要調整。', todo:'在家早晚各量一次記下來，回診時給醫師看；少鹽、少喝酒。'},
+  {n:/飯前血糖|空腹血糖|AC ?sugar|Glucose/i, nm:'空腹血糖', what:'空腹 8 小時後血液裡的糖。', mean:'100～125 屬於偏高（糖尿病前期），還不是糖尿病。', todo:'掛新陳代謝科，加驗醣化血色素和胰島素阻抗；少喝含糖飲料、精緻澱粉。'},
+  {n:/醣化|HbA1c|HbAlC/i, nm:'醣化血色素', what:'過去 3 個月血糖的平均。', mean:'5.7～6.4 屬於糖尿病前期。', todo:'跟空腹血糖一起看，交給新陳代謝科判斷要不要追蹤。'},
+  {n:/LDL/i, nm:'LDL 壞膽固醇', what:'會黏在血管壁的膽固醇。', mean:'太高容易血管硬化；你吃冠脂妥後已經壓下來。', todo:'冠脂妥照常吃，別自己停藥；少吃油炸和加工肉。'},
+  {n:/CHOL|總膽固醇/i, nm:'總膽固醇', what:'血液裡所有膽固醇加起來。', mean:'偏高要看 LDL 才知道風險大不大。', todo:'和 LDL 一起追蹤；冠脂妥照常吃。'},
+  {n:/HDL/, nm:'HDL 好膽固醇', what:'會把膽固醇帶回肝臟的好膽固醇。', mean:'太低保護力不夠。', todo:'運動能把它拉高；少吃反式脂肪。'},
+  {n:/TC\/HDL|血管硬化指數/, nm:'血管硬化指數', what:'總膽固醇除以好膽固醇。', mean:'超過 5 代表血管硬化風險高。', todo:'控制 LDL、多運動拉高 HDL。'},
+  {n:/三酸甘油脂|^TG/, nm:'三酸甘油脂', what:'血液裡的中性脂肪，吃甜、喝酒最容易升高。', mean:'偏高和脂肪肝、肚子胖常常一起出現。', todo:'少喝含糖飲料和酒；抽血前一晚別吃宵夜。'},
+  {n:/尿蛋白/, nm:'尿蛋白', what:'尿裡驗到蛋白質。', mean:'可能只是喝水少或久站，也可能是血壓影響到腎臟。', todo:'下次回診再驗一次，加驗尿液微量白蛋白；連續陽性就看腎臟科。'},
+  {n:/微量白蛋白/, nm:'微量白蛋白', what:'尿裡很少量的白蛋白，比尿蛋白更早發現腎臟受影響。', mean:'高血壓、血糖偏高的人要定期驗。', todo:'請醫師一起開單驗。'},
+  {n:/尿膽素原/, nm:'尿膽素原', what:'膽紅素經過腸道後的產物，會從尿排出。', mean:'輕微 1+ 常見於喝水少；也可能跟肝膽或紅血球破壞有關。', todo:'看腸胃科時順便問；驗尿前一天多喝水。'},
+  {n:/RBC|紅血球總數/, nm:'紅血球數', known:true, what:'血液裡紅血球的數量。', mean:'地中海型貧血帶因的人紅血球小但數量多，偏高是已知原因。', todo:'不用特別處理；不要自己吃鐵劑。'},
+  {n:/^Hb\s|Hb 血色素|^血色素/, nm:'血色素', known:true, what:'紅血球裡負責帶氧氣的蛋白質。', mean:'略低是地中海型貧血帶因的典型表現，不是缺鐵。', todo:'維持追蹤即可；若明顯下降或頭暈喘再找醫師。'},
+  {n:/Hct|容積比/, nm:'紅血球容積比', known:true, what:'紅血球佔血液的比例。', mean:'略低和地中海型貧血帶因有關。', todo:'跟血色素一起看，持平就好。'},
+  {n:/MCV/, nm:'MCV', known:true, what:'每顆紅血球的平均大小。', mean:'地中海型貧血帶因的人紅血球天生比較小，偏低是已知原因。', todo:'不用處理；看病時告訴醫師你是帶因者，避免被當成缺鐵。'},
+  {n:/MCHC/, nm:'MCHC', known:true, what:'紅血球裡血色素的濃度。', mean:'略低跟地中海型貧血帶因有關。', todo:'不用處理。'},
+  {n:/MCH(?!C)/, nm:'MCH', known:true, what:'每顆紅血球平均有多少血色素。', mean:'紅血球小，裡面的血色素也就少，是帶因的典型表現。', todo:'不用處理。'},
+  {n:/RDW|紅血球分佈/, nm:'RDW', known:true, what:'紅血球大小差異多大。', mean:'帶因者常偏寬。', todo:'不用處理。'},
+  {n:/LDH/, nm:'LDH', what:'身體細胞裡的一種酵素。', mean:'偏低通常沒有臨床意義，報告寫可能跟勞累、睡不好有關。', todo:'睡飽一點；服冠脂妥的話健檢可一起看 CPK。'},
+  {n:/CPK/, nm:'CPK', what:'肌肉受傷時會升高的酵素。', mean:'吃降膽固醇藥的人用來看有沒有肌肉副作用。', todo:'有不明原因肌肉痠痛就告訴醫師。'},
+  {n:/Lym#|淋巴球數/, nm:'淋巴球', what:'白血球的一種，對抗病毒。', mean:'一次偏高多半是最近感冒或發炎。', todo:'下次健檢再看，持續偏高才需要追。'},
+  {n:/cyfra/i, nm:'Cyfra21-1', what:'肺部腫瘤的參考指標之一。', mean:'只是參考，發炎、抽菸、腎功能都會讓它變高，不等於生病。', todo:'2027 健檢再驗一次看趨勢；持續上升再看胸腔內科。'},
+  {n:/PSA/, nm:'PSA', what:'攝護腺分泌的蛋白，用來篩檢攝護腺問題。', mean:'4 以下正常；攝護腺肥大的人每年看有沒有往上爬。', todo:'每年驗一次，記下數字比較。'},
+  {n:/腹部超音波/, v:/脂肪肝/, nm:'脂肪肝', what:'肝臟裡堆了太多脂肪。', mean:'跟肚子胖、血脂、血糖有關，久了可能傷肝。', todo:'減重 5～10% 就會改善；少油炸、少酒。'},
+  {n:/腹部超音波/, v:/膽囊|瘜肉|息肉/, nm:'膽囊瘜肉', what:'膽囊壁上的小突起，多數是膽固醇沉積。', mean:'0.5 公分以下通常每年追蹤就好。', todo:'每年超音波看大小；超過 0.5 公分或長很快再看肝膽腸胃科。'},
+  {n:/腹部超音波/, v:/結晶|結石/, nm:'腎臟結晶體', what:'尿裡礦物質在腎臟沉積的小顆粒。', mean:'是結石的前期，水喝太少最常見。', todo:'每天喝水 2000 cc 以上、別憋尿；有血尿或腰痛就看泌尿科。'},
+  {n:/甲狀腺/, v:/結節|囊腫/, nm:'甲狀腺結節／囊腫', what:'甲狀腺裡的小腫塊（實心叫結節、水泡叫囊腫）。', mean:'大多是良性；從囊腫變結節要請醫師看一下。', todo:'掛新陳代謝科，請醫師判斷要不要抽血驗甲狀腺功能或定期超音波。'},
+  {n:/攝護腺/, v:/肥大/, nm:'攝護腺肥大', what:'男性攝護腺變大，年紀增長很常見。', mean:'會壓到尿道，造成頻尿、夜尿、尿流細。', todo:'每年超音波＋PSA；有排尿症狀就看泌尿科。'},
+  {n:/攝護腺/, v:/鈣化/, nm:'攝護腺鈣化', what:'攝護腺裡的鈣質沉積。', mean:'多半跟年紀或以前發炎有關，沒症狀通常不用治療。', todo:'跟著肥大一起追蹤即可。'},
+  {n:/眼底|杯盤比|視神經/, nm:'眼底杯盤比', what:'視神經中間凹陷的比例。', mean:'偏大要排除早期青光眼，不代表已經是青光眼。', todo:'掛眼科做眼壓、視野、OCT 檢查確認。'},
+  {n:/眼壓/, nm:'眼壓', what:'眼球裡的壓力。', mean:'偏高久了可能傷視神經。', todo:'少熬夜、少長時間滑手機；跟杯盤比一起給眼科看。'},
+  {n:/心電圖/, nm:'心電圖', what:'記錄心跳電流的檢查。', mean:'可看心律不整、心肌缺氧。', todo:'有異常再看心臟科；正常就每年照做。'},
+  {n:/自律神經/, nm:'自律神經', what:'看交感（緊張）和副交感（放鬆）平衡的檢查。', mean:'壓力大、睡不好時常會失衡。', todo:'睡滿 6～7 小時、規律運動；有心悸失眠再看醫師。'},
+  {n:/心臟超音波/, nm:'心臟超音波', what:'用超音波看心臟結構和瓣膜。', mean:'高血壓久了心室可能變厚，瓣膜輕微閉鎖不全很常見。', todo:'血壓控制好；照醫師建議幾年追一次。'},
+  {n:/頸動脈/, nm:'頸動脈超音波', what:'看脖子大血管有沒有變厚、有沒有斑塊。', mean:'血管內壁增厚代表開始有硬化。', todo:'血壓、血脂控制好；照醫師建議定期追蹤。'},
+  {n:/胃鏡/, nm:'胃鏡', what:'從嘴巴放鏡頭看食道、胃、十二指腸。', mean:'逆流性食道炎 B 級是中度發炎，胃酸往上跑造成的。', todo:'吃飽別馬上躺、少咖啡宵夜；問腸胃科什麼時候要再照。'},
+  {n:/大腸鏡/, nm:'大腸鏡', what:'從肛門放鏡頭看整段大腸。', mean:'痔瘡很常見，重點是有沒有瘜肉。', todo:'多吃蔬果、多喝水；出血或疼痛看直腸外科。'},
+  {n:/消化系統理學/, nm:'腹部圓凸', what:'醫師觸診時看到肚子明顯凸出。', mean:'多半是肚子脂肪，跟腰圍一起看。', todo:'跟腰圍一樣，靠減重改善。'}
+];
+const ckExps = it => CK_EXP.filter(e => e.n.test(String(it.name)) && (!e.v || e.v.test(String(it.val == null ? '' : it.val))));
+const ckKnown = it => { const ex = ckExps(it); return ex.length > 0 && ex.every(e => e.known); };
+/* E2 部位分組：顯示順序；比對順序另列（避免「醣化血色素」被歸到血液、「眼壓」被歸到血壓） */
+const CK_GRPS = ['體重與代謝','眼睛','腎臟與泌尿','消化','癌症指標','甲狀腺','自律神經','其他','血液'];
+const CK_GRP_RULES = [
+  ['消化', /尿膽素原/],
+  ['體重與代謝', /醣化|HbA1c|HbAlC|尿酸/i],
+  ['血液', /RBC|^Hb\s|Hb 血色素|^血色素|Hct|容積比|MCV|MCH|RDW|紅血球/],
+  ['甲狀腺', /甲狀腺|TSH|^T3|^T4/],
+  ['眼睛', /眼|視神經|杯盤/],
+  ['癌症指標', /cyfra|PSA|CEA|AFP|CA-?199|SCC|癌/i],
+  ['自律神經', /自律神經/],
+  ['腎臟與泌尿', /攝護腺|尿|腎|eGFR|肌酸酐|Creatinine|BUN/i],
+  ['消化', /胃鏡|大腸鏡|腹部超音波|消化|肝|膽|GOT|GPT|r-GT|Amylase/i],
+  ['體重與代謝', /腰圍|體重|BMI|壓|血糖|sugar|Glucose|膽固醇|CHOL|LDL|HDL|TG|三酸|TC\/HDL|頸動脈|心臟|心電圖|LDH|CPK/i]
+];
+function ckGrpOf(it){ const n = String(it.name); for (const [g, re] of CK_GRP_RULES) if (re.test(n)) return g; return '其他'; }
+/* E1 趨勢四格 */
+const CK_TR = [
+  {t:'LDL 壞膽固醇', re:/LDL/i},
+  {t:'空腹血糖', re:/飯前血糖|空腹血糖|AC ?sugar|Glucose/i},
+  {t:'收縮壓', re:/收縮壓/},
+  {t:'紅字項數', cnt:true}
+];
+/* E4 摘要重點數值 */
+const CK_KEYV = [
+  {t:'LDL', re:/LDL/i}, {t:'空腹血糖', re:/飯前血糖|空腹血糖|AC ?sugar|Glucose/i}, {t:'醣化血色素', re:/醣化|HbA1c|HbAlC/i},
+  {t:'三酸甘油脂', re:/三酸甘油脂|^TG/}, {t:'收縮壓', re:/收縮壓/}, {t:'舒張壓', re:/舒張壓/}, {t:'腰圍', re:/腰圍/},
+  {t:'尿蛋白', re:/尿蛋白/}, {t:'PSA', re:/PSA/}, {t:'Cyfra21-1', re:/cyfra/i}
+];
+
+/* ── ckplan：整份存 D.ckplan → Firestore meta/ckplan ── */
+function ckP(){ if (!D.ckplan || typeof D.ckplan !== 'object') D.ckplan = ckPlanFix({}); return D.ckplan; }
+function fbPushCkplan(){
+  if (!fbDb || !fbUser || !D.ckplan) return;
+  const ref = fbDb.collection('meta').doc('ckplan'), body = JSON.parse(JSON.stringify(D.ckplan));
+  ref.get().then(s => { const r = s.data(); if (!r || (r.mt||0) < (body.mt||0)) return ref.set(body); }).catch(e => console.warn('sync', e));
+}
+function ckTouch(){ ckP().mt = now(); save(); fbPushCkplan(); }
+function ckMkItem(kind, title, date){
+  const it = {id:uid(), kind, scope:'life', title, date, time:null, done:false, rv:1, mt:now(), del:false};
+  D.items.push(it); fbPushItem(it); gPushEvent(it); return it;
+}
+function ckKillItem(id){
+  const it = D.items.find(x => x.id === id); if (!it || it.del) return;
+  it.del = true; it.rv = (it.rv||0) + 1; it.mt = now(); fbPushItem(it); gDeleteEvent(it);
+}
+const ckFmt = n => Math.round(n).toLocaleString('en-US');
+const ckMd = ds => ds ? (+ds.slice(5,7)) + '/' + (+ds.slice(8,10)) : '';
+const ckTg = (txt, col, cls) => `<span class="ck-tg${cls ? ' ' + cls : ''}" style="--x:${col};">${esc(txt)}</span>`;
+function ckNextOf(c){ const p = ckP(), it = CK_PAY.find(x => x.c === c); return p.nextOv && p.nextOv[c] != null ? +p.nextOv[c] : it.next; }
+function ckNextEff(it){ return it.grp ? Math.min(...CK_PAY.filter(x => x.grp === it.grp).map(x => ckNextOf(x.c))) : ckNextOf(it.c); }
+function ckSplit(){
+  const doIt = [], skip = [];
+  CK_PAY.forEach(it => { const nx = ckNextEff(it); (nx <= CK_TARGET ? doIt : skip).push(Object.assign({}, it, {nx})); });
+  doIt.sort((a,b) => a.c < b.c ? -1 : 1);
+  skip.sort((a,b) => a.nx - b.nx || (a.c < b.c ? -1 : 1));
+  return {doIt, skip};
+}
+function ckCalc(codes){
+  const its = codes.map(c => CK_PAY.find(x => x.c === c)).filter(Boolean);
+  const orig = its.reduce((a,it) => a + it.fee, 0);
+  let off = 0; const lines = [];
+  CK_DISC.forEach(r => {
+    const s = its.filter(it => it.c.startsWith(r.pre)).reduce((a,it) => a + it.fee, 0);
+    const hit = s >= r.min, o = hit ? Math.round(s * (1 - r.rate)) : 0;
+    off += o; lines.push({t:r.t, s, off:o, hit, need:Math.max(0, r.min - s)});
+  });
+  return {orig, net:orig - off, off, lines};
+}
+function ckPicks(){ const p = ckP(); return Array.isArray(p.picks) ? p.picks.slice() : ckSplit().doIt.map(x => x.c); }
+function ckFold(k, v){
+  let f = {}; try{ f = JSON.parse(localStorage.getItem('wb_ck_fold') || '{}') || {}; }catch(e){}
+  if (v === undefined) return !!f[k];
+  f[k] = v; try{ localStorage.setItem('wb_ck_fold', JSON.stringify(f)); }catch(e){}
+}
+/* ── 共用：選日期小彈窗 ── */
+let ckDtCb = null;
+function ckAskDate(title, def, cb, opt){
+  opt = opt || {};
+  $('#ckDtT').textContent = title;
+  $('#ckDtIn').value = def || todayStr();
+  $('#ckDtClr').style.display = opt.clear ? '' : 'none';
+  ckDtCb = cb; $('#ckDtMask').classList.add('on');
+}
+/* ── A 今年該做的事 ── */
+function ckTodoHtml(){
+  const p = ckP(), st = k => (p.todo[k] && p.todo[k].st) || 'pending';
+  const rows = CK_TODO.map((t,i) => Object.assign({i}, t)).sort((a,b) => (st(a.k) === 'skipped') - (st(b.k) === 'skipped') || a.i - b.i);
+  const nA = CK_TODO.filter(t => ['added','done'].includes(st(t.k))).length, nS = CK_TODO.filter(t => st(t.k) === 'skipped').length;
+  const nP = CK_TODO.length - nA - nS;
+  const body = rows.map(t => {
+    const s = st(t.k), o = p.todo[t.k] || {}, w = CK_WHEN[t.w];
+    let btn;
+    if (s === 'added') btn = `<span class="ck-done">已加入 ${esc(ckMd(o.date))}</span><button class="ck-btn" data-cka="undo" data-k="${t.k}">取消</button>`;
+    else if (s === 'done') btn = `<span class="ck-done">已看診 ${esc(ckMd(o.vdate))}</span><button class="ck-btn" data-cka="undo" data-k="${t.k}">取消</button>`;
+    else if (s === 'skipped') btn = `<button class="ck-btn" data-cka="undo" data-k="${t.k}">取消</button>`;
+    else btn = `<button class="ck-btn pri" data-cka="add" data-k="${t.k}">加入</button><button class="ck-btn" data-cka="skip" data-k="${t.k}">略過</button>`;
+    return `<div class="ck-tr${s === 'skipped' ? ' skip' : ''}" data-ckrow="${t.k}"><span class="ck-no">${t.i + 1}</span>
+      <div class="m"><div class="t">${esc(t.t)}</div><div class="w">${ckTg(w.t, w.c)}<span>${esc(t.why)}</span></div></div>
+      <div class="ck-btns">${btn}</div></div>`;
+  }).join('');
+  return `<details class="ck-sd" data-fold="A"${ckFold('A') ? '' : ' open'}><summary><span class="h">今年該做的事</span><svg class="ic"><use href="#i-chev"></use></svg>
+    <span class="p" id="ckTodoP">已加入 ${nA}・已略過 ${nS}・待決定 ${nP}</span></summary>
+    <div class="ck-todo">${body}</div></details>`;
+}
+function ckTodoAct(act, k){
+  const p = ckP(), t = CK_TODO.find(x => x.k === k); if (!t) return;
+  const o = p.todo[k] || {};
+  if (act === 'add'){
+    ckAskDate('「' + t.t + '」要排哪一天？', todayStr(), d => {
+      if (!d) return;
+      const td = ckMkItem('td', t.t, d), ev = ckMkItem('ev', t.t, d);
+      p.todo[k] = {st:'added', date:d, tdId:td.id, evId:ev.id};
+      ckTouch(); renderAll(); toast('已加入待辦和行事曆');
+    });
+    return;
+  }
+  if (act === 'skip'){ p.todo[k] = {st:'skipped'}; ckTouch(); renderAll(); return; }
+  if (act === 'undo'){
+    if (o.tdId) ckKillItem(o.tdId);
+    if (o.evId) ckKillItem(o.evId);
+    delete p.todo[k]; ckTouch(); renderAll(); toast(o.st === 'added' ? '已取消，待辦和行程已移除' : '已回到待決定');
+  }
+}
+/* ── B 自費建議 ── */
+function ckPayRows(list, todo){
+  return list.map(it => `<tr><td class="c">${esc(it.c)}</td><td>${esc(it.n)}<div class="ry">${esc(it.why)}</div></td><td class="r">${ckFmt(it.fee)}</td>
+    <td class="c lt">${it.last ? it.last : '—'}</td><td class="c">${todo ? ckTg(String(it.nx), 'var(--navy)') : it.nx}</td><td class="y">${esc(it.why)}</td></tr>`).join('');
+}
+function ckPayHead(){ return `<thead><tr><th class="c w1">代號</th><th class="w2">項目</th><th class="r w3">費用</th><th class="c w4 lt">上次</th><th class="c w5">下次</th><th class="w6 yh">原因</th></tr></thead>`; }
+function ckPayHtml(){
+  const {doIt, skip} = ckSplit();
+  const cal = ckCalc(doIt.map(x => x.c));
+  const hits = cal.lines.filter(l => l.hit);
+  const l2 = hits.length ? hits.map(l => l.t).join('、') + '後 約 ' + ckFmt(cal.net) : '沒有達到滿額折扣';
+  const t1 = `<div class="ck-payw"><table class="ck-pay">${ckPayHead()}<tbody>
+    <tr class="g"><td colspan="6">${CK_TARGET} 要做・${doIt.length} 項</td></tr>
+    ${doIt.length ? ckPayRows(doIt, true) : '<tr><td colspan="6" class="dw-mute">沒有項目</td></tr>'}
+    <tr class="tot"><td colspan="6"><div class="tt"><span>費用合計</span><span class="v"><span id="ckTotO">原價合計 ${ckFmt(cal.orig)}</span><span id="ckTotN">${esc(l2)}</span></span></div></td></tr>
+    </tbody></table></div>`;
+  const t2 = `<div class="ck-payw sk"><table class="ck-pay">${ckPayHead()}<tbody>
+    <tr class="g"><td colspan="6">${CK_TARGET} 可跳過・${skip.length} 項</td></tr>
+    ${skip.length ? ckPayRows(skip, false) : '<tr><td colspan="6">沒有項目</td></tr>'}
+    </tbody></table></div>`;
+  return `<details class="ck-sd" data-fold="B"${ckFold('B') ? '' : ' open'}><summary><span class="h">自費建議</span><svg class="ic"><use href="#i-chev"></use></svg>
+    <span class="p">${CK_TARGET} 健檢加做</span></summary>
+    ${t1}<div class="ck-gap"></div>${t2}
+    <ul class="ck-note">${CK_NOTE.map(s => `<li>${esc(s)}</li>`).join('')}</ul>
+    <button class="ck-wide" id="ckPickBtn"><svg class="ic"><use href="#i-todo"></use></svg>預約用勾選清單</button></details>`;
+}
+/* ── C 已知狀況 ── */
+function ckTagsHtml(){
+  const tags = ckP().tags || [];
+  return `<div class="ck-tags"><span class="lb">已知狀況</span>${tags.map(t => `<button class="ck-tg" style="--x:${t.k === 'blue' ? 'var(--navy)' : 'var(--sub)'};" data-cktag="${esc(t.id)}" title="點一下刪除">${esc(t.t)}</button>`).join('')}
+    <button class="ck-tg add" id="ckTagAdd">＋新增</button></div>
+    <div class="ck-tagf" id="ckTagF" style="display:none;"><input id="ckTagIn" placeholder="例：脂肪肝、某某藥 10mg" maxlength="30">
+    <button class="ck-btn" data-cktk="gray">加為狀況</button><button class="ck-btn pri" data-cktk="blue">加為用藥</button></div>`;
+}
+/* ── E7 健檢前提醒 ── */
+function ckRemHtml(){
+  const d = ckP().nextDate; if (!d) return '';
+  const n = dayDiff(d); if (n < 0 || n > 3) return '';
+  const head = n === 0 ? '今天健檢' : n === 1 ? '明天健檢' : `${n} 天後健檢`;
+  return `<div class="ck-rem" id="ckRem"><div class="h"><svg class="ic"><use href="#i-bell"></use></svg>${head}（${esc(mdw(d))}）準備事項</div>
+    <ol>${CK_PREP.map(s => `<li>${esc(s)}</li>`).join('')}</ol></div>`;
+}
+/* ── E1 趨勢 ── */
+function ckTrendHtml(cks){
+  const c4 = cks.slice(-4);
+  const cells = CK_TR.map(def => {
+    const pts = c4.map(c => {
+      const its = Array.isArray(c.items) ? c.items : [];
+      if (def.cnt) return {y:c.year, v:its.filter(ckBad).length, hi:null, bad:false};
+      const f = its.find(i => def.re.test(String(i.name)));
+      const ok = f && f.val != null && f.val !== '' && !isNaN(+f.val);
+      return {y:c.year, v: ok ? +f.val : null, hi: f && whHas(f.hi) ? +f.hi : null, bad: f ? ckBad(f) : false};
+    });
+    const has = pts.filter(p => p.v != null);
+    if (!has.length) return `<div class="ck-trc"><div class="h"><span>${esc(def.t)}</span></div><div class="nd">沒有資料</div></div>`;
+    const hi = def.cnt ? null : ([...has].reverse().find(p => p.hi != null) || {}).hi ?? null;
+    const vs = has.map(p => p.v).concat(hi != null ? [hi] : []);
+    let lo = Math.min(...vs), up = Math.max(...vs); if (up === lo){ up += 1; lo -= 1; }
+    const pad = (up - lo) * .15; lo -= pad; up += pad;
+    const W = 160, H = 56, px = 10, py = 7, n = pts.length;
+    const X = i => n === 1 ? W/2 : px + i * (W - 2*px) / (n - 1), Yv = v => py + (H - 2*py) * (1 - (v - lo) / (up - lo));
+    const line = pts.map((p,i) => p.v == null ? null : X(i).toFixed(1) + ',' + Yv(p.v).toFixed(1)).filter(Boolean).join(' ');
+    const dash = hi != null ? `<line x1="${px}" x2="${W-px}" y1="${Yv(hi).toFixed(1)}" y2="${Yv(hi).toFixed(1)}" style="stroke:var(--urgent);" stroke-width="1" stroke-dasharray="4 3" opacity=".7"/>` : '';
+    const dots = pts.map((p,i) => p.v == null ? '' : `<circle cx="${X(i).toFixed(1)}" cy="${Yv(p.v).toFixed(1)}" r="3.2" style="fill:${p.bad ? 'var(--urgent)' : 'var(--card)'}; stroke:${p.bad ? 'var(--urgent)' : 'var(--navy)'};" stroke-width="1.6"/>`).join('');
+    let tag = '';
+    if (has.length >= 2){
+      const a = has[has.length-2].v, b = has[has.length-1].v;
+      const last = has[has.length-1], okNow = hi != null && !last.bad && b <= hi;
+      tag = okNow && b > a ? ckTg('在標準內', 'var(--sub)') : b < a ? ckTg('已改善', 'var(--life)') : b > a ? ckTg('變差', 'var(--urgent)') : ckTg('持平', 'var(--sub)');
+    }
+    return `<div class="ck-trc"><div class="h"><span>${esc(def.t)}</span>${tag}</div>
+      <svg viewBox="0 0 ${W} ${H}" aria-hidden="true"><polyline points="${line}" fill="none" style="stroke:var(--navy);" stroke-width="1.8"/>${dash}${dots}</svg>
+      <div class="vs" style="--n:${n};">${pts.map(p => `<span>${esc(String(p.y).slice(2))}<b class="${p.bad ? 'dw-bad' : ''}">${p.v == null ? '—' : esc(String(p.v))}</b></span>`).join('')}</div>
+      ${hi != null ? `<div class="lim">虛線＝標準上限 ${esc(String(hi))}</div>` : ''}</div>`;
+  }).join('');
+  return `<div class="ck-sec">四年趨勢</div><div class="ck-trg">${cells}</div>`;
+}
+/* ── D 說明框 ── */
+function ckExpBox(it){
+  const ex = ckExps(it); if (!ex.length) return '';
+  return ex.map(e => `<div class="ck-exb">${ex.length > 1 ? `<div class="k">${esc(e.nm)}</div>` : ''}
+    <div class="row"><b>是什麼</b><span>${esc(e.what)}</span></div><div class="row"><b>代表</b><span>${esc(e.mean)}</span></div><div class="row"><b>怎麼做</b><span>${esc(e.todo)}</span></div></div>`).join('');
+}
+/* ── E2＋E6 紅字分組 ── */
+function ckStreak(cks, idx, name){
+  let n = 0;
+  for (let i = idx; i >= 0; i--){ const f = (cks[i].items||[]).find(x => x.name === name); if (f && ckBad(f)) n++; else break; }
+  return n;
+}
+function ckBadHtml(cks, ck, prev, pmap, trend){
+  const items = Array.isArray(ck.items) ? ck.items : [];
+  const idx = cks.indexOf(ck);
+  const bads = items.filter(ckBad).map((it, i) => {
+    const pf = prev ? (prev.items||[]).find(x => x.name === it.name) : null;
+    return {it, i, g:ckGrpOf(it), isNew: !!prev && !(pf && ckBad(pf)), run: ckStreak(cks, idx, it.name), known: ckKnown(it)};
+  });
+  if (!bads.length) return '';
+  const html = CK_GRPS.map(g => {
+    const list = bads.filter(b => b.g === g).sort((a,b) => (b.isNew - a.isNew) || (a.known - b.known) || a.i - b.i);
+    if (!list.length) return '';
+    return `<div class="ck-gh"><span>${esc(g)}</span>${g === '血液' ? '<small>已知原因</small>' : ''}<em>${list.length} 項</em></div>` + list.map(b => {
+      const it = b.it, p = pmap[it.name], num = it.val != null && it.val !== '' && !isNaN(+it.val);
+      const tags = (b.isNew ? ckTg('新', 'var(--urgent)') : '') + (b.run >= 2 ? ckTg('連續 ' + b.run + ' 年', 'var(--ckgold)') : '') +
+        (b.known ? ckTg('已知原因', 'var(--sub)') : ckTg('要追蹤', 'var(--navy)'));
+      const ex = ckExpBox(it);
+      const inner = `<div class="mm"><div class="n">${esc(it.name)}</div><div class="tgs">${tags}</div>
+          ${num ? '' : `<div class="tv">${esc(String(it.val))}</div>`}
+          <div class="r">${num ? '標準 ' + esc(ckRef(it)) : ''}${p && p.val != null ? (num ? '・' : '') + '去年 ' + esc(String(p.val)) : ''}</div></div>
+        ${num ? `<div class="v"><b>${ckVal(it)}</b>${trend(it)}</div>` : ''}${ex ? '<svg class="ic ex"><use href="#i-chev"></use></svg>' : ''}`;
+      return ex ? `<details class="ck-bi"><summary class="ck-it">${inner}</summary><div class="ck-exw">${ex}</div></details>` : `<div class="ck-it ck-bi0">${inner}</div>`;
+    }).join('');
+  }).join('');
+  return `<div class="ck-sec">要注意的・依部位<small>點一下看白話說明</small></div><div class="ck-list ck-bad">${html}</div>
+    <div class="ck-disc">說明為一般衛教內容，實際意義以醫師判讀為準</div>`;
+}
+/* ── E8 搜尋 ── */
+function ckSearch(q){
+  const box = $('#ckQR'); if (!box) return;
+  q = String(q || '').trim().toLowerCase();
+  if (!q){ box.innerHTML = ''; return; }
+  const cks = aliveCk(), names = [];
+  cks.forEach(c => (c.items||[]).forEach(i => { const n = String(i.name); if (n.toLowerCase().includes(q) && !names.includes(n)) names.push(n); }));
+  if (!names.length){ box.innerHTML = '<div class="ck-sr0">找不到符合的項目</div>'; return; }
+  box.innerHTML = '<div class="ck-sr">' + names.slice(0, 6).map(n => {
+    let sample = null;
+    const rows = cks.slice().reverse().map(c => { const f = (c.items||[]).find(i => i.name === n); if (!f) return '';
+      sample = sample || f;
+      return `<tr><td>${esc(c.year)}</td><td class="${ckBad(f) ? 'bad' : ''}">${ckVal(f)}${f.unit ? ' <small class="dw-mute">' + esc(f.unit) + '</small>' : ''}</td><td>${esc(ckRef(f))}</td></tr>`; }).join('');
+    return `<div class="ck-sri"><div class="n">${esc(n)}</div><table class="ck-tbl"><thead><tr><th>年份</th><th>數值</th><th>標準</th></tr></thead><tbody>${rows}</tbody></table>${sample ? ckExpBox(sample) : ''}</div>`;
+  }).join('') + (names.length > 6 ? `<div class="ck-sr0">還有 ${names.length - 6} 項，請打更完整的名稱</div>` : '') + '</div>';
+}
+/* ── 看診紀錄列表 ── */
+function ckVisitsHtml(){
+  const vs = (ckP().visits || []).slice().sort((a,b) => a.date < b.date ? 1 : -1);
+  if (!vs.length) return '';
+  return `<div class="ck-sec">看診紀錄</div><div class="ck-list"><table class="ck-tbl ck-vt"><thead><tr><th>日期</th><th>科別</th><th>建議</th><th>醫師怎麼說</th><th></th></tr></thead><tbody>
+    ${vs.map(v => `<tr><td>${esc(ckMd(v.date))}</td><td>${esc(v.dept)}</td><td>${esc(v.act)}</td><td class="y">${esc(v.note || '—')}</td><td><button class="ck-x" data-ckvdel="${esc(v.id)}">刪除</button></td></tr>`).join('')}
+    </tbody></table></div>`;
+}
 function renderCheckup(){
   const box = $('#dCk'); if (!box) return;
   const cks = aliveCk();
@@ -4150,11 +4718,7 @@ function renderCheckup(){
     const good = o1 < o0;
     return `<span class="${good ? 'dw-good' : o1 > o0 ? 'dw-bad' : 'dw-mute'}">${d > 0 ? '▲' : '▼'} ${r}，${good ? '有進步' : o1 > o0 ? '變差' : '差不多'}</span>`;
   };
-  const att = bads.length ? `<div class="ck-sec">要注意的</div><div class="ck-list">${bads.map(it => {
-      const p = pmap[it.name];
-      return `<div class="ck-it"><div style="min-width:0;"><div class="n">${esc(it.name)}</div>
-        <div class="r">標準 ${esc(ckRef(it))}${p && p.val != null ? '・去年 ' + esc(String(p.val)) : ''}</div></div>
-        <div class="v"><b>${ckVal(it)}</b>${trend(it)}</div></div>`; }).join('')}</div>` : '';
+  const att = ckBadHtml(cks, ck, prev, pmap, trend);
   const cats = [];
   items.forEach(it => { const c = it.cat || '其他'; if (!cats.includes(c)) cats.push(c); });
   const catHtml = `<div class="ck-sec">全部項目</div><div class="ck-list">${cats.map(c => {
@@ -4164,17 +4728,144 @@ function renderCheckup(){
         <table class="ck-tbl"><thead><tr><th>項目</th><th>今年</th><th>標準</th><th>去年</th></tr></thead><tbody>
         ${its.map(it => { const p = pmap[it.name]; return `<tr><td>${esc(it.name)}</td><td class="${ckBad(it) ? 'bad' : ''}">${ckVal(it)}${it.unit ? ' <small class="dw-mute">' + esc(it.unit) + '</small>' : ''}</td><td>${esc(ckRef(it))}</td><td>${p && p.val != null ? esc(String(p.val)) : '—'}</td></tr>`; }).join('')}
         </tbody></table></details>`; }).join('')}</div>`;
-  box.innerHTML = `<div class="dw-card"><div class="dw-ttl">年度健檢</div>${seg}${sum}${att}${catHtml}
+  const nd = ckP().nextDate;
+  const tools = `<div class="ck-tools">
+    <button id="ckSmBtn"><svg class="ic"><use href="#i-page"></use></svg>看診用摘要</button>
+    <button id="ckVsBtn"><svg class="ic"><use href="#i-steth"></use></svg>記錄看診</button>
+    <button id="ckNdBtn"><svg class="ic"><use href="#i-cal"></use></svg>下次健檢日期<small>${nd ? esc(nd.replace(/-/g,'/')) : '未設定'}</small></button></div>`;
+  const search = `<div class="ck-sec">搜尋項目</div><div class="ck-q"><svg class="ic"><use href="#i-search"></use></svg><input id="ckQ" type="search" placeholder="輸入名稱，例：LDL、血糖、攝護腺" autocomplete="off"></div><div id="ckQR"></div>`;
+  box.innerHTML = `<div class="dw-card"><div class="dw-ttl">年度健檢</div>${seg}${ckTagsHtml()}${ckRemHtml()}${ckTodoHtml()}${ckPayHtml()}${sum}
+    ${ckTrendHtml(cks)}${search}${att}${catHtml}${tools}${ckVisitsHtml()}
     <button class="btn pri ck-up" id="ckUp">＋ 上傳健檢報告</button>
     <div class="ck-foot"><span>報告由 Claude 讀取，你確認後才存</span><button id="ckDelY">刪除 ${ckYear} 年資料</button></div></div>`;
   box.querySelectorAll('[data-cky]').forEach(b => b.onclick = () => { ckYear = b.dataset.cky; renderCheckup(); });
   const ckOld = box.querySelector('.ck-older'); if (ckOld) ckOld.onchange = () => { if (ckOld.value){ ckYear = ckOld.value; renderCheckup(); } };
+  box.querySelectorAll('[data-cka]').forEach(b => b.onclick = () => ckTodoAct(b.dataset.cka, b.dataset.k));
+  box.querySelectorAll('details[data-fold]').forEach(d => d.addEventListener('toggle', () => ckFold(d.dataset.fold, !d.open)));
+  box.querySelectorAll('[data-cktag]').forEach(b => b.onclick = () => {
+    const p = ckP(), t = (p.tags||[]).find(x => x.id === b.dataset.cktag); if (!t) return;
+    if (!confirm(`刪除「${t.t}」這個標籤？`)) return;
+    p.tags = p.tags.filter(x => x.id !== t.id); ckTouch(); renderCheckup();
+  });
+  $('#ckTagAdd').onclick = () => { const f = $('#ckTagF'); f.style.display = f.style.display === 'none' ? '' : 'none'; if (f.style.display === '') $('#ckTagIn').focus(); };
+  box.querySelectorAll('[data-cktk]').forEach(b => b.onclick = () => {
+    const v = $('#ckTagIn').value.trim(); if (!v){ toast('先輸入文字'); return; }
+    const p = ckP(); p.tags = p.tags || []; p.tags.push({id:uid(), t:v, k:b.dataset.cktk}); ckTouch(); renderCheckup();
+  });
+  $('#ckPickBtn').onclick = openCkPick;
+  $('#ckSmBtn').onclick = openCkSum;
+  $('#ckVsBtn').onclick = () => openCkVisit();
+  $('#ckNdBtn').onclick = () => ckAskDate('下次健檢日期', ckP().nextDate || '', d => { ckP().nextDate = d || ''; ckTouch(); renderCheckup(); toast(d ? '已設定下次健檢日期' : '已清除'); }, {clear:true});
+  box.querySelectorAll('[data-ckvdel]').forEach(b => b.onclick = () => {
+    if (!confirm('刪除這筆看診紀錄？（已自動調整的項目不會還原）')) return;
+    const p = ckP(); p.visits = (p.visits||[]).filter(v => v.id !== b.dataset.ckvdel); ckTouch(); renderCheckup();
+  });
+  const q = $('#ckQ'); q.value = ckQv; q.oninput = () => { ckQv = q.value; ckSearch(q.value); }; if (ckQv) ckSearch(ckQv);
   $('#ckUp').onclick = openCk;
   $('#ckDelY').onclick = () => {
     if (!confirm(`刪除 ${ckYear} 年的健檢資料？`)) return;
     ck.del = true; ck.rv = (ck.rv||0) + 1; ck.mt = now(); fbPushDoc('checkups', ck); save(); ckYear = null; renderCheckup(); toast('已刪除');
   };
 }
+let ckQv = '';
+/* ── E3 預約用勾選清單 ── */
+function openCkPick(){ renderCkPick(); $('#ckPkMask').classList.add('on'); }
+function renderCkPick(){
+  const {doIt, skip} = ckSplit(), picks = ckPicks();
+  const row = it => `<label class="ck-pk"><input type="checkbox" data-ckpk="${it.c}"${picks.includes(it.c) ? ' checked' : ''}><span class="c">${esc(it.c)}</span><span class="n">${esc(it.n)}</span><span class="f">${ckFmt(it.fee)}</span></label>`;
+  $('#ckPkL').innerHTML = `<div class="ck-pkg">${CK_TARGET} 要做</div>${doIt.map(row).join('')}<div class="ck-pkg sk">${CK_TARGET} 可跳過</div>${skip.map(row).join('')}`;
+  ckPickSum(picks);
+  $('#ckPkL').querySelectorAll('[data-ckpk]').forEach(cb => cb.onchange = () => {
+    const sel = $$('#ckPkL [data-ckpk]').filter(x => x.checked).map(x => x.dataset.ckpk);
+    ckP().picks = sel; ckTouch(); ckPickSum(sel);
+  });
+}
+function ckPickSum(codes){
+  const c = ckCalc(codes);
+  $('#ckPkS').innerHTML = `<div class="r"><span>已勾 ${codes.length} 項・原價</span><b>${ckFmt(c.orig)}</b></div>` +
+    c.lines.map(l => `<div class="r s"><span>${esc(l.t)}${l.hit ? '' : `（還差 ${ckFmt(l.need)}）`}</span><b>${l.hit ? '−' + ckFmt(l.off) : '未達'}</b></div>`).join('') +
+    `<div class="r t"><span>折後約</span><b id="ckPkNet">${ckFmt(c.net)}</b></div>`;
+}
+/* ── E4 看診用摘要 ── */
+function ckSumInner(){
+  const cks = aliveCk().slice(-4), tags = ckP().tags || [];
+  const meds = tags.filter(t => t.k === 'blue').map(t => t.t), conds = tags.filter(t => t.k !== 'blue').map(t => t.t);
+  const ab = cks.slice().reverse().map(c => {
+    const bads = (c.items||[]).filter(ckBad);
+    const parts = CK_GRPS.map(g => { const l = bads.filter(i => ckGrpOf(i) === g); if (!l.length) return '';
+      return `<b>${esc(g)}</b>：${l.map(i => { const v = String(i.val == null ? '' : i.val); return esc(String(i.name).replace(/^[A-Za-z#\-\d\/ .]+(?=[\u4e00-\u9fff])/, '')) + ' ' + esc(v.length > 16 ? v.slice(0, 16) + '…' : v); }).join('、')}`; }).filter(Boolean);
+    return `<tr><td class="yr">${esc(c.year)}</td><td>${parts.join('；') || '無紅字'}</td></tr>`;
+  }).join('');
+  const kv = CK_KEYV.map(k => {
+    const vals = cks.map(c => (c.items||[]).find(i => k.re.test(String(i.name))));
+    if (!vals.some(Boolean)) return '';
+    return `<tr><td>${esc(k.t)}</td>${vals.map(f => `<td class="${f && ckBad(f) ? 'bad' : ''}">${f && f.val != null ? esc(String(f.val)) : '—'}</td>`).join('')}</tr>`;
+  }).join('');
+  return `<div class="cks-h"><div><b>${esc(CK_ME.name)}</b>　出生年 ${CK_ME.born}（男）</div><div class="d">製表 ${esc(todayStr().replace(/-/g,'/'))}</div></div>
+    <table class="cks-t"><tbody><tr><th>用藥</th><td>${meds.map(esc).join('、') || '—'}</td></tr><tr><th>已知狀況</th><td>${conds.map(esc).join('、') || '—'}</td></tr></tbody></table>
+    <div class="cks-s">近年異常（紅字依部位）</div><table class="cks-t"><tbody>${ab}</tbody></table>
+    <div class="cks-s">重點數值</div><table class="cks-t cks-k"><thead><tr><th>項目</th>${cks.map(c => `<th>${esc(c.year)}</th>`).join('')}</tr></thead><tbody>${kv}</tbody></table>
+    <div class="cks-f">紅字＝報告標示異常。資料來源：歷年健檢報告。</div>`;
+}
+function openCkSum(){ $('#ckSmB').innerHTML = ckSumInner(); $('#ckSmMask').classList.add('on'); }
+function ckSumPdf(){
+  const w = window.open('', '_blank');
+  if (!w){ toast('瀏覽器擋了新視窗，請允許彈出視窗'); return; }
+  const css = `@page{size:A4; margin:14mm;} html{font-size:10.5pt;} *{box-sizing:border-box;}
+    body{font-family:"PingFang TC","Microsoft JhengHei",system-ui,sans-serif; color:#111; margin:0; line-height:1.5;}
+    h1{font-size:1.5rem; margin:0 0 .4rem;} .cks-h{display:flex; justify-content:space-between; align-items:baseline; border-bottom:1px solid #1B417D; padding-bottom:.3rem; margin-bottom:.6rem; font-size:1.05rem;}
+    .cks-h .d{font-size:.85rem; color:#666;} .cks-s{font-weight:800; margin:.9rem 0 .3rem; color:#1B417D; font-size:1.05rem;}
+    table{width:100%; border-collapse:collapse;} th,td{border:1px solid #bbb; padding:.25rem .45rem; text-align:left; vertical-align:top; font-size:.92rem;}
+    th{background:#eef2f8; font-weight:700; width:6.5rem;} .cks-k td,.cks-k th{text-align:center;} .cks-k td:first-child{text-align:left;}
+    td.yr{width:4rem; font-weight:700;} .bad{color:#c62828; font-weight:800;} .cks-f{margin-top:.8rem; font-size:.8rem; color:#666;}`;
+  w.document.write(`<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8"><title>看診用摘要_${esc(CK_ME.name)}</title><style>${css}</style></head><body><h1>看診用摘要</h1>${ckSumInner()}<script>window.onload=function(){setTimeout(function(){window.print();},300);};<\/script></body></html>`);
+  w.document.close();
+}
+/* ── E5 記錄看診 ── */
+function openCkVisit(){
+  $('#ckVsDate').value = todayStr(); $('#ckVsDept').value = CK_DEPTS[0]; $('#ckVsNote').value = ''; $('#ckVsRef').value = ''; $('#ckVsAct').value = CK_ACTS[0];
+  ckVsFu(); $('#ckVsMask').classList.add('on');
+}
+function ckVsFu(){
+  const on = $('#ckVsAct').value === '要再檢查';
+  $('#ckVsFuR').style.display = on ? '' : 'none';
+  if (on){ const d = new Date(($('#ckVsDate').value || todayStr()) + 'T00:00:00'); d.setDate(d.getDate() + 30); $('#ckVsFu').value = ymd(d); }
+}
+function ckVisitSave(){
+  const date = $('#ckVsDate').value, dept = $('#ckVsDept').value, note = $('#ckVsNote').value.trim(), ref = $('#ckVsRef').value, act = $('#ckVsAct').value;
+  if (!date){ toast('要填看診日期'); return; }
+  const p = ckP(); p.visits = p.visits || []; p.nextOv = p.nextOv || {};
+  const v = {id:uid(), date, dept, note, ref, act};
+  const aT = ref.startsWith('a:') ? CK_TODO.find(t => t.k === ref.slice(2)) : null;
+  const codes = ref.startsWith('b:') ? [ref.slice(2)] : aT ? aT.codes : [];
+  const msg = [];
+  if (act === '沒事') codes.forEach(c => { p.nextOv[c] = ckNextOf(c) + 2; msg.push(c + ' 延後到 ' + p.nextOv[c]); });
+  if (act === '每年回診') codes.forEach(c => { p.nextOv[c] = +date.slice(0,4) + 1; msg.push(c + ' 改成 ' + p.nextOv[c] + ' 做'); });
+  if (act === '開始治療'){ p.tags = p.tags || []; const t = dept + '開始治療'; if (!p.tags.some(x => x.t === t)) p.tags.push({id:uid(), t, k:'blue'}); msg.push('已加標籤「' + t + '」'); }
+  if (act === '要再檢查'){ const fu = $('#ckVsFu').value || date; const it = ckMkItem('td', '回診：' + dept, fu); v.fuId = it.id; v.fu = fu; msg.push('已加待辦 ' + ckMd(fu) + ' 回診'); }
+  if (aT){ const o = p.todo[aT.k] || {}; p.todo[aT.k] = Object.assign({}, o, {st:'done', vdate:date}); }
+  p.visits.push(v); ckTouch();
+  $('#ckVsMask').classList.remove('on'); renderAll(); toast('已記錄' + (msg.length ? '：' + msg.join('、') : ''));
+}
+(function ckBind2(){
+  const mk = id => { const m = $(id); if (m) m.onclick = e => { if (e.target === m) m.classList.remove('on'); }; return m; };
+  mk('#ckDtMask'); mk('#ckPkMask'); mk('#ckSmMask'); mk('#ckVsMask');
+  $('#ckDtX').onclick = $('#ckDtNo').onclick = () => $('#ckDtMask').classList.remove('on');
+  $('#ckDtOk').onclick = () => { const v = $('#ckDtIn').value; if (!v){ toast('請選日期'); return; } $('#ckDtMask').classList.remove('on'); const cb = ckDtCb; ckDtCb = null; if (cb) cb(v); };
+  $('#ckDtClr').onclick = () => { $('#ckDtMask').classList.remove('on'); const cb = ckDtCb; ckDtCb = null; if (cb) cb(''); };
+  $('#ckPkX').onclick = () => { $('#ckPkMask').classList.remove('on'); };
+  $('#ckPkDef').onclick = () => { ckP().picks = null; ckTouch(); renderCkPick(); };
+  $('#ckSmX').onclick = $('#ckSmClose').onclick = () => $('#ckSmMask').classList.remove('on');
+  $('#ckSmPdf').onclick = ckSumPdf;
+  $('#ckVsX').onclick = $('#ckVsNo').onclick = () => $('#ckVsMask').classList.remove('on');
+  $('#ckVsOk').onclick = ckVisitSave;
+  $('#ckVsAct').onchange = ckVsFu; $('#ckVsDate').onchange = ckVsFu;
+  $('#ckVsDept').innerHTML = CK_DEPTS.map(d => `<option>${d}</option>`).join('');
+  $('#ckVsAct').innerHTML = CK_ACTS.map(d => `<option>${d}</option>`).join('');
+  $('#ckVsRef').innerHTML = '<option value="">（不指定）</option><optgroup label="今年該做的事">' + CK_TODO.map((t,i) => `<option value="a:${t.k}">${i+1}. ${esc(t.t)}</option>`).join('') +
+    '</optgroup><optgroup label="自費項目">' + CK_PAY.map(it => `<option value="b:${it.c}">${it.c} ${esc(it.n)}</option>`).join('') + '</optgroup>';
+  $('#ckVsRef').onchange = () => { const r = $('#ckVsRef').value; const t = r.startsWith('a:') ? CK_TODO.find(x => x.k === r.slice(2)) : null; if (t && t.dept) $('#ckVsDept').value = t.dept; };
+})();
 let ckPending = null;
 function openCk(){ $('#ckTxt').value = ''; $('#ckPv').innerHTML = ''; $('#ckPv').style.display = 'none'; $('#ckOk').disabled = true; ckPending = null; $('#ckMask').classList.add('on'); }
 function ckParse(){
