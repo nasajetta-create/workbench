@@ -624,7 +624,7 @@
   #page-health.dwmode.dwtgt #whCard{display:block;}
   body:not([data-skin="D"]){--navy:var(--case); --gold:var(--soon); --sep:color-mix(in srgb, var(--line) 55%, var(--card));}
   body:not([data-skin="D"]) .dw-card{border:1px solid var(--line); box-shadow:none;}
-  body:not([data-skin="D"]) :is(.dw-card,.dw-six,.dw-wk,.dw-seg,.dw-seg button,.ck-list,.ws-pm,.dw-add,.ck-up,.ws-btns .btn,#ckTxt,.ck-pv,.ws-grab,.dw-tg .btn){border-radius:0;}
+  body:not([data-skin="D"]) :is(.dw-card,.dw-six,.dw-wk,.dw-seg,.dw-seg button,.dw-seg select,.ck-list,.ws-pm,.dw-add,.ck-up,.ws-btns .btn,#ckTxt,.ck-pv,.ws-grab,.dw-tg .btn){border-radius:0;}
   body:not([data-skin="D"]) .dw-add{display:none !important;}
   .ws-kg input::-webkit-inner-spin-button, .ws-kg input::-webkit-outer-spin-button, .ws-row input::-webkit-inner-spin-button, .ws-row input::-webkit-outer-spin-button{-webkit-appearance:none; margin:0;}
   .ws-kg input, .ws-row input{-moz-appearance:textfield; appearance:textfield;}
@@ -665,6 +665,9 @@
   .dw-seg{display:inline-flex; background:var(--page); border-radius:.75rem; padding:.2rem;}
   .dw-seg button{padding:.35rem .95rem; border-radius:.6rem; font-size:.92rem; font-weight:700; color:var(--sub);}
   .dw-seg button.on{background:var(--card); color:var(--ink); box-shadow:0 1px 2px rgba(0,0,0,.08);}
+  /* W1126-09：年度健檢「更早」下拉 */
+  .dw-seg select.ck-older{flex:1.2; min-width:0; padding:.35rem .5rem; border:0; background:transparent; border-radius:.6rem; font:inherit; font-size:.92rem; font-weight:700; color:var(--sub); text-align:center; text-align-last:center;}
+  .dw-seg select.ck-older.on{background:var(--card); color:var(--ink); box-shadow:0 1px 2px rgba(0,0,0,.08);}
   .dw-feel{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:2rem; align-items:start;}
   .dw-say{font-size:2.3rem; font-weight:800; line-height:1.2;}
   .dw-say em{font-style:normal;}
@@ -1332,8 +1335,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 'use strict';
-/* ════════ 艋舺良的工作台 W1126-08（首頁加小工具捷徑：PDF 解密）／W1126-07（主題 D 設為預設：每台裝置一次性切到 D）／W1126-06（健康頁新版套用到 A/B/C 主題）／W1126-05（設定頁加「小工具・移除 PDF 密碼」入口 pdfunlock.html）／W1126-04（主題 D 健康頁：體重有感版＋記一筆 7 項＋年度健檢；修 .pipe 投標四格）／W1126-03（W1126-02 主題 D＋合併 W0928-02 體重多指標目標值＋達標預估＋BMI 目標自動換算） ════════ */
-const VERSION = 'W1126-08';
+/* ════════ 艋舺良的工作台 W1126-09（年度健檢超過 4 年：最近 3 年＋更早下拉）／W1126-08（首頁加小工具捷徑：PDF 解密）／W1126-07（主題 D 設為預設：每台裝置一次性切到 D）／W1126-06（健康頁新版套用到 A/B/C 主題）／W1126-05（設定頁加「小工具・移除 PDF 密碼」入口 pdfunlock.html）／W1126-04（主題 D 健康頁：體重有感版＋記一筆 7 項＋年度健檢；修 .pipe 投標四格）／W1126-03（W1126-02 主題 D＋合併 W0928-02 體重多指標目標值＋達標預估＋BMI 目標自動換算） ════════ */
+const VERSION = 'W1126-09';
 const GCAL_CLIENT_ID = '654856338073-ukdt5nvtc8riq2010lado0i0n5vuhcfl.apps.googleusercontent.com';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
@@ -4129,8 +4132,12 @@ function renderCheckup(){
   const bads = items.filter(ckBad);
   const pBad = prev ? (prev.items||[]).filter(ckBad).length : null;
   const cmp = pBad == null ? '' : bads.length < pBad ? `比去年少 ${pBad - bads.length} 項；` : bads.length > pBad ? `比去年多 ${bads.length - pBad} 項；` : '和去年一樣；';
-  const yrs = cks.slice(-4);
-  const seg = `<span class="dw-seg" style="display:flex;">${yrs.map(c => `<button data-cky="${c.year}" class="${c.year === ckYear ? 'on' : ''}" style="flex:1;">${c.year}</button>`).join('')}</span>`;
+  const many = cks.length > 4;                       // W1126-09：超過 4 年＝最近 3 年按鈕＋「更早」下拉
+  const yrs = many ? cks.slice(-3) : cks;
+  const older = many ? cks.slice(0, -3).reverse() : [];
+  const oldOn = older.some(c => c.year === ckYear);
+  const oldSel = many ? `<select class="ck-older${oldOn ? ' on' : ''}" aria-label="更早的年份"><option value=""${oldOn ? '' : ' selected'}>更早</option>${older.map(c => `<option value="${c.year}"${c.year === ckYear ? ' selected' : ''}>${c.year}</option>`).join('')}</select>` : '';
+  const seg = `<span class="dw-seg" style="display:flex;">${yrs.map(c => `<button data-cky="${c.year}" class="${c.year === ckYear ? 'on' : ''}" style="flex:1;">${c.year}</button>`).join('')}${oldSel}</span>`;
   const sum = `<div class="ck-sum"><div class="w">${esc(ck.date || ck.year)}${ck.clinic ? '・' + esc(ck.clinic) : ''}</div>
     <div class="s">${bads.length ? `今年 <span class="dw-bad">${bads.length} 項</span> 紅字` : '今年 <span class="dw-good">全部正常</span>'}</div>
     <div class="s2">${cmp}共檢查 ${items.length} 項</div></div>`;
@@ -4161,6 +4168,7 @@ function renderCheckup(){
     <button class="btn pri ck-up" id="ckUp">＋ 上傳健檢報告</button>
     <div class="ck-foot"><span>報告由 Claude 讀取，你確認後才存</span><button id="ckDelY">刪除 ${ckYear} 年資料</button></div></div>`;
   box.querySelectorAll('[data-cky]').forEach(b => b.onclick = () => { ckYear = b.dataset.cky; renderCheckup(); });
+  const ckOld = box.querySelector('.ck-older'); if (ckOld) ckOld.onchange = () => { if (ckOld.value){ ckYear = ckOld.value; renderCheckup(); } };
   $('#ckUp').onclick = openCk;
   $('#ckDelY').onclick = () => {
     if (!confirm(`刪除 ${ckYear} 年的健檢資料？`)) return;
