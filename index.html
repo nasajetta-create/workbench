@@ -1070,7 +1070,10 @@
   .tr-pn2{color:var(--tv); font-weight:600;}
   .tr-pfh em{font-style:normal; color:var(--tv); font-weight:700; font-size:1.05rem; white-space:nowrap;}
   .tr-pfh em small{font-size:.72rem; font-weight:500; color:var(--sub);}
-  .tr-pfold{border-top:1px solid var(--tl1); margin:.9rem 0 .2rem;}
+  .tr-pfold{margin:.9rem 0 .2rem;}
+  .tr-pct{font-size:.78rem; font-weight:700; color:var(--sub); letter-spacing:.06em; padding:.9rem .4rem .35rem; border-bottom:1px solid var(--tl1);}
+  .tr-pct:first-child{padding-top:.2rem;}
+  .tr-pct small{font-weight:500; margin-left:.5rem;}
   .tr-pf{border-bottom:1px solid var(--tl2);}
   .tr-pfh{display:flex; align-items:center; gap:.8rem; padding:.55rem .4rem; cursor:pointer;}
   .tr-pfh .tr-pk{width:8.5rem; flex:none;}
@@ -1708,8 +1711,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 'use strict';
-/* ════════ 艋舺良的工作台 W1127-03（足跡國家／城市改成收折列表：每國一行（前三城＋座數），點開看全部；地名辨識：補日本四國、九州、熊本、青森、十和田等 36 處，認不得的名稱當城市放「其他」，舊補登裡不是國名的自動搬到城市）／W1127-02（補登城市畫航線：每個國家一條、終點 600 km 內不重畫；點「以前去過」的章→補上日期視窗（城市國家先帶好、已完成先勾），存檔後補登自動減一次）／W1127-01（Google 行事曆完全自動：勾選的日曆寫 meta/gcalcfg，Worker 每 30 分鐘抓好放 meta/gcalcache，不用開網頁也更新；補登城市也蓋護照章「以前去過」；地標補畫米蘭、佛羅倫斯、威尼斯、羅馬、梵蒂岡、里斯本、波多）／W1126-22（旅遊頁補登改成城市或國家、同城再補登＝×2、桌機地圖也放大到去過範圍、城市名避免重疊）／W1126-21（旅遊頁：近期｜想去兩欄、我的足跡＋世界地圖、護照章含地標；旅程加國家／城市；已踏國家自動算＋補登；新增 lib/worldmap.json）／W1126-20（右上日期加西元年份與農曆，兩行）／W1126-19（個人頁待辦：「今天到期」只算今天，逾期另外顯示「逾期 N 件」）／W1126-18（主題 D 全部分頁拿掉卡片框改線條分區；當月清單：行程過了顯示已結束並收起，只有待辦才叫逾期）／W1126-17（個人頁：拿掉大標、標題放大加圖示、鎖頭縮小放標題旁、左待辦右三張）／W1126-16（Google 行事曆過期後，點頁面第一下自動續連）／W1126-15（旅程：填出發後回程自動帶入出發日、不能選更早；「工程」改名「案場」，案場頁分段 在建案／已完工；沒有進行中投標案時頂部隱藏「投標」、首頁四格變三格、公司事務頁最上面多「投標」類）／W1126-14（首頁「這一週」可切 週一～週日／從今天起，預設週一，存 prefs.wkStart）／W1126-13（首頁「這一週」：人員休假「休：」拉到日期那一列）／W1126-12（主題 D 首頁「這一週」：沒行程的日子縮窄、有行程的變寬）／W1126-11（主題 D 首頁最下方加版號小字）／W1126-10（年度健檢 A～E：今年該做的事・自費建議・已知狀況・紅字白話說明・四年趨勢・部位分組・預約勾選・看診摘要・記錄看診・健檢前提醒・搜尋；新增 D.ckplan→meta/ckplan）／W1126-09（年度健檢超過 4 年：最近 3 年＋更早下拉）／W1126-08（首頁加小工具捷徑：PDF 解密）／W1126-07（主題 D 設為預設：每台裝置一次性切到 D）／W1126-06（健康頁新版套用到 A/B/C 主題）／W1126-05（設定頁加「小工具・移除 PDF 密碼」入口 pdfunlock.html）／W1126-04（主題 D 健康頁：體重有感版＋記一筆 7 項＋年度健檢；修 .pipe 投標四格）／W1126-03（W1126-02 主題 D＋合併 W0928-02 體重多指標目標值＋達標預估＋BMI 目標自動換算） ════════ */
-const VERSION = 'W1127-03';
+/* ════════ 艋舺良的工作台 W1127-04（地名表補 178 處：廣州、深圳等中國城市、芭達雅等泰國、東南亞、歐美澳常見旅遊地）／W1127-03（足跡國家／城市改成收折列表：每國一行（前三城＋座數），點開看全部；地名辨識：補日本四國、九州、熊本、青森、十和田等 36 處，認不得的名稱當城市放「其他」，舊補登裡不是國名的自動搬到城市）／W1127-02（補登城市畫航線：每個國家一條、終點 600 km 內不重畫；點「以前去過」的章→補上日期視窗（城市國家先帶好、已完成先勾），存檔後補登自動減一次）／W1127-01（Google 行事曆完全自動：勾選的日曆寫 meta/gcalcfg，Worker 每 30 分鐘抓好放 meta/gcalcache，不用開網頁也更新；補登城市也蓋護照章「以前去過」；地標補畫米蘭、佛羅倫斯、威尼斯、羅馬、梵蒂岡、里斯本、波多）／W1126-22（旅遊頁補登改成城市或國家、同城再補登＝×2、桌機地圖也放大到去過範圍、城市名避免重疊）／W1126-21（旅遊頁：近期｜想去兩欄、我的足跡＋世界地圖、護照章含地標；旅程加國家／城市；已踏國家自動算＋補登；新增 lib/worldmap.json）／W1126-20（右上日期加西元年份與農曆，兩行）／W1126-19（個人頁待辦：「今天到期」只算今天，逾期另外顯示「逾期 N 件」）／W1126-18（主題 D 全部分頁拿掉卡片框改線條分區；當月清單：行程過了顯示已結束並收起，只有待辦才叫逾期）／W1126-17（個人頁：拿掉大標、標題放大加圖示、鎖頭縮小放標題旁、左待辦右三張）／W1126-16（Google 行事曆過期後，點頁面第一下自動續連）／W1126-15（旅程：填出發後回程自動帶入出發日、不能選更早；「工程」改名「案場」，案場頁分段 在建案／已完工；沒有進行中投標案時頂部隱藏「投標」、首頁四格變三格、公司事務頁最上面多「投標」類）／W1126-14（首頁「這一週」可切 週一～週日／從今天起，預設週一，存 prefs.wkStart）／W1126-13（首頁「這一週」：人員休假「休：」拉到日期那一列）／W1126-12（主題 D 首頁「這一週」：沒行程的日子縮窄、有行程的變寬）／W1126-11（主題 D 首頁最下方加版號小字）／W1126-10（年度健檢 A～E：今年該做的事・自費建議・已知狀況・紅字白話說明・四年趨勢・部位分組・預約勾選・看診摘要・記錄看診・健檢前提醒・搜尋；新增 D.ckplan→meta/ckplan）／W1126-09（年度健檢超過 4 年：最近 3 年＋更早下拉）／W1126-08（首頁加小工具捷徑：PDF 解密）／W1126-07（主題 D 設為預設：每台裝置一次性切到 D）／W1126-06（健康頁新版套用到 A/B/C 主題）／W1126-05（設定頁加「小工具・移除 PDF 密碼」入口 pdfunlock.html）／W1126-04（主題 D 健康頁：體重有感版＋記一筆 7 項＋年度健檢；修 .pipe 投標四格）／W1126-03（W1126-02 主題 D＋合併 W0928-02 體重多指標目標值＋達標預估＋BMI 目標自動換算） ════════ */
+const VERSION = 'W1127-04';
 const GCAL_CLIENT_ID = '654856338073-ukdt5nvtc8riq2010lado0i0n5vuhcfl.apps.googleusercontent.com';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
@@ -1746,7 +1749,7 @@ function blank(){ return {
   trips: [],                       // {id,kind:'near'|'wish',name,start,end,year,budget,split,note,done,rv,mt,del}
   notes: [],                       // {id,txt,tag,pin,rv,mt,del}
   company: [],                     // W1126-01 公司事務 {id,cat,title,due,pct,note,done,rv,mt,del}
-  prefs: {netBase:0, goalMoney:0, countries:0, countriesTarget:50, extraCountries:[], extraCities:[], weightTarget:0, whTargets:{fat:0, muscle:0, visceral:0, bmi:0}, whStart:{}, mt:0},
+  prefs: {netBase:0, goalMoney:0, countries:0, countriesTarget:50, extraCountries:[], extraCities:[], extraGeo:{}, weightTarget:0, whTargets:{fat:0, muscle:0, visceral:0, bmi:0}, whStart:{}, mt:0},
   settings: {skin:'D', skinV:1, fs:'m', scope:'all', order:DEF_ORDER.slice(), folded:{}, showMoney:false, pin:null, lockApp:true, lockMoney:false},
   ver: 1
 };}
@@ -1771,7 +1774,7 @@ function load(){
   d.ckplan = ckPlanFix(d.ckplan);   /* W1126-10 */
   d.prefs = d.prefs || {};
   d.prefs.health = Object.assign({bpSys:130, bpDia:80, exWeek:3}, (d.prefs||{}).health||{});
-  d.prefs = Object.assign({netBase:0, goalMoney:0, countries:0, countriesTarget:50, extraCountries:[], extraCities:[], weightTarget:0, whTargets:{fat:0, muscle:0, visceral:0, bmi:0}, whStart:{}, mt:0}, d.prefs||{});
+  d.prefs = Object.assign({netBase:0, goalMoney:0, countries:0, countriesTarget:50, extraCountries:[], extraCities:[], extraGeo:{}, weightTarget:0, whTargets:{fat:0, muscle:0, visceral:0, bmi:0}, whStart:{}, mt:0}, d.prefs||{});
   d.prefs.whTargets = Object.assign({fat:0, muscle:0, visceral:0, bmi:0}, (d.prefs.whTargets && typeof d.prefs.whTargets==='object') ? d.prefs.whTargets : {});   /* W0928：巢狀物件另補 default */
   if (!d.prefs.whStart || typeof d.prefs.whStart !== 'object') d.prefs.whStart = {};
   d.prefs.taxP = Object.assign(JSON.parse(JSON.stringify(TAXP_DEF)), d.prefs.taxP||{});
@@ -3161,6 +3164,8 @@ const TR_CN = {   // 中文國名 → 地圖名稱
  '澳洲':'Australia','紐西蘭':'New Zealand','帛琉':'','關島':'','斐濟':'Fiji'};
 const TR_ALIAS = {'南韓':'韓國','大韓民國':'韓國','美':'美國','英':'英國','澳大利亞':'澳洲','荷蘭王國':'荷蘭','捷克共和國':'捷克','阿拉伯聯合大公國':'阿聯','義大利共和國':'義大利','意大利':'義大利','新西蘭':'紐西蘭','梵諦岡':'梵蒂岡','波爾圖':'波多'};
 const TR_CITY = {   // 城市 → [經度, 緯度, 國家]
+ /* W1127-04 補：中國、泰國（芭達雅）、東南亞、日韓以外常見旅遊地 */
+ '廣州':[113.26,23.13,'中國'],'深圳':[114.06,22.54,'中國'],'杭州':[120.16,30.27,'中國'],'蘇州':[120.62,31.3,'中國'],'南京':[118.8,32.06,'中國'],'成都':[104.07,30.57,'中國'],'重慶':[106.55,29.56,'中國'],'西安':[108.94,34.34,'中國'],'桂林':[110.29,25.27,'中國'],'廈門':[118.09,24.48,'中國'],'青島':[120.38,36.07,'中國'],'大連':[121.61,38.91,'中國'],'哈爾濱':[126.63,45.75,'中國'],'昆明':[102.83,24.88,'中國'],'麗江':[100.23,26.87,'中國'],'張家界':[110.48,29.12,'中國'],'天津':[117.2,39.13,'中國'],'武漢':[114.31,30.59,'中國'],'長沙':[112.94,28.23,'中國'],'三亞':[109.51,18.25,'中國'],'黃山':[118.17,30.13,'中國'],'九寨溝':[103.92,33.26,'中國'],'拉薩':[91.14,29.65,'中國'],'福州':[119.3,26.08,'中國'],'珠海':[113.58,22.27,'中國'],'無錫':[120.31,31.49,'中國'],'寧波':[121.55,29.87,'中國'],'鄭州':[113.63,34.75,'中國'],'瀋陽':[123.43,41.81,'中國'],'貴陽':[106.63,26.65,'中國'],'海口':[110.2,20.04,'中國'],'烏魯木齊':[87.62,43.83,'中國'],'內蒙古':[111.75,40.84,'中國'],'芭達雅':[100.88,12.93,'泰國'],'華欣':[99.96,12.57,'泰國'],'蘇美島':[100.06,9.51,'泰國'],'喀比':[98.91,8.09,'泰國'],'甲米':[98.91,8.09,'泰國'],'清萊':[99.83,19.91,'泰國'],'大城':[100.57,14.35,'泰國'],'考艾':[101.4,14.44,'泰國'],'大邱':[128.6,35.87,'韓國'],'慶州':[129.22,35.86,'韓國'],'仁川':[126.71,37.46,'韓國'],'江陵':[128.88,37.75,'韓國'],'全州':[127.15,35.82,'韓國'],'光州':[126.85,35.16,'韓國'],'會安':[108.33,15.88,'越南'],'下龍灣':[107.08,20.95,'越南'],'芽莊':[109.19,12.24,'越南'],'大叻':[108.44,11.94,'越南'],'富國島':[103.96,10.29,'越南'],'順化':[107.59,16.46,'越南'],'沙壩':[103.84,22.34,'越南'],'檳城':[100.33,5.41,'馬來西亞'],'蘭卡威':[99.73,6.35,'馬來西亞'],'亞庇':[116.07,5.98,'馬來西亞'],'沙巴':[116.07,5.98,'馬來西亞'],'馬六甲':[102.25,2.19,'馬來西亞'],'古晉':[110.35,1.55,'馬來西亞'],'怡保':[101.08,4.6,'馬來西亞'],'雅加達':[106.85,-6.21,'印尼'],'日惹':[110.37,-7.8,'印尼'],'泗水':[112.75,-7.25,'印尼'],'民丹島':[104.45,1.07,'印尼'],'龍目島':[116.32,-8.65,'印尼'],'薄荷島':[124.0,9.85,'菲律賓'],'巴拉望':[118.74,9.74,'菲律賓'],'愛妮島':[119.4,11.2,'菲律賓'],'科隆':[120.2,12.0,'菲律賓'],'碧瑤':[120.6,16.4,'菲律賓'],'金邊':[104.92,11.56,'柬埔寨'],'暹粒':[103.86,13.36,'柬埔寨'],'永珍':[102.63,17.97,'寮國'],'龍坡邦':[102.13,19.89,'寮國'],'琅勃拉邦':[102.13,19.89,'寮國'],'仰光':[96.2,16.84,'緬甸'],'蒲甘':[94.86,21.17,'緬甸'],'新德里':[77.21,28.61,'印度'],'孟買':[72.88,19.08,'印度'],'阿格拉':[78.01,27.18,'印度'],'齋浦爾':[75.79,26.91,'印度'],'加德滿都':[85.32,27.72,'尼泊爾'],'可倫坡':[79.86,6.93,'斯里蘭卡'],'馬列':[73.51,4.18,'馬爾地夫'],'卡帕多奇亞':[34.83,38.64,'土耳其'],'棉堡':[29.12,37.92,'土耳其'],'安塔利亞':[30.71,36.9,'土耳其'],'開羅':[31.24,30.04,'埃及'],'路克索':[32.64,25.69,'埃及'],'馬拉喀什':[-7.98,31.63,'摩洛哥'],'卡薩布蘭加':[-7.59,33.57,'摩洛哥'],'耶路撒冷':[35.21,31.77,'以色列'],'特拉維夫':[34.78,32.09,'以色列'],'佩特拉':[35.44,30.33,'約旦'],'阿布達比':[54.37,24.45,'阿聯'],'杜哈':[51.53,25.29,'卡達'],'日內瓦':[6.14,46.2,'瑞士'],'琉森':[8.31,47.05,'瑞士'],'盧森':[8.31,47.05,'瑞士'],'因特拉肯':[7.86,46.69,'瑞士'],'策馬特':[7.75,46.02,'瑞士'],'伯恩':[7.45,46.95,'瑞士'],'漢堡':[9.99,53.55,'德國'],'科隆':[6.96,50.94,'德國'],'海德堡':[8.69,49.4,'德國'],'德勒斯登':[13.74,51.05,'德國'],'紐倫堡':[11.08,49.45,'德國'],'羅騰堡':[10.18,49.38,'德國'],'新天鵝堡':[10.75,47.56,'德國'],'里昂':[4.84,45.76,'法國'],'馬賽':[5.37,43.3,'法國'],'波爾多':[-0.58,44.84,'法國'],'史特拉斯堡':[7.75,48.57,'法國'],'科爾馬':[7.36,48.08,'法國'],'亞維儂':[4.81,43.95,'法國'],'坎城':[7.02,43.55,'法國'],'聖米歇爾山':[-1.51,48.64,'法國'],'摩納哥':[7.42,43.74,'法國'],'塞維亞':[-5.98,37.39,'西班牙'],'格拉納達':[-3.6,37.18,'西班牙'],'瓦倫西亞':[-0.38,39.47,'西班牙'],'馬約卡':[2.65,39.57,'西班牙'],'拿坡里':[14.27,40.85,'義大利'],'比薩':[10.4,43.72,'義大利'],'五漁村':[9.71,44.13,'義大利'],'阿瑪菲':[14.6,40.63,'義大利'],'西西里':[13.36,38.12,'義大利'],'維洛納':[10.99,45.44,'義大利'],'都靈':[7.69,45.07,'義大利'],'多洛米蒂':[11.85,46.41,'義大利'],'曼徹斯特':[-2.24,53.48,'英國'],'利物浦':[-2.98,53.41,'英國'],'牛津':[-1.26,51.75,'英國'],'劍橋':[0.12,52.21,'英國'],'巴斯':[-2.36,51.38,'英國'],'約克':[-1.08,53.96,'英國'],'鹿特丹':[4.48,51.92,'荷蘭'],'海牙':[4.3,52.07,'荷蘭'],'布魯日':[3.22,51.21,'比利時'],'安特衛普':[4.4,51.22,'比利時'],'哈修塔特':[13.65,47.56,'奧地利'],'哈爾施塔特':[13.65,47.56,'奧地利'],'因斯布魯克':[11.4,47.27,'奧地利'],'庫倫洛夫':[14.32,48.81,'捷克'],'CK小鎮':[14.32,48.81,'捷克'],'杜布羅夫尼克':[18.09,42.65,'克羅埃西亞'],'札格雷布':[15.98,45.81,'克羅埃西亞'],'斯普利特':[16.44,43.51,'克羅埃西亞'],'米克諾斯':[25.33,37.45,'希臘'],'卑爾根':[5.32,60.39,'挪威'],'特羅姆瑟':[18.96,69.65,'挪威'],'羅凡尼米':[25.73,66.5,'芬蘭'],'奧胡斯':[10.2,56.16,'丹麥'],'哥特堡':[11.97,57.71,'瑞典'],'辛特拉':[-9.39,38.8,'葡萄牙'],'芝加哥':[-87.63,41.88,'美國'],'波士頓':[-71.06,42.36,'美國'],'華盛頓':[-77.04,38.91,'美國'],'邁阿密':[-80.19,25.76,'美國'],'奧蘭多':[-81.38,28.54,'美國'],'聖地牙哥':[-117.16,32.72,'美國'],'大峽谷':[-112.11,36.06,'美國'],'黃石公園':[-110.59,44.43,'美國'],'阿拉斯加':[-149.9,61.22,'美國'],'紐奧良':[-90.07,29.95,'美國'],'蒙特婁':[-73.57,45.5,'加拿大'],'魁北克':[-71.21,46.81,'加拿大'],'班夫':[-115.57,51.18,'加拿大'],'維多利亞':[-123.37,48.43,'加拿大'],'黃金海岸':[153.43,-28.02,'澳洲'],'凱恩斯':[145.77,-16.92,'澳洲'],'伯斯':[115.86,-31.95,'澳洲'],'阿德雷德':[138.6,-34.93,'澳洲'],'塔斯馬尼亞':[147.33,-42.88,'澳洲'],'基督城':[172.64,-43.53,'紐西蘭'],'威靈頓':[174.78,-41.29,'紐西蘭'],'羅托魯瓦':[176.25,-38.14,'紐西蘭'],
  '四國':[133.53,33.84,'日本'],'九州':[130.7,32.6,'日本'],'熊本':[130.74,32.79,'日本'],'青森':[140.74,40.82,'日本'],'十和田':[141.21,40.61,'日本'],
  '鹿兒島':[130.56,31.6,'日本'],'長崎':[129.87,32.75,'日本'],'別府':[131.49,33.28,'日本'],'由布院':[131.36,33.26,'日本'],'松山':[132.77,33.84,'日本'],'高松':[134.05,34.34,'日本'],'高知':[133.53,33.56,'日本'],'德島':[134.55,34.07,'日本'],
  '岡山':[133.92,34.66,'日本'],'姬路':[134.69,34.82,'日本'],'橫濱':[139.64,35.44,'日本'],'鎌倉':[139.55,35.32,'日本'],'日光':[139.6,36.72,'日本'],'河口湖':[138.76,35.5,'日本'],'富士山':[138.73,35.36,'日本'],
@@ -3196,6 +3201,33 @@ TR_LM['波多'] = '<path d="M4 14h40M4 18h40M8 14v-4M40 14v-4M8 44q16-46 32 0M10
 TR_LM['波爾圖'] = TR_LM['波多'];
 const TR_PLANE = '<path d="M6 30l36-14-10 22-8-8-6 8v-10l18-12"/>';
 let WMAP = null, wmapLoading = false;
+/* W1127-04：輸入的地名自動判別（城市／國家／景點都行）＋國家依洲分組 */
+const TR_ISO = {'JP':'日本','KR':'韓國','TH':'泰國','VN':'越南','SG':'新加坡','MY':'馬來西亞','ID':'印尼','PH':'菲律賓','KH':'柬埔寨','LA':'寮國','MM':'緬甸','CN':'中國','HK':'香港','MO':'澳門','MN':'蒙古','IN':'印度','NP':'尼泊爾','LK':'斯里蘭卡','MV':'馬爾地夫','BT':'不丹','AE':'阿聯','TR':'土耳其','IL':'以色列','JO':'約旦','EG':'埃及','MA':'摩洛哥','ZA':'南非','KE':'肯亞','FR':'法國','DE':'德國','GB':'英國','IE':'愛爾蘭','IT':'義大利','VA':'梵蒂岡','ES':'西班牙','PT':'葡萄牙','NL':'荷蘭','BE':'比利時','LU':'盧森堡','CH':'瑞士','AT':'奧地利','CZ':'捷克','HU':'匈牙利','PL':'波蘭','SK':'斯洛伐克','SI':'斯洛維尼亞','HR':'克羅埃西亞','GR':'希臘','DK':'丹麥','SE':'瑞典','NO':'挪威','FI':'芬蘭','IS':'冰島','EE':'愛沙尼亞','RU':'俄羅斯','RO':'羅馬尼亞','BG':'保加利亞','RS':'塞爾維亞','US':'美國','CA':'加拿大','MX':'墨西哥','CU':'古巴','BR':'巴西','AR':'阿根廷','CL':'智利','PE':'秘魯','AU':'澳洲','NZ':'紐西蘭','PW':'帛琉','GU':'關島','FJ':'斐濟','QA':'卡達','MC':'摩納哥','TW':'台灣'};
+const TR_CONT = {'日本':'亞洲','韓國':'亞洲','中國':'亞洲','香港':'亞洲','澳門':'亞洲','台灣':'亞洲','蒙古':'亞洲','泰國':'亞洲','越南':'亞洲','新加坡':'亞洲','馬來西亞':'亞洲','印尼':'亞洲','菲律賓':'亞洲','柬埔寨':'亞洲','寮國':'亞洲','緬甸':'亞洲','印度':'亞洲','尼泊爾':'亞洲','斯里蘭卡':'亞洲','馬爾地夫':'亞洲','不丹':'亞洲','杜拜':'亞洲','阿聯':'亞洲','土耳其':'亞洲','以色列':'亞洲','約旦':'亞洲','卡達':'亞洲','法國':'歐洲','德國':'歐洲','英國':'歐洲','愛爾蘭':'歐洲','義大利':'歐洲','梵蒂岡':'歐洲','西班牙':'歐洲','葡萄牙':'歐洲','荷蘭':'歐洲','比利時':'歐洲','盧森堡':'歐洲','瑞士':'歐洲','奧地利':'歐洲','捷克':'歐洲','匈牙利':'歐洲','波蘭':'歐洲','斯洛伐克':'歐洲','斯洛維尼亞':'歐洲','克羅埃西亞':'歐洲','希臘':'歐洲','丹麥':'歐洲','瑞典':'歐洲','挪威':'歐洲','芬蘭':'歐洲','冰島':'歐洲','愛沙尼亞':'歐洲','俄羅斯':'歐洲','羅馬尼亞':'歐洲','保加利亞':'歐洲','塞爾維亞':'歐洲','摩納哥':'歐洲','美國':'美洲','加拿大':'美洲','墨西哥':'美洲','古巴':'美洲','巴西':'美洲','阿根廷':'美洲','智利':'美洲','秘魯':'美洲','澳洲':'大洋洲','紐西蘭':'大洋洲','帛琉':'大洋洲','關島':'大洋洲','斐濟':'大洋洲','埃及':'非洲','摩洛哥':'非洲','南非':'非洲','肯亞':'非洲'};
+const TR_CONT_ORDER = ['亞洲','歐洲','美洲','大洋洲','非洲','其他'];
+function trGeoMerge(){ const g = D.prefs.extraGeo || {}; for (const k in g) if (!TR_CITY[k] && Array.isArray(g[k])) TR_CITY[k] = g[k]; }
+const trGeoTried = new Set();
+async function trGeocode(name){   // OpenStreetMap 免金鑰：回傳 {kind:'country'|'place', country, lon, lat} 或 null
+  try{
+    const r = await fetch('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&addressdetails=1&accept-language=zh-TW&q=' + encodeURIComponent(name));
+    if (!r.ok) return null;
+    const j = (await r.json())[0]; if (!j) return null;
+    const cc = ((j.address||{}).country_code || '').toUpperCase(), cty = TR_ISO[cc] || (j.address||{}).country || '';
+    if (!cty) return null;
+    if (j.addresstype === 'country' || j.type === 'country') return {kind:'country', country: cty};
+    return {kind:'place', country: cty, lon: +(+j.lon).toFixed(2), lat: +(+j.lat).toFixed(2)};
+  }catch(e){ return null; }
+}
+async function trResolveUnknown(){   // 補登裡認不得的地名，背景查一次
+  const todo = [...new Set(D.prefs.extraCities||[])].filter(c => !TR_CITY[c] && !trGeoTried.has(c)).slice(0, 5);
+  if (!todo.length) return;
+  let ch = false;
+  for (const c of todo){ trGeoTried.add(c); const g = await trGeocode(c);
+    if (g && g.kind === 'place'){ D.prefs.extraGeo = Object.assign({}, D.prefs.extraGeo, {[c]: [g.lon, g.lat, g.country]}); ch = true; }
+    else if (g && g.kind === 'country'){ D.prefs.extraCities = D.prefs.extraCities.filter(x => x !== c); D.prefs.extraCountries = (D.prefs.extraCountries||[]).filter(x => x !== g.country).concat([g.country]); ch = true; }
+    await new Promise(r => setTimeout(r, 1100)); }
+  if (ch){ D.prefs.mt = now(); save(); fbPushPrefs(); trGeoMerge(); if ($('#page-trip') && $('#page-trip').offsetParent !== null) renderTripPage(); }
+}
 /* W1127-03：足跡改成國家收折列表（2026-11-27 使用者從 表格／方格／收折 三版選定收折） */
 const trFoldOpen = new Set();
 function trPlaceTable(st, exN){
@@ -3204,15 +3236,18 @@ function trPlaceTable(st, exN){
     if (!trCities(t).length) trCountries(t).forEach(k => row(k)); });
   Object.keys(exN).forEach(c => { const k = (TR_CITY[c]||[])[2] || '其他'; const r = row(k); r.cities[c] = r.cities[c] || {n:0, ex:0}; r.cities[c].n += exN[c]; r.cities[c].ex = exN[c]; });
   (D.prefs.extraCountries||[]).forEach(k => { row(k).exC = true; });
-  const keys = Object.keys(rows).sort((a, b) => (a === '其他') - (b === '其他') || Object.keys(rows[b].cities).length - Object.keys(rows[a].cities).length || a.localeCompare(b, 'zh-Hant'));
+  const ct = k => TR_CONT_ORDER.indexOf(TR_CONT[k] || '其他');
+  const keys = Object.keys(rows).sort((a, b) => ct(a) - ct(b) || Object.keys(rows[b].cities).length - Object.keys(rows[a].cities).length || a.localeCompare(b, 'zh-Hant'));
   if (!keys.length) return '';
   const cityHtml = (r, cs) => cs.map(c => { const o = r.cities[c]; return `<span class="tr-pc${o.ex?' ex':''}"${o.ex?` data-rmcity="${esc(c)}" title="補登的，點一下減一次"`:''}>${esc(c)}${o.n>1?`<small>×${o.n}</small>`:''}${o.ex?'<i>×</i>':''}</span>`; }).join('');
   const head = (k, i, r) => { const en = TR_CN[k] ? TR_CN[k].replace('United States of America','USA').replace('United Kingdom','UK') : '';
     return `<b>${i+1}. ${esc(k)}${r.exC?`<span class="tr-pkx" data-rmc="${esc(k)}" title="移除補登的國家">×</span>`:''}</b>${en?`<small>${esc(en)}</small>`:''}`; };
   /* 收折：每國一行（前三城＋座數），點開看全部城市 */
+    let lastCt = '';
     return `<div class="tr-pfold">` + keys.map((k, i) => { const r = rows[k], cs = Object.keys(r.cities), on = trFoldOpen.has(k);
+      const cn = TR_CONT[k] || '其他', hd = cn !== lastCt ? (lastCt = cn, `<div class="tr-pct">${cn}<small>${keys.filter(x => (TR_CONT[x] || '其他') === cn).length} 國</small></div>`) : '';
       const pv = cs.slice(0, 3).join('、') + (cs.length > 3 ? ` 等 ${cs.length} 座` : '');
-      return `<div class="tr-pf${on?' on':''}"><div class="tr-pfh" data-pfold="${esc(k)}"><span class="tr-pk">${head(k, i, r)}</span>
+      return hd + `<div class="tr-pf${on?' on':''}"><div class="tr-pfh" data-pfold="${esc(k)}"><span class="tr-pk">${head(k, i, r)}</span>
         <span class="tr-pfp">${on ? '' : esc(pv) || '沒有記城市'}</span><em>${cs.length}<small> 座</small></em><svg class="ic tr-pfa"><use href="#i-chev"></use></svg></div>
         ${on ? `<div class="tr-pfc">${cityHtml(r, cs) || '<span class="tr-pn">沒有記城市</span>'}</div>` : ''}</div>`; }).join('') + '</div>';
 }
@@ -3245,6 +3280,7 @@ function trDist(a, b){ const r = Math.PI/180;
   return 6371*Math.acos(Math.max(-1, Math.min(1, c))); }
 function trHash(s){ let h = 5381; for (const ch of String(s)) h = ((h<<5) + h + ch.charCodeAt(0)) | 0; return Math.abs(h); }
 function trStats(){
+  trGeoMerge();
   const done = D.trips.filter(t => !t.del && t.done);
   const cnt = {}; done.forEach(t => trCountries(t).forEach(c => cnt[c] = (cnt[c]||0) + 1));
   (D.prefs.extraCountries||[]).forEach(c => { if (!cnt[c]) cnt[c] = 0; });
@@ -3322,6 +3358,7 @@ function trLoadMap(){
 }
 let trAddC = false;   // 補登國家輸入框是否打開
 function renderTripPage(){
+  trGeoMerge(); setTimeout(trResolveUnknown, 0);   // W1127-04
   const mob = innerWidth < 760;
   { const ec = D.prefs.extraCountries||[], mv = ec.map(trNormC).filter(c => TR_CITY[c] || !TR_CN[c]);   /* W1127-03：國名表沒有的也搬 */   // 舊補登裡其實是城市的，搬到城市
     if (mv.length){ D.prefs.extraCities = (D.prefs.extraCities||[]).concat(mv); D.prefs.extraCountries = ec.filter(c => !(TR_CITY[trNormC(c)] || !TR_CN[trNormC(c)])); D.prefs.mt = now(); save(); fbPushPrefs(); } }
@@ -3387,7 +3424,16 @@ function renderTripPage(){
   $('#ctTgt').onchange = e => { D.prefs.countriesTarget = +e.target.value||50; D.prefs.mt = now(); save(); fbPushPrefs(); renderTripPage(); };
   const ca = $('#trCAdd'); if (ca) ca.onclick = () => { trAddC = true; renderTripPage(); const i = $('#trCIn'); if (i) i.focus(); };
   const ok = $('#trCOk'); if (ok){ const add = () => { const v = trNormC(($('#trCIn').value||'').trim()); trAddC = false;
-      if (v && (TR_CITY[v] || !TR_CN[v])){   /* W1127-03：認得的城市＋認不得的名稱都當城市；只有國名表裡有的才當國家 */ const a = D.prefs.extraCities = (D.prefs.extraCities||[]).slice(); a.push(v); D.prefs.mt = now(); save(); fbPushPrefs();
+      if (v && !TR_CITY[v] && !TR_CN[v]){   /* W1127-04：表裡沒有就上網自動判別 */
+        toast('判別「' + v + '」中…');
+        trGeocode(v).then(g => {
+          if (g && g.kind === 'country'){ D.prefs.extraCountries = (D.prefs.extraCountries||[]).filter(x => x !== g.country).concat([g.country]); toast('已補登國家 ' + g.country); }
+          else { D.prefs.extraCities = (D.prefs.extraCities||[]).concat([v]); trGeoTried.add(v);
+            if (g){ D.prefs.extraGeo = Object.assign({}, D.prefs.extraGeo, {[v]: [g.lon, g.lat, g.country]}); trGeoMerge(); toast('已補登 ' + v + '（' + g.country + '）'); }
+            else toast('已補登 ' + v + '（查不到位置，先放「其他」）'); }
+          D.prefs.mt = now(); save(); fbPushPrefs(); renderTripPage(); });
+      }
+      else if (v && TR_CITY[v]){   /* W1127-03：認得的城市＋認不得的名稱都當城市；只有國名表裡有的才當國家 */ const a = D.prefs.extraCities = (D.prefs.extraCities||[]).slice(); a.push(v); D.prefs.mt = now(); save(); fbPushPrefs();
         const k = a.filter(x => x === v).length; toast(k > 1 ? v+' 第 '+k+' 次' : TR_CITY[v] ? '已補登城市 '+v+'（'+TR_CITY[v][2]+'）' : '已補登 '+v+'（地圖上沒有這個地名，先放「其他」）'); }
       else if (v){ const a = D.prefs.extraCountries = (D.prefs.extraCountries||[]).filter(x => x !== v); a.push(v); D.prefs.mt = now(); save(); fbPushPrefs(); toast('已補登國家 '+v); }
       renderTripPage(); };
