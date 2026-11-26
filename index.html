@@ -602,6 +602,171 @@
   @media (min-width:761px){
     body[data-skin="D"] .modal{border-radius:1.4rem;}
   }
+
+  /* ═══ W1126-04：投標案四格（.pipe，原本沒定義導致直排；A/B/C 共用） ═══ */
+  .pipe{display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:1px; background:var(--line); border:1px solid var(--line);}
+  .pipe .st{background:var(--card); text-align:center; padding:.45rem .2rem; min-width:0;}
+  .pipe .st b{display:block; font-size:1.3rem; font-weight:800; line-height:1.2; font-variant-numeric:tabular-nums;}
+  .pipe .st span{display:block; font-size:.75rem; color:var(--sub); white-space:nowrap;}
+  .pipe .st.hot b{color:var(--urgent);}
+
+  /* ═══ W1126-04：主題 D 健康頁（體重有感版＋年度健檢） ═══ */
+  .dwonly{display:none;}
+  body[data-skin="D"] .dwonly{display:block;}
+  body[data-skin="D"] #page-health.dwmode #whCard{display:none;}
+  body[data-skin="D"] #page-health.dwmode.dwtgt #whCard{display:block;}
+  .dw-card{background:var(--card); border-radius:1.25rem; padding:1.1rem 1.3rem; margin-bottom:.9rem; box-shadow:0 1px 2px rgba(0,0,0,.03);}
+  .dw-h{display:flex; align-items:center; justify-content:space-between; gap:.6rem; margin-bottom:.6rem; flex-wrap:wrap;}
+  .dw-h b{font-size:1.05rem; font-weight:800;}
+  .dw-ttl{font-size:1.55rem; font-weight:800; margin:.2rem 0 .8rem;}
+  .dw-good{color:var(--life);} .dw-bad{color:var(--urgent);} .dw-mute{color:var(--sub);}
+  /* ① 今天大數字 */
+  .dw-hero{display:grid; grid-template-columns:auto minmax(0,1fr); gap:1.6rem; align-items:center; cursor:pointer;}
+  .dw-when{font-size:.85rem; color:var(--sub); font-weight:600;}
+  .dw-big{font-size:4.4rem; font-weight:800; letter-spacing:-.03em; line-height:1; font-variant-numeric:tabular-nums; margin:.3rem 0 .4rem;}
+  .dw-big small{font-size:1.35rem; font-weight:700; margin-left:.2rem; letter-spacing:0;}
+  .dw-dl{display:flex; flex-wrap:wrap; gap:.3rem 1.1rem; font-size:1rem;}
+  .dw-dl b{font-weight:800; font-variant-numeric:tabular-nums;}
+  .dw-tg{display:flex; align-items:center; gap:1rem; border-left:1px solid var(--sep); padding-left:1.6rem; min-width:0;}
+  .dw-tg .dwr{position:relative; width:5.2rem; height:5.2rem; flex:none; display:block;}
+  .dw-tg .dwr svg{width:100%; height:100%; display:block;}
+  .dw-tg .dwr b{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:1.2rem; font-weight:800;}
+  .dw-tg .t1{font-size:1.1rem; font-weight:800;}
+  .dw-tg .t2{font-size:.88rem; color:var(--sub); margin-top:.2rem;}
+  .dw-tg .btn{margin-left:auto;}
+  /* ② 體組成六格：一個外框＋內部細線 */
+  .dw-six{display:grid; grid-template-columns:repeat(6, minmax(0,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:1rem; overflow:hidden;}
+  .dw-cell{background:var(--card); padding:.9rem .9rem; display:flex; align-items:center; gap:.7rem; cursor:pointer; min-width:0; text-align:left; color:inherit;}
+  .dw-cell:hover{background:color-mix(in srgb, var(--navy) 3%, #fff);}
+  .dw-cell.on{background:color-mix(in srgb, var(--navy) 7%, #fff);}
+  .dw-cell .rg{width:2.6rem; height:2.6rem; flex:none;}
+  .dw-cell .rg svg{width:100%; height:100%; display:block;}
+  .dw-cell .lb{font-size:.9rem; color:var(--sub); font-weight:700;}
+  .dw-cell .vl{font-size:1.6rem; font-weight:800; line-height:1.15; font-variant-numeric:tabular-nums; white-space:nowrap;}
+  .dw-cell .vl small{font-size:.85rem; font-weight:700; margin-left:.1rem;}
+  .dw-cell .dt{font-size:.88rem; font-weight:700; font-variant-numeric:tabular-nums;}
+  /* ③ 有感版 */
+  .dw-seg{display:inline-flex; background:var(--page); border-radius:.75rem; padding:.2rem;}
+  .dw-seg button{padding:.35rem .95rem; border-radius:.6rem; font-size:.92rem; font-weight:700; color:var(--sub);}
+  .dw-seg button.on{background:#fff; color:var(--ink); box-shadow:0 1px 2px rgba(0,0,0,.08);}
+  .dw-feel{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:2rem; align-items:start;}
+  .dw-say{font-size:2.3rem; font-weight:800; line-height:1.2;}
+  .dw-say em{font-style:normal;}
+  .dw-say2{font-size:1rem; color:var(--sub); margin-top:.3rem;}
+  .dw-say2 b{color:var(--ink);}
+  .dw-road{position:relative; height:3.4rem; margin:.9rem .6rem 0;}
+  .dw-road .ln{position:absolute; left:0; right:0; top:.75rem; border-top:2px dashed var(--line);}
+  .dw-road .dn{position:absolute; left:0; top:.7rem; height:3px; background:var(--life);}
+  .dw-road .pt{position:absolute; top:.25rem; width:1.05rem; height:1.05rem; border-radius:50%; margin-left:-.52rem; background:#fff; border:3px solid var(--life);}
+  .dw-road .pt.now{background:var(--life);}
+  .dw-road .pt.goal{border-color:var(--gold); width:1.35rem; height:1.35rem; margin-left:-.68rem; top:.1rem;}
+  .dw-road .lb{position:absolute; top:1.65rem; transform:translateX(-50%); font-size:.85rem; white-space:nowrap; font-weight:700; color:var(--sub);}
+  .dw-road .lb.now{color:var(--life);} .dw-road .lb.goal{color:#A87A10;}
+  .dw-road .lb.l0{transform:none;} .dw-road .lb.l1{transform:translateX(-100%);}
+  .dw-rest{font-size:.9rem; color:var(--sub); margin-top:.2rem;}
+  .dw-wkh{display:flex; justify-content:space-between; align-items:baseline; gap:.6rem; flex-wrap:wrap; margin-bottom:.5rem;}
+  .dw-wkh b{font-size:1rem; font-weight:800;}
+  .dw-wkh span{font-size:.92rem; font-weight:800;}
+  .dw-wk{display:grid; grid-template-columns:repeat(8, minmax(0,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:.8rem; overflow:hidden;}
+  .dw-wk div{background:#fff; text-align:center; padding:.45rem .1rem; min-width:0;}
+  .dw-wk small{display:block; font-size:.75rem; color:var(--sub); font-variant-numeric:tabular-nums;}
+  .dw-wk b{display:block; font-size:.98rem; font-weight:800; font-variant-numeric:tabular-nums; white-space:nowrap;}
+  .dw-links{display:flex; justify-content:flex-end; gap:1.2rem; margin-top:.8rem;}
+  .dw-links button{font-size:.95rem; font-weight:800; color:var(--navy);}
+  .dw-chart{margin-top:.9rem; border-top:1px solid var(--sep); padding-top:.8rem;}
+  .dw-chart svg{width:100%; height:9rem; display:block;}
+  .dw-chart .ax{display:flex; justify-content:space-between; font-size:.8rem; color:var(--sub);}
+  /* ④ 最近紀錄 */
+  .dw-tbl{width:100%; border-collapse:collapse; font-size:1.05rem; font-variant-numeric:tabular-nums;}
+  .dw-tbl th{font-size:.9rem; color:var(--sub); font-weight:700; padding:.55rem .3rem; text-align:center; border-bottom:1px solid var(--line);}
+  .dw-tbl td{padding:.75rem .3rem; text-align:center; border-bottom:1px solid var(--sep);}
+  .dw-tbl tbody tr{cursor:pointer;}
+  .dw-tbl tbody tr:hover td{background:color-mix(in srgb, var(--navy) 4%, #fff);}
+  .dw-tbl td.k{font-weight:800;}
+  .dw-more{display:block; margin:.6rem auto 0; font-size:.9rem; font-weight:700; color:var(--navy);}
+  .dw-add{display:none;}
+  /* 記一筆（半頁） */
+  #wsMask .modal{max-width:460px; padding:.6rem 1.3rem 1.2rem;}
+  .ws-grab{width:2.6rem; height:.3rem; border-radius:999px; background:var(--line); margin:.2rem auto .6rem;}
+  .ws-top{display:flex; align-items:center; justify-content:space-between; gap:.5rem;}
+  .ws-top b{font-size:1.15rem; font-weight:800;}
+  .ws-top button{font-size:1rem; color:var(--sub); font-weight:600;}
+  .ws-top input[type="date"]{width:auto; font-weight:700; color:var(--navy); padding:.3rem .5rem;}
+  .ws-kgl{text-align:center; font-size:.9rem; color:var(--sub); margin-top:.9rem;}
+  .ws-kg{display:flex; align-items:center; justify-content:center; gap:.8rem;}
+  .ws-pm{width:3.4rem; height:3.4rem; border-radius:50%; background:var(--page); font-size:1.7rem; font-weight:500; flex:none; display:flex; align-items:center; justify-content:center;}
+  .ws-pm.s{width:2.5rem; height:2.5rem; font-size:1.25rem;}
+  .ws-pm:active{transform:scale(.94);}
+  body[data-skin="D"] .ws-kg input{width:10.5rem; font-size:3.6rem; font-weight:800; text-align:center; border:none; background:transparent; padding:0; font-variant-numeric:tabular-nums;}
+  .ws-kg span{font-size:1.2rem; font-weight:700; margin-left:-.6rem;}
+  .ws-tip{text-align:center; font-size:.82rem; color:var(--sub); margin:.2rem 0 .6rem;}
+  .ws-sec{display:flex; justify-content:space-between; font-size:.95rem; font-weight:800; padding:.5rem 0; border-bottom:1px solid var(--line);}
+  .ws-sec span{font-weight:600; color:var(--sub); font-size:.85rem;}
+  .ws-row{display:flex; align-items:center; gap:.5rem; padding:.42rem 0; border-bottom:1px solid var(--sep);}
+  .ws-row label{flex:1; font-size:1rem; font-weight:700; margin:0;}
+  .ws-row label small{display:block; font-size:.72rem; color:var(--sub); font-weight:600;}
+  body[data-skin="D"] .ws-row input{width:5.4rem; text-align:center; font-size:1.2rem; font-weight:800; border:none; background:transparent; padding:.2rem 0; font-variant-numeric:tabular-nums;}
+  .ws-row .u{width:2.2rem; font-size:.8rem; color:var(--sub); margin-left:-.4rem;}
+  .ws-btns{display:flex; gap:.6rem; margin-top:1rem;}
+  .ws-btns .btn{flex:1; padding:.85rem; font-size:1.05rem;}
+  .ws-btns .btn.del{flex:none; padding:.85rem 1.2rem;}
+  /* 年度健檢 */
+  .ck-sum{margin-top:.8rem;}
+  .ck-sum .w{font-size:.88rem; color:var(--sub); font-weight:600;}
+  .ck-sum .s{font-size:2rem; font-weight:800; margin:.25rem 0;}
+  .ck-sum .s2{font-size:1rem; color:var(--sub);}
+  .ck-sec{font-size:1.05rem; font-weight:800; margin:1.2rem 0 .6rem;}
+  .ck-list{border:1px solid var(--line); border-radius:1rem; overflow:hidden;}
+  .ck-it{display:flex; justify-content:space-between; align-items:center; gap:.8rem; padding:.8rem 1rem; border-top:1px solid var(--line);}
+  .ck-it:first-child{border-top:none;}
+  .ck-it .n{font-size:1.05rem; font-weight:800;}
+  .ck-it .r{font-size:.85rem; color:var(--sub); margin-top:.15rem;}
+  .ck-it .v{text-align:right; flex:none;}
+  .ck-it .v b{display:block; font-size:1.6rem; font-weight:800; color:var(--urgent); font-variant-numeric:tabular-nums; line-height:1.1;}
+  .ck-it .v span{font-size:.85rem; font-weight:800;}
+  .ck-cat{border-top:1px solid var(--line);}
+  .ck-cat:first-child{border-top:none;}
+  .ck-cat summary{display:flex; align-items:center; gap:.6rem; padding:.8rem 1rem; cursor:pointer; list-style:none; font-size:1.02rem; font-weight:800;}
+  .ck-cat summary::-webkit-details-marker{display:none;}
+  .ck-cat summary .c{margin-left:auto; font-size:.9rem; color:var(--sub); font-weight:600;}
+  .ck-cat summary .f{font-size:.92rem; font-weight:800; min-width:5.2rem; text-align:right;}
+  .ck-cat summary .ic{color:var(--sub); transition:transform .15s;}
+  .ck-cat[open] summary .ic{transform:rotate(90deg);}
+  .ck-tbl{width:100%; border-collapse:collapse; font-size:.92rem; font-variant-numeric:tabular-nums;}
+  .ck-tbl th{font-size:.8rem; color:var(--sub); font-weight:700; text-align:right; padding:.4rem 1rem; background:var(--page);}
+  .ck-tbl th:first-child, .ck-tbl td:first-child{text-align:left;}
+  .ck-tbl td{padding:.5rem 1rem; text-align:right; border-top:1px solid var(--sep);}
+  .ck-tbl td.bad{color:var(--urgent); font-weight:800;}
+  .ck-up{width:100%; margin-top:1rem; padding:.9rem; font-size:1.05rem;}
+  .ck-foot{display:flex; justify-content:space-between; align-items:center; margin-top:.7rem; font-size:.8rem; color:var(--sub);}
+  .ck-foot button{color:var(--sub); font-size:.8rem; text-decoration:underline;}
+  #ckMask .modal{max-width:560px;}
+  .ck-steps{font-size:.95rem; line-height:1.6; margin:.4rem 0 .8rem; padding-left:1.2rem;}
+  #ckTxt{width:100%; min-height:9rem; font-size:.85rem; font-family:ui-monospace,Consolas,monospace; border:1px solid var(--line); border-radius:.7rem; padding:.6rem;}
+  .ck-pv{margin-top:.8rem; border:1px solid var(--line); border-radius:.8rem; padding:.7rem .9rem; font-size:.92rem; max-height:16rem; overflow:auto;}
+  .ck-pv .bad{color:var(--urgent); font-weight:800;}
+  @media (max-width:760px){
+    .dw-card{padding:1rem 1.05rem;}
+    .dw-hero{grid-template-columns:minmax(0,1fr);}
+    .dw-tg{display:none;}
+    .dw-big{font-size:4rem;}
+    .dw-six{grid-template-columns:repeat(2, minmax(0,1fr));}
+    .dw-cell{padding:.8rem .7rem; gap:.55rem;}
+    .dw-cell .rg{width:2.3rem; height:2.3rem;}
+    .dw-cell .vl{font-size:1.45rem;}
+    .dw-feel{grid-template-columns:minmax(0,1fr); gap:1.2rem;}
+    .dw-say{font-size:2rem;}
+    .dw-wk{grid-template-columns:repeat(4, minmax(0,1fr));}
+    .dw-wk b{font-size:.95rem;}
+    .dw-wk small{font-size:.68rem;}
+    .dw-tbl{font-size:.95rem;}
+    .dw-tbl .xm{display:none;}
+    .dw-tbl td, .dw-tbl th{padding-left:.15rem; padding-right:.15rem;}
+    body[data-skin="D"] #page-health.dwmode #whAdd{display:none;}
+    .dw-add{display:block; position:sticky; bottom:.8rem; z-index:5; width:100%; padding:1rem; font-size:1.1rem; border-radius:999px; box-shadow:0 4px 16px rgba(27,65,125,.28);}
+    .ck-sum .s{font-size:1.8rem;}
+    .ck-tbl th, .ck-tbl td{padding-left:.6rem; padding-right:.6rem;}
+  }
 </style>
 </head>
 <body data-skin="A">
@@ -639,6 +804,7 @@
   <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M7 3h10v6a5 5 0 0 1-10 0z"/><path d="M7 5H4v2a3 3 0 0 0 3 3M17 5h3v2a3 3 0 0 1-3 3"/><path d="M12 14v4M8 21h8M9.5 18h5v3h-5z"/></symbol>
   <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.6 8-8 9.5C7.6 20 4 17 4 12V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></symbol>
   <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
   <!-- 天氣 -->
   <symbol id="w-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.2v2.6M12 19.2v2.6M2.2 12h2.6M19.2 12h2.6M5.3 5.3l1.9 1.9M16.8 16.8l1.9 1.9M18.7 5.3l-1.9 1.9M7.2 16.8l-1.9 1.9"/></symbol>
   <symbol id="w-cloud" viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 0 0 .5-8 6 6 0 0 0-11.4 1.4A3.5 3.5 0 0 0 7 18z"/></symbol>
@@ -783,7 +949,9 @@
       </div>
       <div id="healthLock" style="display:none;" class="card"><div class="empty"><svg class="ic"><use href="#i-lock"></use></svg> 健康頁已上鎖<div class="iform" style="justify-content:center;"><input type="password" id="healthPin" placeholder="輸入 PIN" style="max-width:140px;"><button class="btn pri" id="healthUnlock">解鎖</button></div></div></div>
       <div id="healthBody">
-        <div class="card"><h3><svg class="ic"><use href="#i-weight"></use></svg>體重・體組成<span class="pn">（十年趨勢）</span></h3><div class="bd" id="whBox"></div></div>
+        <div class="dwonly" id="dWh"></div>
+        <div class="card" id="whCard"><h3><svg class="ic"><use href="#i-weight"></use></svg>體重・體組成<span class="pn">（十年趨勢）</span></h3><div class="bd" id="whBox"></div></div>
+        <div class="dwonly" id="dCk"></div>
         <div style="display:flex; gap:12px; flex-wrap:wrap;">
           <div class="card" style="flex:1; min-width:280px;"><h3><svg class="ic"><use href="#i-health"></use></svg>血壓</h3><div class="bd" id="bpBox"></div></div>
           <div class="card" style="flex:1; min-width:280px;"><h3><svg class="ic"><use href="#i-focus"></use></svg>運動</h3><div class="bd" id="exBox"></div></div>
@@ -889,6 +1057,34 @@
 
 <button class="fab" id="fab">＋</button>
 
+<!-- W1126-04：主題 D 記一筆（半頁） -->
+<div class="mask" id="wsMask"><div class="modal" role="dialog" aria-label="記一筆">
+  <div class="ws-grab"></div>
+  <div class="ws-top"><button id="wsCancel">取消</button><b>記一筆</b><input type="date" id="wsDate" aria-label="日期"></div>
+  <div class="ws-kgl">體重</div>
+  <div class="ws-kg"><button class="ws-pm" data-wsp="kg" data-d="-1" aria-label="體重減">−</button><input type="number" step="0.1" inputmode="decimal" id="ws_kg" aria-label="體重"><span>kg</span><button class="ws-pm" data-wsp="kg" data-d="1" aria-label="體重加">＋</button></div>
+  <div class="ws-tip">每按一下 0.1；也可以直接點數字打字</div>
+  <div class="ws-sec">體組成<span id="wsLast"></span></div>
+  <div class="ws-row"><label>體脂</label><button class="ws-pm s" data-wsp="fat" data-d="-1">−</button><input type="number" step="0.1" inputmode="decimal" id="ws_fat" aria-label="體脂"><span class="u">%</span><button class="ws-pm s" data-wsp="fat" data-d="1">＋</button></div>
+  <div class="ws-row"><label>肌肉</label><button class="ws-pm s" data-wsp="muscle" data-d="-1">−</button><input type="number" step="0.1" inputmode="decimal" id="ws_muscle" aria-label="肌肉"><span class="u">%</span><button class="ws-pm s" data-wsp="muscle" data-d="1">＋</button></div>
+  <div class="ws-row"><label>內臟脂肪</label><button class="ws-pm s" data-wsp="visceral" data-d="-1">−</button><input type="number" step="1" inputmode="numeric" id="ws_visceral" aria-label="內臟脂肪"><span class="u"></span><button class="ws-pm s" data-wsp="visceral" data-d="1">＋</button></div>
+  <div class="ws-row"><label>BMI<small id="wsBmiTag"></small></label><button class="ws-pm s" data-wsp="bmi" data-d="-1">−</button><input type="number" step="0.1" inputmode="decimal" id="ws_bmi" aria-label="BMI"><span class="u"></span><button class="ws-pm s" data-wsp="bmi" data-d="1">＋</button></div>
+  <div class="ws-row"><label>基礎代謝</label><button class="ws-pm s" data-wsp="bmr" data-d="-1">−</button><input type="number" step="1" inputmode="numeric" id="ws_bmr" aria-label="基礎代謝"><span class="u">kcal</span><button class="ws-pm s" data-wsp="bmr" data-d="1">＋</button></div>
+  <div class="ws-row"><label>身體年齡</label><button class="ws-pm s" data-wsp="bodyAge" data-d="-1">−</button><input type="number" step="1" inputmode="numeric" id="ws_bodyAge" aria-label="身體年齡"><span class="u">歲</span><button class="ws-pm s" data-wsp="bodyAge" data-d="1">＋</button></div>
+  <div class="ws-btns"><button class="btn del" id="wsDel">刪除</button><button class="btn pri" id="wsSave">儲存</button></div>
+</div></div>
+<!-- W1126-04：上傳健檢報告 -->
+<div class="mask" id="ckMask"><div class="modal" role="dialog" aria-label="上傳健檢報告">
+  <h3>上傳健檢報告<button class="x" id="ckX" aria-label="關閉"><svg class="ic"><use href="#i-close"></use></svg></button></h3>
+  <ol class="ck-steps">
+    <li>把健檢報告照片或 PDF 傳給 Claude，說「健檢入工作台」</li>
+    <li>Claude 讀完會給你一段資料，整段複製貼在下面</li>
+    <li>按「看預覽」，確認沒問題再按「確認存檔」</li>
+  </ol>
+  <textarea id="ckTxt" placeholder="把 Claude 給的資料貼在這裡"></textarea>
+  <div class="ck-pv" id="ckPv" style="display:none;"></div>
+  <div class="ws-btns"><button class="btn" id="ckChk">看預覽</button><button class="btn pri" id="ckOk" disabled>確認存檔</button></div>
+</div></div>
 <div class="mask" id="mask">
   <div class="modal">
     <h3 id="mTitle">快速記錄 <button class="x" id="mClose">✕</button></h3>
@@ -1116,8 +1312,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 'use strict';
-/* ════════ 艋舺良的工作台 W1126-03（W1126-02 主題 D＋合併 W0928-02 體重多指標目標值＋達標預估＋BMI 目標自動換算） ════════ */
-const VERSION = 'W1126-03';
+/* ════════ 艋舺良的工作台 W1126-04（主題 D 健康頁：體重有感版＋記一筆 7 項＋年度健檢；修 .pipe 投標四格）／W1126-03（W1126-02 主題 D＋合併 W0928-02 體重多指標目標值＋達標預估＋BMI 目標自動換算） ════════ */
+const VERSION = 'W1126-04';
 const GCAL_CLIENT_ID = '654856338073-ukdt5nvtc8riq2010lado0i0n5vuhcfl.apps.googleusercontent.com';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
@@ -1148,7 +1344,8 @@ function blank(){ return {
   txs: [],                         // {id,t,amt,dir:'in'|'out',scope,proj,date,tax,recur,loan,rv,mt,del}
   recurs: [],                      // {id,name,amt,dir,scope,day,mode:'auto'|'conf',tax,on,start:'YYYY-MM',rv,mt,del}
   loans: [],                       // {id,name,remain,monthly,day,paid,total,scope,start:'YYYY-MM',rv,mt,del}
-  weights: [],                     // {id,kg,date,rv,mt,del}
+  weights: [],                     // {id,kg,date,tm,fat,muscle,visceral,bmi,bmr,bodyAge,rv,mt,del}（W1126-04 加 bmr/bodyAge/bmi/tm）
+  checkups: [],                    // W1126-04 年度健檢 {id,year,date,clinic,items:[{cat,name,val,unit,lo,hi,ref,flag}],rv,mt,del}
   trips: [],                       // {id,kind:'near'|'wish',name,start,end,year,budget,split,note,done,rv,mt,del}
   notes: [],                       // {id,txt,tag,pin,rv,mt,del}
   company: [],                     // W1126-01 公司事務 {id,cat,title,due,pct,note,done,rv,mt,del}
@@ -1161,7 +1358,7 @@ function load(){
   try{ const r = localStorage.getItem(KEY); if(r) d = JSON.parse(r); }
   catch(e){ /* 私隱模式或預覽環境 */ }
   d = d || mem || blank();
-  ['projects','bids','clients','txs','weights','trips','notes','recurs','loans','bp','allergy','company'].forEach(k => { if(!Array.isArray(d[k])) d[k] = []; });
+  ['projects','bids','clients','txs','weights','trips','notes','recurs','loans','bp','allergy','company','checkups'].forEach(k => { if(!Array.isArray(d[k])) d[k] = []; });
   d.prefs = d.prefs || {};
   d.prefs.health = Object.assign({bpSys:130, bpDia:80, exWeek:3}, (d.prefs||{}).health||{});
   d.prefs = Object.assign({netBase:0, goalMoney:0, countries:0, countriesTarget:50, weightTarget:0, whTargets:{fat:0, muscle:0, visceral:0, bmi:0}, whStart:{}, mt:0}, d.prefs||{});
@@ -2306,6 +2503,11 @@ function renderHealthPage(){
   $('#healthLock').style.display = locked ? '' : 'none';
   $('#healthBody').style.display = locked ? 'none' : '';
   if (locked) return;
+  /* W1126-04：主題 D 用新版體重頁＋年度健檢；舊體重卡收起，按「改目標」才展開 */
+  $('#page-health').classList.toggle('dwmode', isD());
+  if (!isD()) $('#page-health').classList.remove('dwtgt');
+  $('#whAdd').textContent = isD() ? '＋ 記一筆' : '＋ 記體重';
+  if (isD()){ renderDWeight(); renderCheckup(); }
   /* ── 【53】體重・體組成（W0928：多指標目標＋達標預估） ── */
   const avail = whAvail();
   if (!avail.includes(whMetric)) whMetric = 'kg';
@@ -2900,6 +3102,7 @@ async function renderPush(){
 /* ── 快速記錄／編輯 ── */
 let mEdit = null, mEditTx = null, mKind = 'ev', mScope = 'life', mDir = 'out', mTax = 'biz';
 function openAdd(kind, date){
+  if (kind === 'wt' && isD() && typeof openWs === 'function'){ openWs(date); return; }   /* W1126-04 */
   mEdit = null; mEditTx = null; mKind = kind || 'ev'; mTax = 'biz';
   $('#mTitle').firstChild.textContent = '快速記錄 ';
   $('#mText').value = ''; $('#mDate').value = date || todayStr(); $('#mTime').value = '';
@@ -3169,6 +3372,7 @@ function fbPushAll(){
   D.clients.forEach(c => fbPushDoc('clients', c));
   D.txs.forEach(fbPushTx);
   D.weights.forEach(w => fbPushDoc('weights', w));
+  (D.checkups||[]).forEach(c => fbPushDoc('checkups', c));
   D.trips.forEach(t => fbPushDoc('trips', t));
   D.notes.forEach(n => fbPushDoc('notes', n));
   D.recurs.forEach(r => fbPushDoc('recurs', r));
@@ -3206,7 +3410,7 @@ function fbStart(){
     }, e => console.warn('snap', e));
     fbSubs.push(un);
   });
-  const collMap = {projects:'projects', bids:'bids', clients:'clients', weights:'weights', trips:'trips', notes:'notes', recurs:'recurs', loans:'loans', bp:'bp', allergy:'allergy', company:'company'};
+  const collMap = {projects:'projects', bids:'bids', clients:'clients', weights:'weights', trips:'trips', notes:'notes', recurs:'recurs', loans:'loans', bp:'bp', allergy:'allergy', company:'company', checkups:'checkups'};
   const y0 = new Date().getFullYear();
   ['txs_'+(y0-1), 'txs_'+y0, 'txs_'+(y0+1)].forEach(c => collMap[c] = 'txs');
   Object.keys(collMap).forEach(coll => {
@@ -3599,6 +3803,382 @@ $('#cDel').onclick = () => {
   cEditing.del = true; cEditing.rv = (cEditing.rv||0) + 1; cEditing.mt = now();
   save(); fbPushDoc('company', cEditing); $('#cmask').classList.remove('on'); renderAll(); toast('已刪除（墓碑保留）');
 };
+
+
+/* ════════ W1126-04：主題 D 健康頁——體重有感版＋記一筆＋年度健檢 ════════ */
+const DW_M = {
+  kg:{lb:'體重', u:'kg', st:.1, up:false},
+  fat:{lb:'體脂', u:'%', st:.1, up:false},
+  muscle:{lb:'肌肉', u:'%', st:.1, up:true},
+  visceral:{lb:'內臟脂肪', u:'', st:1, up:false},
+  bmi:{lb:'BMI', u:'', st:.1, up:false},
+  bmr:{lb:'基礎代謝', u:'kcal', st:1, up:true},
+  bodyAge:{lb:'身體年齡', u:'歲', st:1, up:false}
+};
+const DW_SIX = ['fat','muscle','visceral','bmi','bmr','bodyAge'];
+let dwM = 'kg', dwRange = '3m', dwChart = false, dwRows = 5;
+const dwNum = (m, v) => DW_M[m].st >= 1 ? String(Math.round(+v)) : (+v).toFixed(1);
+const dwU = (m, sp) => { const u = DW_M[m].u; return !u ? '' : (u === '%' ? '%' : (sp ? ' ' : '') + u); };
+/* 變化值上色：往好的方向＝綠、往壞的方向＝紅 */
+function dwDelta(m, d, plain){
+  if (d == null || isNaN(d)) return '<span class="dw-mute">—</span>';
+  const r = DW_M[m].st >= 1 ? Math.round(d) : Math.round(d*10)/10;
+  if (r === 0) return '<span class="dw-mute">持平</span>';
+  const good = DW_M[m].up ? r > 0 : r < 0;
+  const txt = plain ? (r > 0 ? '+' : '−') + dwNum(m, Math.abs(r)) : (r > 0 ? '▲' : '▼') + dwNum(m, Math.abs(r));
+  return `<span class="${good ? 'dw-good' : 'dw-bad'}">${txt}</span>`;
+}
+/* 某日（含）以前最後一筆 */
+function dwAt(m, ds){ const s = whSeries(m).filter(w => w.date <= ds); return s.length ? s[s.length-1] : null; }
+function dwAgo(days){ return ymd(new Date(Date.now() - days*86400000)); }
+function dwRangeStart(){ return dwAgo(dwRange === '1m' ? 30 : dwRange === '1y' ? 365 : 91); }
+/* 週一為一週開始 */
+function dwMon(d){ const x = new Date(d); x.setHours(0,0,0,0); x.setDate(x.getDate() - ((x.getDay()+6)%7)); return x; }
+
+function renderDWeight(){
+  const box = $('#dWh'); if (!box) return;
+  const all = whSeries('kg');
+  const cur = all[all.length-1];
+  if (!cur){
+    box.innerHTML = `<div class="dw-card"><div class="dw-ttl">體重・體組成</div><div class="empty">還沒有紀錄——按「＋ 記一筆」開始</div>
+      <button class="btn pri dw-add" data-dwadd>＋ 記一筆</button></div>`;
+    box.querySelectorAll('[data-dwadd]').forEach(b => b.onclick = () => openWs());
+    return;
+  }
+  /* ① 今天大數字 */
+  const wk = dwAt('kg', dwAgo(7)), mo = dwAt('kg', dwAgo(30));
+  const curBmi = whLatest('bmi');
+  const when = cur.date === todayStr() ? '今天' + (cur.tm ? ' ' + cur.tm : '') : mdw(cur.date) + (cur.tm ? ' ' + cur.tm : '');
+  const stK = whStat('kg');
+  let tg = '';
+  if (stK.tgt){
+    const pct = stK.hit ? 100 : (stK.pct != null ? stK.pct : 0);
+    tg = `<div class="dw-tg"><span class="dwr">${ringSvg(pct, stK.hit ? 'var(--gold)' : 'var(--life)')}<b>${pct}%</b></span>
+      <div><div class="t1">目標 ${dwNum('kg', stK.tgt)} kg・${stK.hit ? '已達標' : '還差 ' + dwNum('kg', Math.abs(stK.cur - stK.tgt))}</div>
+      <div class="t2">${stK.hit ? '維持住就好' : (stK.eta || (stK.dir === 'away' ? '近 30 天趨勢與目標相反' : '再多記幾筆就能估達標日'))}</div></div>
+      <button class="btn" data-dwtgt>改目標</button></div>`;
+  } else {
+    tg = `<div class="dw-tg"><div><div class="t1">還沒設體重目標</div><div class="t2">設了才會算還差多少、何時達標</div></div><button class="btn" data-dwtgt>設目標</button></div>`;
+  }
+  const hero = `<div class="dw-card"><div class="dw-hero" data-dwm="kg">
+    <div><div class="dw-when">${when}・體重</div>
+      <div class="dw-big">${dwNum('kg', cur.kg)}<small>kg</small></div>
+      <div class="dw-dl"><span>比上週 <b>${wk && wk !== cur ? dwDelta('kg', cur.kg - wk.kg, true) : '<span class="dw-mute">—</span>'}</b></span>
+        <span>比上月 <b>${mo && mo !== cur ? dwDelta('kg', cur.kg - mo.kg, true) : '<span class="dw-mute">—</span>'}</b></span>
+        ${curBmi ? `<span>BMI <b>${dwNum('bmi', curBmi.bmi)}</b></span>` : ''}</div></div>
+    ${tg}</div></div>`;
+  /* ② 體組成六格 */
+  const cells = DW_SIX.map(m => {
+    const s = whSeries(m), last = s[s.length-1], prev = s[s.length-2];
+    const st = whStat(m);
+    const pct = st.tgt ? (st.hit ? 100 : (st.pct || 0)) : 0;
+    return `<button class="dw-cell${dwM === m ? ' on' : ''}" data-dwm="${m}">
+      <span class="rg">${ringSvg(pct, st.hit ? 'var(--gold)' : 'var(--life)')}</span>
+      <span style="min-width:0;"><span class="lb" style="display:block;">${DW_M[m].lb}</span>
+      <span class="vl" style="display:block;">${last ? dwNum(m, last[m]) + `<small>${dwU(m)}</small>` : '<span class="dw-mute">—</span>'}</span>
+      <span class="dt" style="display:block;">${last && prev ? dwDelta(m, last[m] - prev[m]) : '&nbsp;'}</span></span></button>`;
+  }).join('');
+  const six = `<div class="dw-card"><div class="dw-six">${cells}</div></div>`;
+  /* ③ 有感版 */
+  const m = dwM, MU = DW_M[m];
+  const ser = whSeries(m), last = ser[ser.length-1];
+  const rs = dwRangeStart();
+  const inR = ser.filter(w => w.date >= rs);
+  const base = dwAt(m, rs) || inR[0];
+  let say = '', say2 = '';
+  if (!last){ say = `${MU.lb}還沒有紀錄`; say2 = '記一筆時把這項也填上'; }
+  else if (!base || base === last){ say = `${MU.lb} ${dwNum(m, last[m])}${dwU(m, true)}`; say2 = '這段時間只有一筆，再記幾筆就看得出變化'; }
+  else {
+    const d = +last[m] - +base[m], ad = Math.abs(d);
+    const r = MU.st >= 1 ? Math.round(ad) : Math.round(ad*10)/10;
+    const good = r === 0 ? null : (MU.up ? d > 0 : d < 0);
+    const cls = good === null ? '' : good ? 'dw-good' : 'dw-bad';
+    if (m === 'kg'){
+      say = r === 0 ? '體重持平' : `${d < 0 ? '瘦了' : '胖了'} <em class="${cls}">${whFmt(r)}</em> 公斤`;
+      if (r >= .5){ const n = Math.max(1, Math.round(r / 1.03)); say2 = `差不多是 <b>${n} 瓶 1 公升鮮奶</b> 的重量`; }
+      else if (r > 0){ say2 = `差不多是 <b>${Math.max(1, Math.round(r*1000/60))} 顆雞蛋</b> 的重量`; }
+      else say2 = '和這段時間開頭一樣';
+    } else if (m === 'bodyAge'){
+      say = r === 0 ? '身體年齡持平' : `身體年齡${d < 0 ? '年輕' : '老了'} <em class="${cls}">${r}</em> 歲`;
+      say2 = `現在 <b>${dwNum(m, last[m])} 歲</b>`;
+    } else {
+      say = r === 0 ? `${MU.lb}持平` : `${MU.lb}${d < 0 ? '降了' : '升了'} <em class="${cls}">${dwNum(m, r)}</em>${dwU(m, true)}`;
+      say2 = `從 <b>${dwNum(m, base[m])}</b> 到 <b>${dwNum(m, last[m])}</b>${dwU(m, true)}`;
+    }
+  }
+  /* 路程線：起點 → 今天 → 目標 */
+  let road = '';
+  const st = whStat(m);
+  if (last && st.tgt){
+    const s0 = (D.prefs.whStart||{})[m];
+    const sv = s0 && whHas(s0.v) ? +s0.v : +ser[0][m];
+    const span = sv - st.tgt;
+    const p = st.hit ? 100 : (span ? Math.max(0, Math.min(100, (sv - st.cur) / span * 100)) : 0);
+    const pL = Math.max(32, Math.min(68, p));
+    const restTxt = st.hit ? '已達標' : `還有 ${dwNum(m, Math.abs(st.cur - st.tgt))}${dwU(m, true)}` + (st.eta ? '・' + st.eta.replace('照目前速度', '').replace(' 達標','') : '');
+    road = `<div class="dw-road">
+      <div class="ln"></div><div class="dn" style="width:${p}%;"></div>
+      <span class="pt" style="left:0;"></span><span class="pt now" style="left:${p}%;"></span><span class="pt goal" style="left:100%;"></span>
+      <span class="lb l0" style="left:0;">起點 ${dwNum(m, sv)}</span>
+      <span class="lb now" style="left:${pL}%;">今天 ${dwNum(m, st.cur)}</span>
+      <span class="lb goal l1" style="left:100%;">目標 ${dwNum(m, st.tgt)}</span></div>
+      <div class="dw-rest">${restTxt}</div>`;
+  } else if (last){
+    road = `<div class="dw-say2" style="margin-top:1rem;">${MU.lb}還沒設目標・<button style="color:var(--navy); font-weight:800;" data-dwtgt>設目標 ▸</button></div>`;
+  }
+  /* 每週成績：最近 8 週，每週最後一筆 vs 前一週最後一筆 */
+  const mon0 = dwMon(new Date());
+  const weeks = [];
+  for (let i = 7; i >= 0; i--){
+    const s = new Date(mon0.getTime() - i*7*86400000), e = new Date(s.getTime() + 6*86400000);
+    const sd = ymd(s), ed = ymd(e);
+    const inW = ser.filter(w => w.date >= sd && w.date <= ed);
+    const lw = inW[inW.length-1];
+    const pv = dwAt(m, ymd(new Date(s.getTime() - 86400000)));
+    weeks.push({lab: i === 0 ? '本週' : mdS(sd), d: lw && pv ? +lw[m] - +pv[m] : null});
+  }
+  const has = weeks.filter(w => w.d != null);
+  const goodN = has.filter(w => { const r = Math.round(w.d*10)/10; return MU.up ? r > 0 : r < 0; }).length;
+  const dirWord = MU.up ? '上升' : '下降';
+  const wkTag = !has.length ? '' : goodN >= has.length*.75 ? `<span class="dw-good">${has.length} 週有 ${goodN} 週${dirWord}，節奏穩定</span>`
+    : goodN >= has.length*.5 ? `<span style="color:var(--soon);">${has.length} 週有 ${goodN} 週${dirWord}，有進有退</span>`
+    : `<span class="dw-bad">${has.length} 週只有 ${goodN} 週${dirWord}，要加油</span>`;
+  const wkHtml = `<div class="dw-wkh"><b>每週成績</b>${wkTag}</div>
+    <div class="dw-wk">${weeks.map(w => `<div><small>${w.lab}</small><b>${w.d == null ? '<span class="dw-mute">—</span>' : dwDelta(m, w.d)}</b></div>`).join('')}</div>`;
+  /* 詳細曲線（收起來） */
+  let chart = '';
+  if (dwChart){
+    const pts = inR.length > 1 ? inR : ser.slice(-2);
+    if (pts.length > 1){
+      const vals = pts.map(w => +w[m]); let mn = Math.min(...vals), mx = Math.max(...vals);
+      if (st.tgt){ mn = Math.min(mn, st.tgt); mx = Math.max(mx, st.tgt); }
+      const rng = (mx - mn) || 1;
+      const t0 = Date.parse(pts[0].date), t1 = Date.parse(pts[pts.length-1].date) || t0 + 1;
+      const X = w => ((Date.parse(w.date) - t0) / ((t1 - t0) || 1) * 400).toFixed(1);
+      const Y = v => (86 - (v - mn) / rng * 76).toFixed(1);
+      chart = `<div class="dw-chart"><svg viewBox="0 0 400 92" preserveAspectRatio="none">
+        ${st.tgt ? `<line x1="0" x2="400" y1="${Y(st.tgt)}" y2="${Y(st.tgt)}" stroke="var(--gold)" stroke-width="1.2" stroke-dasharray="5 4" vector-effect="non-scaling-stroke"/>` : ''}
+        <polyline points="${pts.map(w => X(w)+','+Y(+w[m])).join(' ')}" fill="none" stroke="var(--life)" stroke-width="2" vector-effect="non-scaling-stroke"/></svg>
+        <div class="ax"><span>${mdS(pts[0].date)}</span><span>高 ${dwNum(m, Math.max(...vals))}・低 ${dwNum(m, Math.min(...vals))}${st.tgt ? '・目標 ' + dwNum(m, st.tgt) : ''}</span><span>${mdS(pts[pts.length-1].date)}</span></div></div>`;
+    } else chart = '<div class="dw-chart"><div class="empty">資料還不夠畫曲線</div></div>';
+  }
+  const feel = `<div class="dw-card">
+    <div class="dw-h"><b>這段時間${m !== 'kg' ? '・' + MU.lb : ''}</b>
+      <span class="dw-seg">${[['1m','1個月'],['3m','3個月'],['1y','1年']].map(([v,l]) => `<button data-dwr="${v}" class="${v === dwRange ? 'on' : ''}">${l}</button>`).join('')}</span></div>
+    <div class="dw-feel"><div><div class="dw-say">${say}</div><div class="dw-say2">${say2}</div>${road}</div><div>${wkHtml}</div></div>
+    ${chart}
+    <div class="dw-links"><button data-dwtgt>改目標</button><button data-dwch>${dwChart ? '收起曲線 ▴' : '看詳細曲線 ▸'}</button></div></div>`;
+  /* ④ 最近紀錄 */
+  const recs = aliveW().filter(w => w.date && whHas(w.kg)).sort((a,b) => a.date < b.date ? 1 : -1);
+  const cell = (w, k) => whHas(w[k]) ? dwNum(k, w[k]) : '<span class="dw-mute">—</span>';
+  const tbl = `<div class="dw-card"><div class="dw-h"><b>最近紀錄</b><span class="dw-mute" style="font-size:.85rem;">點一列可以改或刪・共 ${recs.length} 筆</span></div>
+    <table class="dw-tbl"><thead><tr><th>日期</th><th>體重</th><th>體脂</th><th>肌肉</th><th>內臟</th><th>BMI</th><th class="xm">基代</th><th class="xm">年齡</th></tr></thead><tbody>
+    ${recs.slice(0, dwRows).map(w => `<tr data-dwed="${w.date}"><td>${mdS(w.date)}</td><td class="k">${dwNum('kg', w.kg)}</td><td>${cell(w,'fat')}</td><td>${cell(w,'muscle')}</td><td>${cell(w,'visceral')}</td><td>${cell(w,'bmi')}</td><td class="xm">${cell(w,'bmr')}</td><td class="xm">${cell(w,'bodyAge')}</td></tr>`).join('')}
+    </tbody></table>${recs.length > dwRows ? `<button class="dw-more" data-dwmore>再顯示 ${Math.min(15, recs.length - dwRows)} 筆 ▾</button>` : ''}</div>`;
+  box.innerHTML = hero + six + feel + tbl + `<button class="btn pri dw-add" data-dwadd>＋ 記一筆</button>`;
+  /* 事件 */
+  box.querySelectorAll('[data-dwm]').forEach(b => b.onclick = e => { if (e.target.closest('[data-dwtgt]')) return; dwM = b.dataset.dwm; renderDWeight(); });
+  box.querySelectorAll('[data-dwr]').forEach(b => b.onclick = () => { dwRange = b.dataset.dwr; renderDWeight(); });
+  box.querySelectorAll('[data-dwch]').forEach(b => b.onclick = () => { dwChart = !dwChart; renderDWeight(); });
+  box.querySelectorAll('[data-dwmore]').forEach(b => b.onclick = () => { dwRows += 15; renderDWeight(); });
+  box.querySelectorAll('[data-dwed]').forEach(r => r.onclick = () => openWs(r.dataset.dwed));
+  box.querySelectorAll('[data-dwadd]').forEach(b => b.onclick = () => openWs());
+  box.querySelectorAll('[data-dwtgt]').forEach(b => b.onclick = e => {
+    e.stopPropagation();
+    const pg = $('#page-health'); pg.classList.add('dwtgt');
+    if (WH_METRICS[dwM]) whMetric = dwM;
+    renderHealthPage();
+    const ip = $('#whBox').querySelector(`[data-whtgt="${WH_METRICS[dwM] ? dwM : 'kg'}"]`);
+    $('#whCard').scrollIntoView({behavior:'smooth', block:'start'});
+    if (ip) setTimeout(() => ip.focus({preventScroll:true}), 350);
+  });
+}
+
+/* ── 記一筆（半頁輸入）：7 項都預帶上一次的數字 ── */
+const WS_KEYS = ['kg','fat','muscle','visceral','bmi','bmr','bodyAge'];
+let wsBmiHand = false, wsEditDate = null;
+function wsFill(date){
+  const ex = aliveW().find(w => w.date === date && whHas(w.kg));
+  const lastOf = k => { const s = whSeries(k).filter(w => w.date <= date); return s.length ? s[s.length-1] : whLatest(k); };
+  wsEditDate = ex ? date : null;
+  WS_KEYS.forEach(k => {
+    const src = ex && whHas(ex[k]) ? ex : (ex ? null : lastOf(k));
+    $('#ws_' + k).value = src && whHas(src[k]) ? dwNum(k, src[k]) : '';
+  });
+  wsBmiHand = !!(ex && whHas(ex.bmi) && !whH2());
+  const l = whSeries('kg').filter(w => w.date < date).pop();
+  $('#wsLast').textContent = ex ? '這天已有紀錄，存檔會更新' : (l ? '上次 ' + mdS(l.date) : '第一筆');
+  $('#wsDel').style.display = ex ? '' : 'none';
+  wsBmiTag();
+}
+function wsBmiTag(){ $('#wsBmiTag').textContent = whH2() ? (wsBmiHand ? '手動' : '跟著體重自動算') : '手動輸入'; }
+function wsAutoBmi(){
+  const h2 = whH2(), kg = +$('#ws_kg').value;
+  if (h2 && kg && !wsBmiHand) $('#ws_bmi').value = whFmt(Math.round(kg / h2 * 10) / 10);
+}
+function openWs(date){
+  const d = date || todayStr();
+  $('#wsDate').value = d;
+  wsFill(d);
+  $('#wsMask').classList.add('on');
+}
+function wsStep(k, dir){
+  const ip = $('#ws_' + k), st = DW_M[k].st;
+  let v = whHas(ip.value) && ip.value !== '' ? +ip.value : (whLatest(k) ? +whLatest(k)[k] : 0);
+  v = Math.max(0, Math.round((v + dir*st) * 10) / 10);
+  ip.value = dwNum(k, v);
+  if (k === 'kg') wsAutoBmi();
+  if (k === 'bmi'){ wsBmiHand = true; wsBmiTag(); }
+}
+function wsSave(){
+  const date = $('#wsDate').value;
+  const kg = +$('#ws_kg').value;
+  if (!date || !kg){ toast('體重和日期要填'); return; }
+  const v = {};
+  WS_KEYS.forEach(k => { const s = $('#ws_' + k).value.trim(); v[k] = s === '' ? null : Math.round(+s * 10) / 10; });
+  const tm = date === todayStr() ? new Date().toTimeString().slice(0,5) : null;
+  let w = aliveW().find(x => x.date === date && whHas(x.kg));
+  if (w){
+    WS_KEYS.forEach(k => { if (v[k] == null) delete w[k]; else w[k] = v[k]; });
+    if (tm) w.tm = tm; w.rv = (w.rv||0) + 1; w.mt = now();
+  } else {
+    w = {id:uid(), date, rv:1, mt:now(), del:false};
+    WS_KEYS.forEach(k => { if (v[k] != null) w[k] = v[k]; });
+    if (tm) w.tm = tm;
+    D.weights.push(w);
+  }
+  fbPushDoc('weights', w); save();
+  $('#wsMask').classList.remove('on'); renderAll(); toast('已記錄');
+}
+function wsDelete(){
+  const w = aliveW().find(x => x.date === wsEditDate && whHas(x.kg)); if (!w) return;
+  if (!confirm('刪除 ' + mdS(w.date) + ' 這筆紀錄？')) return;
+  w.del = true; w.rv = (w.rv||0) + 1; w.mt = now(); fbPushDoc('weights', w); save();
+  $('#wsMask').classList.remove('on'); renderAll(); toast('已刪除');
+}
+(function wsBind(){
+  const mk = $('#wsMask'); if (!mk) return;
+  mk.onclick = e => { if (e.target === mk) mk.classList.remove('on'); };
+  $('#wsCancel').onclick = () => mk.classList.remove('on');
+  $('#wsSave').onclick = wsSave;
+  $('#wsDel').onclick = wsDelete;
+  $('#wsDate').onchange = () => { if ($('#wsDate').value) wsFill($('#wsDate').value); };
+  mk.querySelectorAll('[data-wsp]').forEach(b => b.onclick = () => wsStep(b.dataset.wsp, +b.dataset.d));
+  $('#ws_kg').oninput = wsAutoBmi;
+  $('#ws_bmi').oninput = () => { wsBmiHand = true; wsBmiTag(); };
+})();
+
+/* ── 年度健檢（checkups 集合，每年一筆） ── */
+let ckYear = null;
+const aliveCk = () => (D.checkups||[]).filter(c => !c.del && c.year).sort((a,b) => a.year < b.year ? -1 : 1);
+function ckBad(it){
+  if (it.flag != null) return !!it.flag;
+  const v = +it.val; if (it.val == null || it.val === '' || isNaN(v)) return false;
+  return (whHas(it.hi) && v > +it.hi) || (whHas(it.lo) && v < +it.lo);
+}
+function ckRef(it){
+  if (it.ref) return String(it.ref);
+  if (whHas(it.lo) && whHas(it.hi)) return `${it.lo}～${it.hi}`;
+  if (whHas(it.hi)) return `< ${it.hi}`;
+  if (whHas(it.lo)) return `> ${it.lo}`;
+  return '—';
+}
+function ckOff(it, v){ v = +v; if (isNaN(v)) return 0; return whHas(it.hi) && v > +it.hi ? v - +it.hi : whHas(it.lo) && v < +it.lo ? +it.lo - v : 0; }
+function ckVal(it){ return it.val == null || it.val === '' ? '—' : esc(String(it.val)); }
+function renderCheckup(){
+  const box = $('#dCk'); if (!box) return;
+  const cks = aliveCk();
+  if (!cks.length){
+    box.innerHTML = `<div class="dw-card"><div class="dw-ttl">年度健檢</div><div class="empty">還沒有健檢資料——把報告照片或 PDF 傳給 Claude，讀完貼進來就好</div>
+      <button class="btn pri ck-up" id="ckUp">＋ 上傳健檢報告</button></div>`;
+    $('#ckUp').onclick = openCk; return;
+  }
+  if (!ckYear || !cks.find(c => c.year === ckYear)) ckYear = cks[cks.length-1].year;
+  const ck = cks.find(c => c.year === ckYear);
+  const prev = cks.filter(c => c.year < ckYear).pop();
+  const items = Array.isArray(ck.items) ? ck.items : [];
+  const pmap = {}; (prev && Array.isArray(prev.items) ? prev.items : []).forEach(i => { pmap[i.name] = i; });
+  const bads = items.filter(ckBad);
+  const pBad = prev ? (prev.items||[]).filter(ckBad).length : null;
+  const cmp = pBad == null ? '' : bads.length < pBad ? `比去年少 ${pBad - bads.length} 項；` : bads.length > pBad ? `比去年多 ${bads.length - pBad} 項；` : '和去年一樣；';
+  const yrs = cks.slice(-4);
+  const seg = `<span class="dw-seg" style="display:flex;">${yrs.map(c => `<button data-cky="${c.year}" class="${c.year === ckYear ? 'on' : ''}" style="flex:1;">${c.year}</button>`).join('')}</span>`;
+  const sum = `<div class="ck-sum"><div class="w">${esc(ck.date || ck.year)}${ck.clinic ? '・' + esc(ck.clinic) : ''}</div>
+    <div class="s">${bads.length ? `今年 <span class="dw-bad">${bads.length} 項</span> 紅字` : '今年 <span class="dw-good">全部正常</span>'}</div>
+    <div class="s2">${cmp}共檢查 ${items.length} 項</div></div>`;
+  const trend = it => {
+    const p = pmap[it.name];
+    if (!p || p.val == null || isNaN(+p.val) || isNaN(+it.val)) return '<span class="dw-mute">去年沒有這項</span>';
+    const d = +it.val - +p.val, o1 = ckOff(it, it.val), o0 = ckOff(it, p.val);
+    const r = Math.round(Math.abs(d) * 100) / 100;
+    if (!r) return '<span class="dw-mute">和去年一樣</span>';
+    const good = o1 < o0;
+    return `<span class="${good ? 'dw-good' : o1 > o0 ? 'dw-bad' : 'dw-mute'}">${d > 0 ? '▲' : '▼'} ${r}，${good ? '有進步' : o1 > o0 ? '變差' : '差不多'}</span>`;
+  };
+  const att = bads.length ? `<div class="ck-sec">要注意的</div><div class="ck-list">${bads.map(it => {
+      const p = pmap[it.name];
+      return `<div class="ck-it"><div style="min-width:0;"><div class="n">${esc(it.name)}</div>
+        <div class="r">標準 ${esc(ckRef(it))}${p && p.val != null ? '・去年 ' + esc(String(p.val)) : ''}</div></div>
+        <div class="v"><b>${ckVal(it)}</b>${trend(it)}</div></div>`; }).join('')}</div>` : '';
+  const cats = [];
+  items.forEach(it => { const c = it.cat || '其他'; if (!cats.includes(c)) cats.push(c); });
+  const catHtml = `<div class="ck-sec">全部項目</div><div class="ck-list">${cats.map(c => {
+      const its = items.filter(it => (it.cat || '其他') === c), nb = its.filter(ckBad).length;
+      return `<details class="ck-cat"><summary>${esc(c)}<span class="c">${its.length} 項</span>
+        <span class="f ${nb ? 'dw-bad' : 'dw-good'}">${nb ? nb + ' 項紅字' : '全部正常'}</span><svg class="ic"><use href="#i-chev"></use></svg></summary>
+        <table class="ck-tbl"><thead><tr><th>項目</th><th>今年</th><th>標準</th><th>去年</th></tr></thead><tbody>
+        ${its.map(it => { const p = pmap[it.name]; return `<tr><td>${esc(it.name)}</td><td class="${ckBad(it) ? 'bad' : ''}">${ckVal(it)}${it.unit ? ' <small class="dw-mute">' + esc(it.unit) + '</small>' : ''}</td><td>${esc(ckRef(it))}</td><td>${p && p.val != null ? esc(String(p.val)) : '—'}</td></tr>`; }).join('')}
+        </tbody></table></details>`; }).join('')}</div>`;
+  box.innerHTML = `<div class="dw-card"><div class="dw-ttl">年度健檢</div>${seg}${sum}${att}${catHtml}
+    <button class="btn pri ck-up" id="ckUp">＋ 上傳健檢報告</button>
+    <div class="ck-foot"><span>報告由 Claude 讀取，你確認後才存</span><button id="ckDelY">刪除 ${ckYear} 年資料</button></div></div>`;
+  box.querySelectorAll('[data-cky]').forEach(b => b.onclick = () => { ckYear = b.dataset.cky; renderCheckup(); });
+  $('#ckUp').onclick = openCk;
+  $('#ckDelY').onclick = () => {
+    if (!confirm(`刪除 ${ckYear} 年的健檢資料？`)) return;
+    ck.del = true; ck.rv = (ck.rv||0) + 1; ck.mt = now(); fbPushDoc('checkups', ck); save(); ckYear = null; renderCheckup(); toast('已刪除');
+  };
+}
+let ckPending = null;
+function openCk(){ $('#ckTxt').value = ''; $('#ckPv').innerHTML = ''; $('#ckPv').style.display = 'none'; $('#ckOk').disabled = true; ckPending = null; $('#ckMask').classList.add('on'); }
+function ckParse(){
+  let s = $('#ckTxt').value.trim().replace(/^```(json)?/i, '').replace(/```$/, '').trim();
+  let o;
+  try { o = JSON.parse(s); } catch(e){ $('#ckPv').style.display = ''; $('#ckPv').innerHTML = '<span class="bad">讀不懂這段資料，請整段重新複製貼上</span>'; $('#ckOk').disabled = true; return; }
+  if (Array.isArray(o)) o = {items:o};
+  const items = (Array.isArray(o.items) ? o.items : []).filter(i => i && i.name).map(i => {
+    const r = {cat: i.cat ? String(i.cat) : '其他', name: String(i.name), val: i.val != null ? i.val : null};
+    ['unit','ref'].forEach(k => { if (i[k] != null && i[k] !== '') r[k] = String(i[k]); });
+    ['lo','hi'].forEach(k => { if (whHas(i[k])) r[k] = +i[k]; });
+    if (i.flag != null) r.flag = !!i.flag;
+    return r; });
+  const year = String(o.year || (o.date ? String(o.date).slice(0,4) : '')).trim();
+  if (!/^\d{4}$/.test(year) || !items.length){ $('#ckPv').style.display = ''; $('#ckPv').innerHTML = '<span class="bad">缺年份或沒有任何項目，請確認貼上的是 Claude 給的整段資料</span>'; $('#ckOk').disabled = true; return; }
+  ckPending = {year, date: o.date ? String(o.date) : year, clinic: o.clinic ? String(o.clinic) : '', items};
+  const bads = items.filter(ckBad);
+  const ex = aliveCk().find(c => c.year === year);
+  $('#ckPv').style.display = '';
+  $('#ckPv').innerHTML = `<b>${esc(year)} 年・${esc(ckPending.date)}${ckPending.clinic ? '・' + esc(ckPending.clinic) : ''}</b><br>
+    共 ${items.length} 項，分 ${new Set(items.map(i => i.cat)).size} 類；紅字 ${bads.length} 項${bads.length ? '：<span class="bad">' + bads.map(i => esc(i.name) + ' ' + esc(String(i.val))).join('、') + '</span>' : ''}
+    ${ex ? `<br><span class="bad">${esc(year)} 年已經有資料，存檔會整筆取代</span>` : ''}`;
+  $('#ckOk').disabled = false;
+}
+function ckSave(){
+  if (!ckPending) return;
+  if (!Array.isArray(D.checkups)) D.checkups = [];
+  let c = aliveCk().find(x => x.year === ckPending.year);
+  if (c){ Object.assign(c, ckPending, {rv:(c.rv||0) + 1, mt:now()}); }
+  else { c = Object.assign({id:uid(), rv:1, mt:now(), del:false}, ckPending); D.checkups.push(c); }
+  fbPushDoc('checkups', c); save(); ckYear = c.year; ckPending = null;
+  $('#ckMask').classList.remove('on'); renderAll(); toast('健檢資料已存');
+}
+(function ckBind(){
+  const mk = $('#ckMask'); if (!mk) return;
+  mk.onclick = e => { if (e.target === mk) mk.classList.remove('on'); };
+  $('#ckX').onclick = () => mk.classList.remove('on');
+  $('#ckChk').onclick = ckParse;
+  $('#ckOk').onclick = ckSave;
+})();
 
 function renderAll(){
   processRecurs();   // 固定收支／貸款到期自動入帳（確定性 id 冪等；登入時綁 txs 資料就緒旗標）
