@@ -449,6 +449,7 @@
   body[data-skin="D"] .dh-ln .s{font-size:.85rem; color:var(--sub); margin-top:.3rem; overflow-wrap:anywhere;}
   /* W1126-08：首頁小工具捷徑（一個外框＋內部細線分隔） */
   body[data-skin="D"] .dh-tools{margin-top:1.1rem;}
+  body[data-skin="D"] .dh-ver{margin:1rem 0 .4rem; text-align:center; font-size:.8rem; color:var(--sub); font-variant-numeric:tabular-nums;}
   body[data-skin="D"] .dh-tg{display:flex; flex-wrap:wrap; width:fit-content; max-width:100%; gap:1px; background:var(--sep); border:1px solid var(--sep); border-radius:.9rem; overflow:hidden;}
   body[data-skin="D"] .dh-tl{flex:0 0 13rem; display:flex; align-items:center; gap:.6rem; background:#fff; padding:.8rem 1rem; font-size:1rem; font-weight:700; cursor:pointer; min-width:0;}
   @media (max-width:760px){ body[data-skin="D"] .dh-tg{width:100%;} body[data-skin="D"] .dh-tl{flex:1 1 9rem;} }
@@ -1528,8 +1529,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 'use strict';
-/* ════════ 艋舺良的工作台 W1126-10（年度健檢 A～E：今年該做的事・自費建議・已知狀況・紅字白話說明・四年趨勢・部位分組・預約勾選・看診摘要・記錄看診・健檢前提醒・搜尋；新增 D.ckplan→meta/ckplan）／W1126-09（年度健檢超過 4 年：最近 3 年＋更早下拉）／W1126-08（首頁加小工具捷徑：PDF 解密）／W1126-07（主題 D 設為預設：每台裝置一次性切到 D）／W1126-06（健康頁新版套用到 A/B/C 主題）／W1126-05（設定頁加「小工具・移除 PDF 密碼」入口 pdfunlock.html）／W1126-04（主題 D 健康頁：體重有感版＋記一筆 7 項＋年度健檢；修 .pipe 投標四格）／W1126-03（W1126-02 主題 D＋合併 W0928-02 體重多指標目標值＋達標預估＋BMI 目標自動換算） ════════ */
-const VERSION = 'W1126-10';
+/* ════════ 艋舺良的工作台 W1126-11（主題 D 首頁最下方加版號小字）／W1126-10（年度健檢 A～E：今年該做的事・自費建議・已知狀況・紅字白話說明・四年趨勢・部位分組・預約勾選・看診摘要・記錄看診・健檢前提醒・搜尋；新增 D.ckplan→meta/ckplan）／W1126-09（年度健檢超過 4 年：最近 3 年＋更早下拉）／W1126-08（首頁加小工具捷徑：PDF 解密）／W1126-07（主題 D 設為預設：每台裝置一次性切到 D）／W1126-06（健康頁新版套用到 A/B/C 主題）／W1126-05（設定頁加「小工具・移除 PDF 密碼」入口 pdfunlock.html）／W1126-04（主題 D 健康頁：體重有感版＋記一筆 7 項＋年度健檢；修 .pipe 投標四格）／W1126-03（W1126-02 主題 D＋合併 W0928-02 體重多指標目標值＋達標預估＋BMI 目標自動換算） ════════ */
+const VERSION = 'W1126-11';
 const GCAL_CLIENT_ID = '654856338073-ukdt5nvtc8riq2010lado0i0n5vuhcfl.apps.googleusercontent.com';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
@@ -3908,7 +3909,7 @@ function renderDHome(){
   /* ⑥ 小工具捷徑（W1126-08；新工具加進 TOOLS 即可） */
   const tools = `<div class="dh-card dh-tools"><div class="dh-lab">小工具</div><div class="dh-tg">` +
     TOOLS.map(x => `<div class="dh-tl" data-href="${x.href}"><svg class="ic"><use href="#${x.ic}"></use></svg><span>${x.t}<small>${x.s}</small></span></div>`).join('') + '</div></div>';
-  box.innerHTML = `<div class="dh-top">${next}<div class="dh-card">${odHtml}</div></div>${tl}${week}${lines}${tools}`;
+  box.innerHTML = `<div class="dh-top">${next}<div class="dh-card">${odHtml}</div></div>${tl}${week}${lines}${tools}<div class="dh-ver" id="vtagHome"></div>`;
 }
 function coComplete(id){
   const c = D.company.find(x => x.id === id); if (!c) return;
@@ -4930,6 +4931,7 @@ function renderAll(){
   $('#vtag1').textContent = vt; $('#vtag2').textContent = vt;
   $('#vtagHead').textContent = vt;                 // 側欄標題正下方（桌機一眼可見）
   $('#vtagSet').textContent = '艋舺良的工作台 ' + vt;   // 「更多」頁最上面（手機）
+  const vh = $('#vtagHome'); if (vh) vh.textContent = vt;   // W1126-11：主題 D 首頁最下方小字
   applyAuthUI();
 }
 renderAll();
