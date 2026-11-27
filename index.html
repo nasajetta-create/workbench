@@ -1103,9 +1103,11 @@
   .tr-cap{display:flex; align-items:center; gap:.6rem; min-height:1.7rem;}
   .tr-zn{font-size:1rem; color:var(--ink);}
   #trZAll{border-style:solid;}
-  .tr-cbar{display:flex; flex-wrap:wrap; align-items:center; gap:.4rem; padding:.7rem 0 .2rem;}
-  .tr-cbl{font-size:.75rem; font-weight:700; color:var(--sub); letter-spacing:.06em; margin-left:.5rem;}
-  .tr-cbl:first-child{margin-left:0;}
+  .tr-cbar{display:flex; flex-direction:column; gap:.5rem; padding:.7rem 0 .2rem;}
+  .tr-cbr{display:grid; grid-template-columns:3.2rem 1fr; align-items:start; column-gap:.5rem;}   /* W1127-13 */
+  .tr-cbc{display:flex; flex-wrap:wrap; gap:.4rem;}
+  .tr-cbl{font-size:.75rem; font-weight:700; color:var(--sub); letter-spacing:.06em; padding-top:.25rem;}
+  .tr-cbar .tr-ltg{align-self:flex-end;}
   .tr-cz[data-zc]{cursor:pointer;}
   .tr-cz.on{background:color-mix(in srgb, var(--tv) 22%, transparent); border-color:var(--tv); font-weight:700;}
   .tr-ltg{margin-left:auto; display:inline-flex; align-items:center; gap:.2rem; font-size:.82rem; font-weight:600; color:var(--sub); cursor:pointer; white-space:nowrap; padding:.2rem 0 .2rem .6rem;}
@@ -1151,6 +1153,28 @@
     .tr-stamp b{font-size:.95rem;}
   }
   #authInfo.sync-bad{color:var(--urgent); font-weight:700;}   /* W1127-12 */
+
+  /* W1127-14：合併表單——一個外框、列與列 1px 細線分隔、左標題右填值（iOS 日期框不再撐出去） */
+  .fgrp{border:1px solid var(--line); background:var(--hair); margin:0 0 14px; overflow:hidden; display:flex; flex-direction:column; gap:1px;}
+  .fgrp .fr{display:grid; grid-template-columns:6.5rem minmax(0,1fr); align-items:center; column-gap:.6rem; min-height:3rem; padding:0 .9rem; margin:0; background:var(--card); cursor:text;}
+  .fgrp .fr > span small{display:block; font-size:.72rem; opacity:.8; white-space:normal;}
+  .fgrp-t{font-size:.78rem; color:var(--sub); margin:0 0 5px;}
+  .fgrp-n{font-size:.75rem; color:var(--sub); margin:-8px 0 14px; line-height:1.5;}
+  .fgrp .fr > span{font-size:.88rem; color:var(--sub); white-space:nowrap;}
+  .fgrp input, .fgrp select{border:0 !important; background:transparent !important; box-shadow:none !important; border-radius:0 !important; padding:.6rem 0; width:100%; min-width:0; max-width:100%; text-align:right; font-size:1rem;}
+  .fgrp select{text-align-last:right; cursor:pointer;}
+  .fgrp input[type="date"]{-webkit-appearance:none; appearance:none; display:block; min-height:2.6rem; line-height:1.2;}
+  .fgrp input[type="date"]::-webkit-date-and-time-value{text-align:right;}
+  .fgrp input::placeholder{color:var(--sub); opacity:.55;}
+  .fgrp .fr.ck{cursor:pointer; grid-template-columns:minmax(0,1fr) auto; padding-top:.45rem; padding-bottom:.45rem;}
+  .fgrp input[type="number"]{-moz-appearance:textfield; appearance:textfield;}
+  .fgrp input[type="number"]::-webkit-inner-spin-button, .fgrp input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none; margin:0;}
+  .fgrp .fr.ck input{width:1.25rem; height:1.25rem; justify-self:end; accent-color:var(--navy);}
+  .fgrp .fr.rg{grid-template-columns:6.5rem minmax(0,1fr) 3.2rem;}
+  .fgrp .fr.rg input[type="range"]{padding:0; accent-color:var(--navy);}
+  body[data-skin="D"] .fgrp{border-radius:.8rem;}
+  .fgrp input:focus, .fgrp select:focus{outline:none;}
+  .fgrp .fr:focus-within{background:color-mix(in srgb, var(--navy) 5%, var(--card));}
 </style>
 </head>
 <body data-skin="A">
@@ -1487,7 +1511,7 @@
 <!-- W1126-10：年度健檢 選日期／勾選清單／看診摘要／記錄看診 -->
 <div class="mask" id="ckDtMask"><div class="modal ck-dtm" role="dialog" aria-label="選日期">
   <h3><span id="ckDtT">選日期</span><button class="x" id="ckDtX" aria-label="關閉"><svg class="ic"><use href="#i-close"></use></svg></button></h3>
-  <div class="frow"><input type="date" id="ckDtIn"></div>
+  <div class="fgrp"><label class="fr"><span>日期</span><input type="date" id="ckDtIn"></label></div>
   <div class="ws-btns"><button class="btn del" id="ckDtClr">清除</button><button class="btn" id="ckDtNo">取消</button><button class="btn pri" id="ckDtOk">確定</button></div>
 </div></div>
 <div class="mask" id="ckPkMask"><div class="modal ck-pkm" role="dialog" aria-label="預約用勾選清單">
@@ -1503,14 +1527,14 @@
 </div></div>
 <div class="mask" id="ckVsMask"><div class="modal ck-vsm" role="dialog" aria-label="記錄看診">
   <h3>記錄看診<button class="x" id="ckVsX" aria-label="關閉"><svg class="ic"><use href="#i-close"></use></svg></button></h3>
-  <div class="ck-vg">
-    <div class="frow"><label for="ckVsDate">看診日期</label><input type="date" id="ckVsDate"></div>
-    <div class="frow"><label for="ckVsDept">科別</label><select id="ckVsDept"></select></div>
-  </div>
-  <div class="frow"><label for="ckVsNote">醫師怎麼說</label><textarea id="ckVsNote" rows="3" placeholder="例：杯盤比正常範圍，一年後再追"></textarea></div>
-  <div class="frow"><label for="ckVsRef">對應項目</label><select id="ckVsRef"></select></div>
-  <div class="frow"><label for="ckVsAct">建議怎麼變</label><select id="ckVsAct"></select></div>
-  <div class="frow" id="ckVsFuR" style="display:none;"><label for="ckVsFu">回診日期（會加進待辦）</label><input type="date" id="ckVsFu"></div>
+  <div class="fgrp"><!-- W1127-14 -->
+      <label class="fr"><span>看診日期</span><input type="date" id="ckVsDate"></label>
+      <label class="fr"><span>科別</span><select id="ckVsDept"></select></label>
+      <label class="fr"><span>對應項目</span><select id="ckVsRef"></select></label>
+      <label class="fr"><span>建議怎麼變</span><select id="ckVsAct"></select></label>
+      <label class="fr" id="ckVsFuR" style="display:none;"><span>回診日期<small>會加進待辦</small></span><input type="date" id="ckVsFu"></label>
+    </div>
+    <div class="frow"><label for="ckVsNote">醫師怎麼說</label><textarea id="ckVsNote" rows="3" placeholder="例：杯盤比正常範圍，一年後再追"></textarea></div>
   <div class="ws-btns"><button class="btn" id="ckVsNo">取消</button><button class="btn pri" id="ckVsOk">存檔</button></div>
 </div></div>
 <div class="mask" id="mask">
@@ -1524,27 +1548,28 @@
       <button data-v="case" style="color:var(--case);">投標</button>
       <button data-v="life" style="color:var(--life);">個人</button>
     </div></div>
-    <div class="frow" id="mTextRow"><label>內容</label><input id="mText" placeholder="例：大同案 複驗陪同"></div>
-    <div class="frow" id="mTxRow" style="display:none;">
-      <div class="chips" style="margin-bottom:8px;"><button data-dir="out" id="mDirOut" style="color:var(--urgent);">− 支出</button><button data-dir="in" id="mDirIn" style="color:var(--life);">＋ 收入</button></div>
-      <div style="display:flex; gap:8px;">
-        <div style="flex:1;"><label>金額</label><input type="number" id="mAmt" placeholder="0"></div>
-        <div style="flex:1.4;"><label>掛到案件（選填）</label><select id="mProj"><option value="">—</option></select></div>
+    <div class="fgrp"><!-- W1127-14 -->
+      <label class="fr" id="mTextRow"><span>內容</span><input id="mText" placeholder="例：大同案 複驗陪同"></label>
+    </div>
+    <div id="mTxRow" style="display:none;">
+      <div class="frow"><div class="chips"><button data-dir="out" id="mDirOut" style="color:var(--urgent);">− 支出</button><button data-dir="in" id="mDirIn" style="color:var(--life);">＋ 收入</button></div></div>
+      <div class="fgrp">
+        <label class="fr"><span>金額</span><input type="number" inputmode="numeric" id="mAmt" placeholder="0"></label>
+        <label class="fr"><span>掛到案件</span><select id="mProj"><option value="">選填</option></select></label>
       </div>
-      <div id="mTaxRow" style="margin-top:8px; display:none;"><label>稅務類別（報稅預估用）</label>
+      <div class="frow" id="mTaxRow" style="display:none;"><label>稅務類別（報稅預估用）</label>
         <div class="chips" id="mTax"><button data-v="biz">執行業務</button><button data-v="sal">薪資</button><button data-v="none">免稅</button></div>
       </div>
     </div>
-    <div class="frow" id="mWtRow" style="display:none;"><label>體重 (kg)</label><input type="number" step="0.1" id="mKg" placeholder="72.5">
-      <div style="display:flex; gap:6px; margin-top:6px;">
-        <div style="flex:1;"><label style="font-size:.70rem;">體脂%（選填）</label><input type="number" step="0.1" id="mFat"></div>
-        <div style="flex:1;"><label style="font-size:.70rem;">肌肉%（選填）</label><input type="number" step="0.1" id="mMuscle"></div>
-        <div style="flex:1;"><label style="font-size:.70rem;">內臟脂肪（選填）</label><input type="number" step="0.5" id="mVisceral"></div>
-      </div>
+    <div class="fgrp" id="mWtRow" style="display:none;">
+      <label class="fr"><span>體重 kg</span><input type="number" step="0.1" inputmode="decimal" id="mKg" placeholder="72.5"></label>
+      <label class="fr"><span>體脂 %</span><input type="number" step="0.1" inputmode="decimal" id="mFat" placeholder="選填"></label>
+      <label class="fr"><span>肌肉 %</span><input type="number" step="0.1" inputmode="decimal" id="mMuscle" placeholder="選填"></label>
+      <label class="fr"><span>內臟脂肪</span><input type="number" step="0.5" inputmode="decimal" id="mVisceral" placeholder="選填"></label>
     </div>
-    <div class="frow" style="display:flex; gap:8px;">
-      <div style="flex:1.4;"><label id="mDateLb">日期</label><input type="date" id="mDate"></div>
-      <div style="flex:1;" id="mTimeCol"><label>時間（選填）</label><input type="time" id="mTime"></div>
+    <div class="fgrp">
+      <label class="fr"><span id="mDateLb">日期</span><input type="date" id="mDate"></label>
+      <label class="fr" id="mTimeCol"><span>時間</span><input type="time" id="mTime"></label>
     </div>
     <div class="mbtns">
       <button class="btn del" id="mDel" style="display:none;">刪除</button>
@@ -1556,8 +1581,10 @@
 <div class="mask" id="gmask">
   <div class="modal">
     <h3>編輯目標 <button class="x" id="gClose">✕</button></h3>
-    <div class="frow"><label>名稱</label><input id="gName"></div>
-    <div class="frow"><label>進度 %（第三批起自動連動記帳／旅遊）</label><input type="number" id="gPct" min="0" max="100"></div>
+    <div class="fgrp"><!-- W1127-14 -->
+      <label class="fr"><span>名稱</span><input id="gName"></label>
+      <label class="fr"><span>進度 %</span><input type="number" inputmode="numeric" id="gPct" min="0" max="100"></label>
+    </div>
     <div class="mbtns"><button class="btn pri" id="gSave">儲存</button></div>
   </div>
 </div>
@@ -1565,19 +1592,22 @@
 <div class="mask" id="pmask">
   <div class="modal">
     <h3 id="pTitle">案場 <button class="x" id="pClose">✕</button></h3>
-    <div class="frow"><label>案場名稱</label><input id="p_name" placeholder="例：大同整修案"></div>
-    <div class="frow" style="display:flex; gap:8px;">
-      <div style="flex:1;"><label>合約金額</label><input type="number" id="p_contract" placeholder="0"></div>
-      <div style="flex:1;"><label>成本預算</label><input type="number" id="p_budget" placeholder="0"></div>
-      <div style="flex:1;"><label>進度 %</label><input type="number" id="p_prog" min="0" max="100"></div>
+    <!-- W1127-14：表單改「一個外框＋細線分隔」，每列左標題右填值，不再一格一格方框 -->
+    <div class="fgrp">
+      <label class="fr"><span>案場名稱</span><input id="p_name" placeholder="例：大同整修案"></label>
+      <label class="fr"><span>合約金額</span><input type="number" inputmode="numeric" id="p_contract" placeholder="0"></label>
+      <label class="fr"><span>成本預算</span><input type="number" inputmode="numeric" id="p_budget" placeholder="0"></label>
+      <label class="fr"><span>進度 %</span><input type="number" inputmode="numeric" id="p_prog" min="0" max="100" placeholder="0"></label>
     </div>
-    <div class="frow" style="display:flex; gap:8px;">
-      <div style="flex:1;"><label>狀態</label><select id="p_status"><option value="active">進行中</option><option value="warranty">保固中</option><option value="done">已結案</option></select></div>
-      <div style="flex:1;"><label>保固到期</label><input type="date" id="p_wend"></div>
-      <div style="flex:1;"><label>保固金</label><input type="number" id="p_ret" placeholder="0"></div>
+    <div class="fgrp">
+      <label class="fr"><span>狀態</span><select id="p_status"><option value="active">進行中</option><option value="warranty">保固中</option><option value="done">已結案</option></select></label>
+      <label class="fr"><span>保固到期</span><input type="date" id="p_wend"></label>
+      <label class="fr"><span>保固金</span><input type="number" inputmode="numeric" id="p_ret" placeholder="0"></label>
+      <label class="fr ck"><span>保固金已退回</span><input type="checkbox" id="p_retok"></label>
     </div>
-    <div class="frow"><label><input type="checkbox" id="p_retok" style="width:auto;"> 保固金已退回</label></div>
-    <div class="frow"><label>G95 連結（選填，貼該案 G95 網址）</label><input id="p_g95" placeholder="https://..."></div>
+    <div class="fgrp">
+      <label class="fr"><span>G95 連結</span><input id="p_g95" placeholder="選填，貼該案 G95 網址"></label>
+    </div>
     <div class="mbtns">
       <button class="btn del" id="pDel" style="display:none;">刪除</button>
       <button class="btn pri" id="pSave">儲存</button>
@@ -1588,29 +1618,26 @@
 <div class="mask" id="bmask">
   <div class="modal">
     <h3 id="bTitle">投標案 <button class="x" id="bClose">✕</button></h3>
-    <div class="frow" style="display:flex; gap:8px;">
-      <div style="flex:2;"><label>案名</label><input id="b_name" placeholder="例：幼兒園整修案"></div>
-      <div style="flex:1;"><label>階段</label><select id="b_stage">
+    <div class="fgrp"><!-- W1127-14 -->
+      <label class="fr"><span>案名</span><input id="b_name" placeholder="例：幼兒園整修案"></label>
+      <label class="fr"><span>階段</span><select id="b_stage">
         <option value="prep">領標・備標</option><option value="est">估算中</option>
         <option value="sub">已送標</option><option value="open">待開標</option>
-        <option value="won">得標</option><option value="lost">未得標</option></select></div>
+        <option value="won">得標</option><option value="lost">未得標</option></select></label>
+      <label class="fr"><span>業主</span><input id="b_owner" list="clientList"><datalist id="clientList"></datalist></label>
+      <label class="fr"><span>標價</span><input type="number" inputmode="numeric" id="b_amt" placeholder="0"></label>
     </div>
-    <div class="frow" style="display:flex; gap:8px;">
-      <div style="flex:1.4;"><label>業主</label><input id="b_owner" list="clientList"><datalist id="clientList"></datalist></div>
-      <div style="flex:1;"><label>標價</label><input type="number" id="b_amt" placeholder="0"></div>
+    <div class="fgrp-t">關鍵日期（填了自動進行事曆＋倒數）</div>
+    <div class="fgrp">
+      <label class="fr"><span>現勘</span><input type="date" id="b_d_site"></label>
+      <label class="fr"><span>疑義截止</span><input type="date" id="b_d_qa"></label>
+      <label class="fr"><span>截標</span><input type="date" id="b_d_close"></label>
+      <label class="fr"><span>開標</span><input type="date" id="b_d_open"></label>
     </div>
-    <div class="frow"><label>關鍵日期（填了自動進行事曆＋倒數）</label>
-      <div style="display:flex; gap:6px; flex-wrap:wrap;">
-        <div style="flex:1; min-width:90px;"><label style="font-size:.70rem;">現勘</label><input type="date" id="b_d_site"></div>
-        <div style="flex:1; min-width:90px;"><label style="font-size:.70rem;">疑義截止</label><input type="date" id="b_d_qa"></div>
-        <div style="flex:1; min-width:90px;"><label style="font-size:.70rem;">截標</label><input type="date" id="b_d_close"></div>
-        <div style="flex:1; min-width:90px;"><label style="font-size:.70rem;">開標</label><input type="date" id="b_d_open"></div>
-      </div>
-    </div>
-    <div class="frow" style="display:flex; gap:8px; align-items:flex-end;">
-      <div style="flex:1;"><label>押標金</label><input type="number" id="b_dep" placeholder="0"></div>
-      <label style="flex:none; font-size:.88rem;"><input type="checkbox" id="b_dep_paid" style="width:auto;"> 已繳</label>
-      <label style="flex:none; font-size:.88rem;"><input type="checkbox" id="b_dep_ret" style="width:auto;"> 已退</label>
+    <div class="fgrp">
+      <label class="fr"><span>押標金</span><input type="number" inputmode="numeric" id="b_dep" placeholder="0"></label>
+      <label class="fr ck"><span>押標金已繳</span><input type="checkbox" id="b_dep_paid"></label>
+      <label class="fr ck"><span>押標金已退</span><input type="checkbox" id="b_dep_ret"></label>
     </div>
     <div class="frow"><label>估價項目（一行一項：名稱=金額）</label><textarea id="b_items" placeholder="假設工程=50000&#10;泥作工程=120000"></textarea></div>
     <div class="mbtns2">
@@ -1626,22 +1653,24 @@
   <div class="modal">
     <h3 id="tTitle">旅程 <button class="x" id="tClose">✕</button></h3>
     <div class="frow"><div class="chips" id="tKind"><button data-v="near">近期旅程</button><button data-v="wish">長期清單</button></div></div>
-    <div class="frow"><label>名稱</label><input id="t_name" placeholder="例：沖繩 4天3夜／冰島環島"></div>
-    <div class="frow" id="tNearRow" style="display:flex; gap:8px;">
-      <div style="flex:1;"><label>出發</label><input type="date" id="t_start"></div>
-      <div style="flex:1;"><label>回程</label><input type="date" id="t_end"></div>
+    <div class="fgrp"><!-- W1127-14 -->
+      <label class="fr"><span>名稱</span><input id="t_name" placeholder="例：沖繩 4天3夜"></label>
     </div>
-    <div class="frow" id="tWishRow" style="display:none; gap:8px;">
-      <div style="flex:1;"><label>目標年份</label><input type="number" id="t_year" placeholder="2028"></div>
-      <div style="flex:1;"><label>預算</label><input type="number" id="t_budget" placeholder="0"></div>
+    <div class="fgrp" id="tNearRow">
+      <label class="fr"><span>出發</span><input type="date" id="t_start"></label>
+      <label class="fr"><span>回程</span><input type="date" id="t_end"></label>
     </div>
-    <div class="frow" style="display:flex; gap:8px;">
-      <div style="flex:1;"><label>國家</label><input id="t_country" placeholder="例：日本／法國、丹麥"></div>
-      <div style="flex:1;"><label>城市</label><input id="t_city" placeholder="例：大阪、京都"></div>
+    <div class="fgrp" id="tWishRow" style="display:none;">
+      <label class="fr"><span>目標年份</span><input type="number" inputmode="numeric" id="t_year" placeholder="2028"></label>
+      <label class="fr"><span>預算</span><input type="number" inputmode="numeric" id="t_budget" placeholder="0"></label>
     </div>
-    <div class="frow"><label>旅遊分帳連結（選填，貼該旅程網址）</label><input id="t_split" placeholder="https://nasajetta-create.github.io/travel/..."></div>
-    <div class="frow"><label>備註</label><input id="t_note" placeholder="想去的點、待辦…"></div>
-    <div class="frow"><label><input type="checkbox" id="t_done" style="width:auto;"> 已完成（蓋護照章、算進已踏國家）</label></div>
+    <div class="fgrp">
+      <label class="fr"><span>國家</span><input id="t_country" placeholder="例：日本／法國、丹麥"></label>
+      <label class="fr"><span>城市</span><input id="t_city" placeholder="例：大阪、京都"></label>
+      <label class="fr"><span>分帳連結</span><input id="t_split" placeholder="選填，貼旅遊分帳網址"></label>
+      <label class="fr"><span>備註</span><input id="t_note" placeholder="想去的點、待辦…"></label>
+      <label class="fr ck"><span>已完成<small>蓋護照章、算進已踏國家</small></span><input type="checkbox" id="t_done"></label>
+    </div>
     <div class="mbtns">
       <button class="btn del" id="tDel" style="display:none;">刪除</button>
       <button class="btn pri" id="tSave">儲存</button>
@@ -1652,11 +1681,11 @@
 <div class="mask" id="rmask">
   <div class="modal">
     <h3 id="rTitle">固定項目 <button class="x" id="rClose">✕</button></h3>
-    <div class="frow"><label>名稱</label><input id="r_name" placeholder="例：房貸、倉庫租金、保險"></div>
     <div class="frow"><div class="chips" id="rDir"><button data-v="out" style="color:var(--urgent);">− 固定支出</button><button data-v="in" style="color:var(--life);">＋ 固定收入</button></div></div>
-    <div class="frow" style="display:flex; gap:8px;">
-      <div style="flex:1;"><label>金額</label><input type="number" id="r_amt" placeholder="0"></div>
-      <div style="flex:1;"><label>每月幾號</label><input type="number" id="r_day" min="1" max="31" placeholder="5"></div>
+    <div class="fgrp"><!-- W1127-14 -->
+      <label class="fr"><span>名稱</span><input id="r_name" placeholder="例：房貸、倉庫租金、保險"></label>
+      <label class="fr"><span>金額</span><input type="number" inputmode="numeric" id="r_amt" placeholder="0"></label>
+      <label class="fr"><span>每月幾號</span><input type="number" inputmode="numeric" id="r_day" min="1" max="31" placeholder="5"></label>
     </div>
     <div class="frow"><label>分類</label><div class="chips" id="rScope">
       <button data-v="site" style="color:var(--site);">案場</button>
@@ -1668,9 +1697,13 @@
     <div class="frow" id="rTaxRow" style="display:none;"><label>稅務類別</label><div class="chips" id="rTax">
       <button data-v="biz">執行業務</button><button data-v="sal">薪資</button><button data-v="none">免稅</button>
     </div></div>
-    <div class="frow" id="rTaxAmtRow" style="display:none;"><label>應稅金額（選填）——實領和應稅不同時填，例：實領含免稅加班費，報稅累計用這個數；改金額入帳時會按比例換算</label>
-      <input type="number" id="r_taxamt" placeholder="留空＝同金額"></div>
-    <div class="frow"><label><input type="checkbox" id="r_on" style="width:auto;" checked> 啟用中（取消勾選＝暫停，不刪紀錄）</label></div>
+    <div id="rTaxAmtRow" style="display:none;">
+      <div class="fgrp"><label class="fr"><span>應稅金額</span><input type="number" inputmode="numeric" id="r_taxamt" placeholder="留空＝同金額"></label></div>
+      <div class="fgrp-n">實領和應稅不同時才填（例：實領含免稅加班費），報稅累計用這個數；改金額入帳時會按比例換算</div>
+    </div>
+    <div class="fgrp">
+      <label class="fr ck"><span>啟用中<small>取消勾選＝暫停，不刪紀錄</small></span><input type="checkbox" id="r_on" checked></label>
+    </div>
     <div class="mbtns">
       <button class="btn del" id="rDel" style="display:none;">刪除</button>
       <button class="btn pri" id="rSave">儲存</button>
@@ -1681,19 +1714,17 @@
 <div class="mask" id="lmask">
   <div class="modal">
     <h3 id="lTitle">貸款 <button class="x" id="lClose">✕</button></h3>
-    <div class="frow"><label>名稱</label><input id="l_name" placeholder="例：房貸、貨車貸款"></div>
-    <div class="frow" style="display:flex; gap:8px;">
-      <div style="flex:1;"><label>剩餘本金</label><input type="number" id="l_remain" placeholder="0"></div>
-      <div style="flex:1;"><label>月付金（填 0＝手動還款）</label><input type="number" id="l_monthly" placeholder="0"></div>
-      <div style="flex:1;"><label>扣款日</label><input type="number" id="l_day" min="1" max="31" placeholder="5"></div>
+    <div class="fgrp"><!-- W1127-14 -->
+      <label class="fr"><span>名稱</span><input id="l_name" placeholder="例：房貸、貨車貸款"></label>
+      <label class="fr"><span>剩餘本金</span><input type="number" inputmode="numeric" id="l_remain" placeholder="0"></label>
+      <label class="fr"><span>月付金</span><input type="number" inputmode="numeric" id="l_monthly" placeholder="填 0＝手動還款"></label>
+      <label class="fr"><span>扣款日</span><input type="number" inputmode="numeric" id="l_day" min="1" max="31" placeholder="5"></label>
     </div>
-    <div class="frow" style="display:flex; gap:8px;">
-      <div style="flex:1;"><label>已還期數</label><input type="number" id="l_paid" placeholder="0"></div>
-      <div style="flex:1;"><label>總期數（可不填）</label><input type="number" id="l_total" placeholder="無期限"></div>
-    </div>
-    <div class="frow" style="display:flex; gap:8px;">
-      <div style="flex:1;"><label>利率%（選填，浮動填目前值）</label><input type="number" step="0.01" id="l_rate" placeholder="2.95"></div>
-      <div style="flex:1.4;"><label>到期日（選填）</label><input type="date" id="l_end"></div>
+    <div class="fgrp">
+      <label class="fr"><span>已還期數</span><input type="number" inputmode="numeric" id="l_paid" placeholder="0"></label>
+      <label class="fr"><span>總期數</span><input type="number" inputmode="numeric" id="l_total" placeholder="可不填＝無期限"></label>
+      <label class="fr"><span>利率 %</span><input type="number" step="0.01" inputmode="decimal" id="l_rate" placeholder="選填，浮動填目前值"></label>
+      <label class="fr"><span>到期日</span><input type="date" id="l_end"></label>
     </div>
     <div style="font-size:.75rem; color:var(--sub); margin-bottom:6px;">月付金填 0 的貸款不會自動入帳——卡片上會有「還一筆」，還多少記多少。利息浮動的建議另建固定項目「房貸利息」（待確認）按月記實際利息。</div>
     <div class="frow"><label>分類</label><div class="chips" id="lScope">
@@ -1713,14 +1744,13 @@
     <div class="frow"><label>類別</label><div class="chips cocats" id="cCat">
       <button data-v="主管交辦">主管交辦</button><button data-v="人事與考核">人事與考核</button><button data-v="教育訓練與簡報">教育訓練與簡報</button><button data-v="公司專案推動">公司專案推動</button>
     </div></div>
-    <div class="frow"><label>事項名稱</label><input id="c_title" placeholder="例：12 月排休表回報"></div>
-    <div class="frow" style="display:flex; gap:8px;">
-      <div style="flex:1.3;"><label>期限</label><input type="date" id="c_due"></div>
-      <div style="flex:1;"><label>進度 %</label><input type="number" id="c_pct" min="0" max="100" step="5"></div>
+    <div class="fgrp">   <!-- W1127-14 -->
+      <label class="fr"><span>事項名稱</span><input id="c_title" placeholder="例：12 月排休表回報"></label>
+      <label class="fr"><span>期限</span><input type="date" id="c_due"></label>
+      <div class="fr rg"><span>進度 %</span><input type="range" id="c_rng" min="0" max="100" step="5"><input type="number" inputmode="numeric" id="c_pct" min="0" max="100" step="5"></div>
+      <label class="fr"><span>備註</span><input id="c_note" placeholder="例：等同仁簽認"></label>
+      <label class="fr ck"><span>已完成</span><input type="checkbox" id="c_done"></label>
     </div>
-    <div class="frow"><input type="range" id="c_rng" min="0" max="100" step="5" style="padding:0; border:none; background:none;"></div>
-    <div class="frow"><label>備註</label><input id="c_note" placeholder="例：等同仁簽認"></div>
-    <div class="frow"><label><input type="checkbox" id="c_done" style="width:auto;"> 已完成</label></div>
     <div class="mbtns">
       <button class="btn del" id="cDel" style="display:none;">刪除</button>
       <button class="btn pri" id="cSave">儲存</button>
@@ -1745,8 +1775,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 'use strict';
-/* ════════ 艋舺良的工作台 W1127-12（雲端同步改「先收再推、只推本機較新的」：不再每次開都重寫全部資料、也不會把雲端較新的蓋回舊的；設定頁「最後收到雲端」只算伺服器真的送來的，寫不進雲端時紅字；本機資料另存 IndexedDB、清掉卡住的同步紀錄）／W1127-07（地圖的字和點大小跟著地圖實際寬度調：手機 2.3 倍、桌機 1 倍、中間的平板照比例，iPad mini 直向不再過大）／W1127-06（地圖城市名不再重疊：只放在點的旁邊，擠不下、會蓋到別的點、會被邊緣切到的先不顯示（點還在），點國家放大就會出來；放大時那一國的城市先排）／W1127-05（足跡：地圖移到上面；國家收成一排、城市清單預設收起；點國家（地圖上或那一排）→地圖放大到那一國，再點一次或按「看全部」回來；展開清單裡的國家也會跟著放大）／W1127-04（地名表補 178 處：廣州、深圳等中國城市、芭達雅等泰國、東南亞、歐美澳常見旅遊地）／W1127-03（足跡國家／城市改成收折列表：每國一行（前三城＋座數），點開看全部；地名辨識：補日本四國、九州、熊本、青森、十和田等 36 處，認不得的名稱當城市放「其他」，舊補登裡不是國名的自動搬到城市）／W1127-02（補登城市畫航線：每個國家一條、終點 600 km 內不重畫；點「以前去過」的章→補上日期視窗（城市國家先帶好、已完成先勾），存檔後補登自動減一次）／W1127-01（Google 行事曆完全自動：勾選的日曆寫 meta/gcalcfg，Worker 每 30 分鐘抓好放 meta/gcalcache，不用開網頁也更新；補登城市也蓋護照章「以前去過」；地標補畫米蘭、佛羅倫斯、威尼斯、羅馬、梵蒂岡、里斯本、波多）／W1126-22（旅遊頁補登改成城市或國家、同城再補登＝×2、桌機地圖也放大到去過範圍、城市名避免重疊）／W1126-21（旅遊頁：近期｜想去兩欄、我的足跡＋世界地圖、護照章含地標；旅程加國家／城市；已踏國家自動算＋補登；新增 lib/worldmap.json）／W1126-20（右上日期加西元年份與農曆，兩行）／W1126-19（個人頁待辦：「今天到期」只算今天，逾期另外顯示「逾期 N 件」）／W1126-18（主題 D 全部分頁拿掉卡片框改線條分區；當月清單：行程過了顯示已結束並收起，只有待辦才叫逾期）／W1126-17（個人頁：拿掉大標、標題放大加圖示、鎖頭縮小放標題旁、左待辦右三張）／W1126-16（Google 行事曆過期後，點頁面第一下自動續連）／W1126-15（旅程：填出發後回程自動帶入出發日、不能選更早；「工程」改名「案場」，案場頁分段 在建案／已完工；沒有進行中投標案時頂部隱藏「投標」、首頁四格變三格、公司事務頁最上面多「投標」類）／W1126-14（首頁「這一週」可切 週一～週日／從今天起，預設週一，存 prefs.wkStart）／W1126-13（首頁「這一週」：人員休假「休：」拉到日期那一列）／W1126-12（主題 D 首頁「這一週」：沒行程的日子縮窄、有行程的變寬）／W1126-11（主題 D 首頁最下方加版號小字）／W1126-10（年度健檢 A～E：今年該做的事・自費建議・已知狀況・紅字白話說明・四年趨勢・部位分組・預約勾選・看診摘要・記錄看診・健檢前提醒・搜尋；新增 D.ckplan→meta/ckplan）／W1126-09（年度健檢超過 4 年：最近 3 年＋更早下拉）／W1126-08（首頁加小工具捷徑：PDF 解密）／W1126-07（主題 D 設為預設：每台裝置一次性切到 D）／W1126-06（健康頁新版套用到 A/B/C 主題）／W1126-05（設定頁加「小工具・移除 PDF 密碼」入口 pdfunlock.html）／W1126-04（主題 D 健康頁：體重有感版＋記一筆 7 項＋年度健檢；修 .pipe 投標四格）／W1126-03（W1126-02 主題 D＋合併 W0928-02 體重多指標目標值＋達標預估＋BMI 目標自動換算） ════════ */
-const VERSION = 'W1127-12';
+/* ════════ 艋舺良的工作台 W1127-14（全部表單改成「一個外框＋細線分隔」：左標題右填值，iPhone 日期框不再撐出去重疊）／W1127-13（旅遊頁國家那一排：每一洲自己一列，洲名在左、國家在右邊換行）／W1127-12（雲端同步改「先收再推、只推本機較新的」：不再每次開都重寫全部資料、也不會把雲端較新的蓋回舊的；設定頁「最後收到雲端」只算伺服器真的送來的，寫不進雲端時紅字；本機資料另存 IndexedDB、清掉卡住的同步紀錄）／W1127-07（地圖的字和點大小跟著地圖實際寬度調：手機 2.3 倍、桌機 1 倍、中間的平板照比例，iPad mini 直向不再過大）／W1127-06（地圖城市名不再重疊：只放在點的旁邊，擠不下、會蓋到別的點、會被邊緣切到的先不顯示（點還在），點國家放大就會出來；放大時那一國的城市先排）／W1127-05（足跡：地圖移到上面；國家收成一排、城市清單預設收起；點國家（地圖上或那一排）→地圖放大到那一國，再點一次或按「看全部」回來；展開清單裡的國家也會跟著放大）／W1127-04（地名表補 178 處：廣州、深圳等中國城市、芭達雅等泰國、東南亞、歐美澳常見旅遊地）／W1127-03（足跡國家／城市改成收折列表：每國一行（前三城＋座數），點開看全部；地名辨識：補日本四國、九州、熊本、青森、十和田等 36 處，認不得的名稱當城市放「其他」，舊補登裡不是國名的自動搬到城市）／W1127-02（補登城市畫航線：每個國家一條、終點 600 km 內不重畫；點「以前去過」的章→補上日期視窗（城市國家先帶好、已完成先勾），存檔後補登自動減一次）／W1127-01（Google 行事曆完全自動：勾選的日曆寫 meta/gcalcfg，Worker 每 30 分鐘抓好放 meta/gcalcache，不用開網頁也更新；補登城市也蓋護照章「以前去過」；地標補畫米蘭、佛羅倫斯、威尼斯、羅馬、梵蒂岡、里斯本、波多）／W1126-22（旅遊頁補登改成城市或國家、同城再補登＝×2、桌機地圖也放大到去過範圍、城市名避免重疊）／W1126-21（旅遊頁：近期｜想去兩欄、我的足跡＋世界地圖、護照章含地標；旅程加國家／城市；已踏國家自動算＋補登；新增 lib/worldmap.json）／W1126-20（右上日期加西元年份與農曆，兩行）／W1126-19（個人頁待辦：「今天到期」只算今天，逾期另外顯示「逾期 N 件」）／W1126-18（主題 D 全部分頁拿掉卡片框改線條分區；當月清單：行程過了顯示已結束並收起，只有待辦才叫逾期）／W1126-17（個人頁：拿掉大標、標題放大加圖示、鎖頭縮小放標題旁、左待辦右三張）／W1126-16（Google 行事曆過期後，點頁面第一下自動續連）／W1126-15（旅程：填出發後回程自動帶入出發日、不能選更早；「工程」改名「案場」，案場頁分段 在建案／已完工；沒有進行中投標案時頂部隱藏「投標」、首頁四格變三格、公司事務頁最上面多「投標」類）／W1126-14（首頁「這一週」可切 週一～週日／從今天起，預設週一，存 prefs.wkStart）／W1126-13（首頁「這一週」：人員休假「休：」拉到日期那一列）／W1126-12（主題 D 首頁「這一週」：沒行程的日子縮窄、有行程的變寬）／W1126-11（主題 D 首頁最下方加版號小字）／W1126-10（年度健檢 A～E：今年該做的事・自費建議・已知狀況・紅字白話說明・四年趨勢・部位分組・預約勾選・看診摘要・記錄看診・健檢前提醒・搜尋；新增 D.ckplan→meta/ckplan）／W1126-09（年度健檢超過 4 年：最近 3 年＋更早下拉）／W1126-08（首頁加小工具捷徑：PDF 解密）／W1126-07（主題 D 設為預設：每台裝置一次性切到 D）／W1126-06（健康頁新版套用到 A/B/C 主題）／W1126-05（設定頁加「小工具・移除 PDF 密碼」入口 pdfunlock.html）／W1126-04（主題 D 健康頁：體重有感版＋記一筆 7 項＋年度健檢；修 .pipe 投標四格）／W1126-03（W1126-02 主題 D＋合併 W0928-02 體重多指標目標值＋達標預估＋BMI 目標自動換算） ════════ */
+const VERSION = 'W1127-14';
 const GCAL_CLIENT_ID = '654856338073-ukdt5nvtc8riq2010lado0i0n5vuhcfl.apps.googleusercontent.com';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
@@ -3330,9 +3360,10 @@ function trRows(st, exN){
 function trZoomable(k){ return !!((TR_CN[k] && WMAP && WMAP.c[TR_CN[k]]) || TR_CITY[k] || Object.keys(TR_CITY).some(c => TR_CITY[c][2] === k)); }
 function trCountryBar(st, exN){   // W1127-05：收起時只留一排國家，點國家→地圖放大
   const {keys} = trRows(st, exN); if (!keys.length) return '';
-  let lastCt = '';
-  return `<div class="tr-cbar">` + keys.map(k => { const cn = TR_CONT[k] || '其他', hd = cn !== lastCt ? (lastCt = cn, `<span class="tr-cbl">${cn}</span>`) : '';
-    return hd + `<span class="tag tr-chip tr-cz${trZoomC === k ? ' on' : ''}"${k !== '其他' ? ` data-zc="${esc(k)}"` : ''}>${esc(k)}</span>`; }).join('')
+  const grp = [];   // W1127-13：每一洲自己一列（洲名一欄、國家在右邊換行），不再跟下一洲擠在同一行
+  keys.forEach(k => { const cn = TR_CONT[k] || '其他'; let g = grp.find(x => x.cn === cn); if (!g){ g = {cn, ks:[]}; grp.push(g); } g.ks.push(k); });
+  return `<div class="tr-cbar">` + grp.map(g => `<div class="tr-cbr"><span class="tr-cbl">${g.cn}</span><div class="tr-cbc">` +
+    g.ks.map(k => `<span class="tag tr-chip tr-cz${trZoomC === k ? ' on' : ''}"${k !== '其他' ? ` data-zc="${esc(k)}"` : ''}>${esc(k)}</span>`).join('') + '</div></div>').join('')
     + `<span class="tr-ltg" id="trListTg">${trListOpen ? '收起城市清單' : '城市清單'}<svg class="ic${trListOpen ? ' on' : ''}"><use href="#i-chev"></use></svg></span></div>`;
 }
 function trPlaceTable(st, exN){
