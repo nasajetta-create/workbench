@@ -1775,8 +1775,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 'use strict';
-/* ════════ 艋舺良的工作台 W1127-14（全部表單改成「一個外框＋細線分隔」：左標題右填值，iPhone 日期框不再撐出去重疊）／W1127-13（旅遊頁國家那一排：每一洲自己一列，洲名在左、國家在右邊換行）／W1127-12（雲端同步改「先收再推、只推本機較新的」：不再每次開都重寫全部資料、也不會把雲端較新的蓋回舊的；設定頁「最後收到雲端」只算伺服器真的送來的，寫不進雲端時紅字；本機資料另存 IndexedDB、清掉卡住的同步紀錄）／W1127-07（地圖的字和點大小跟著地圖實際寬度調：手機 2.3 倍、桌機 1 倍、中間的平板照比例，iPad mini 直向不再過大）／W1127-06（地圖城市名不再重疊：只放在點的旁邊，擠不下、會蓋到別的點、會被邊緣切到的先不顯示（點還在），點國家放大就會出來；放大時那一國的城市先排）／W1127-05（足跡：地圖移到上面；國家收成一排、城市清單預設收起；點國家（地圖上或那一排）→地圖放大到那一國，再點一次或按「看全部」回來；展開清單裡的國家也會跟著放大）／W1127-04（地名表補 178 處：廣州、深圳等中國城市、芭達雅等泰國、東南亞、歐美澳常見旅遊地）／W1127-03（足跡國家／城市改成收折列表：每國一行（前三城＋座數），點開看全部；地名辨識：補日本四國、九州、熊本、青森、十和田等 36 處，認不得的名稱當城市放「其他」，舊補登裡不是國名的自動搬到城市）／W1127-02（補登城市畫航線：每個國家一條、終點 600 km 內不重畫；點「以前去過」的章→補上日期視窗（城市國家先帶好、已完成先勾），存檔後補登自動減一次）／W1127-01（Google 行事曆完全自動：勾選的日曆寫 meta/gcalcfg，Worker 每 30 分鐘抓好放 meta/gcalcache，不用開網頁也更新；補登城市也蓋護照章「以前去過」；地標補畫米蘭、佛羅倫斯、威尼斯、羅馬、梵蒂岡、里斯本、波多）／W1126-22（旅遊頁補登改成城市或國家、同城再補登＝×2、桌機地圖也放大到去過範圍、城市名避免重疊）／W1126-21（旅遊頁：近期｜想去兩欄、我的足跡＋世界地圖、護照章含地標；旅程加國家／城市；已踏國家自動算＋補登；新增 lib/worldmap.json）／W1126-20（右上日期加西元年份與農曆，兩行）／W1126-19（個人頁待辦：「今天到期」只算今天，逾期另外顯示「逾期 N 件」）／W1126-18（主題 D 全部分頁拿掉卡片框改線條分區；當月清單：行程過了顯示已結束並收起，只有待辦才叫逾期）／W1126-17（個人頁：拿掉大標、標題放大加圖示、鎖頭縮小放標題旁、左待辦右三張）／W1126-16（Google 行事曆過期後，點頁面第一下自動續連）／W1126-15（旅程：填出發後回程自動帶入出發日、不能選更早；「工程」改名「案場」，案場頁分段 在建案／已完工；沒有進行中投標案時頂部隱藏「投標」、首頁四格變三格、公司事務頁最上面多「投標」類）／W1126-14（首頁「這一週」可切 週一～週日／從今天起，預設週一，存 prefs.wkStart）／W1126-13（首頁「這一週」：人員休假「休：」拉到日期那一列）／W1126-12（主題 D 首頁「這一週」：沒行程的日子縮窄、有行程的變寬）／W1126-11（主題 D 首頁最下方加版號小字）／W1126-10（年度健檢 A～E：今年該做的事・自費建議・已知狀況・紅字白話說明・四年趨勢・部位分組・預約勾選・看診摘要・記錄看診・健檢前提醒・搜尋；新增 D.ckplan→meta/ckplan）／W1126-09（年度健檢超過 4 年：最近 3 年＋更早下拉）／W1126-08（首頁加小工具捷徑：PDF 解密）／W1126-07（主題 D 設為預設：每台裝置一次性切到 D）／W1126-06（健康頁新版套用到 A/B/C 主題）／W1126-05（設定頁加「小工具・移除 PDF 密碼」入口 pdfunlock.html）／W1126-04（主題 D 健康頁：體重有感版＋記一筆 7 項＋年度健檢；修 .pipe 投標四格）／W1126-03（W1126-02 主題 D＋合併 W0928-02 體重多指標目標值＋達標預估＋BMI 目標自動換算） ════════ */
-const VERSION = 'W1127-14';
+/* ════════ 艋舺良的工作台 W1127-15（偏好設定逐欄同步：每一欄各自記修改時間，只推真的改過的欄、收雲端逐欄比；自動算的國家數不推；地名快取兩邊合併）／W1127-14（全部表單改成「一個外框＋細線分隔」：左標題右填值，iPhone 日期框不再撐出去重疊）／W1127-13（旅遊頁國家那一排：每一洲自己一列，洲名在左、國家在右邊換行）／W1127-12（雲端同步改「先收再推、只推本機較新的」：不再每次開都重寫全部資料、也不會把雲端較新的蓋回舊的；設定頁「最後收到雲端」只算伺服器真的送來的，寫不進雲端時紅字；本機資料另存 IndexedDB、清掉卡住的同步紀錄）／W1127-07（地圖的字和點大小跟著地圖實際寬度調：手機 2.3 倍、桌機 1 倍、中間的平板照比例，iPad mini 直向不再過大）／W1127-06（地圖城市名不再重疊：只放在點的旁邊，擠不下、會蓋到別的點、會被邊緣切到的先不顯示（點還在），點國家放大就會出來；放大時那一國的城市先排）／W1127-05（足跡：地圖移到上面；國家收成一排、城市清單預設收起；點國家（地圖上或那一排）→地圖放大到那一國，再點一次或按「看全部」回來；展開清單裡的國家也會跟著放大）／W1127-04（地名表補 178 處：廣州、深圳等中國城市、芭達雅等泰國、東南亞、歐美澳常見旅遊地）／W1127-03（足跡國家／城市改成收折列表：每國一行（前三城＋座數），點開看全部；地名辨識：補日本四國、九州、熊本、青森、十和田等 36 處，認不得的名稱當城市放「其他」，舊補登裡不是國名的自動搬到城市）／W1127-02（補登城市畫航線：每個國家一條、終點 600 km 內不重畫；點「以前去過」的章→補上日期視窗（城市國家先帶好、已完成先勾），存檔後補登自動減一次）／W1127-01（Google 行事曆完全自動：勾選的日曆寫 meta/gcalcfg，Worker 每 30 分鐘抓好放 meta/gcalcache，不用開網頁也更新；補登城市也蓋護照章「以前去過」；地標補畫米蘭、佛羅倫斯、威尼斯、羅馬、梵蒂岡、里斯本、波多）／W1126-22（旅遊頁補登改成城市或國家、同城再補登＝×2、桌機地圖也放大到去過範圍、城市名避免重疊）／W1126-21（旅遊頁：近期｜想去兩欄、我的足跡＋世界地圖、護照章含地標；旅程加國家／城市；已踏國家自動算＋補登；新增 lib/worldmap.json）／W1126-20（右上日期加西元年份與農曆，兩行）／W1126-19（個人頁待辦：「今天到期」只算今天，逾期另外顯示「逾期 N 件」）／W1126-18（主題 D 全部分頁拿掉卡片框改線條分區；當月清單：行程過了顯示已結束並收起，只有待辦才叫逾期）／W1126-17（個人頁：拿掉大標、標題放大加圖示、鎖頭縮小放標題旁、左待辦右三張）／W1126-16（Google 行事曆過期後，點頁面第一下自動續連）／W1126-15（旅程：填出發後回程自動帶入出發日、不能選更早；「工程」改名「案場」，案場頁分段 在建案／已完工；沒有進行中投標案時頂部隱藏「投標」、首頁四格變三格、公司事務頁最上面多「投標」類）／W1126-14（首頁「這一週」可切 週一～週日／從今天起，預設週一，存 prefs.wkStart）／W1126-13（首頁「這一週」：人員休假「休：」拉到日期那一列）／W1126-12（主題 D 首頁「這一週」：沒行程的日子縮窄、有行程的變寬）／W1126-11（主題 D 首頁最下方加版號小字）／W1126-10（年度健檢 A～E：今年該做的事・自費建議・已知狀況・紅字白話說明・四年趨勢・部位分組・預約勾選・看診摘要・記錄看診・健檢前提醒・搜尋；新增 D.ckplan→meta/ckplan）／W1126-09（年度健檢超過 4 年：最近 3 年＋更早下拉）／W1126-08（首頁加小工具捷徑：PDF 解密）／W1126-07（主題 D 設為預設：每台裝置一次性切到 D）／W1126-06（健康頁新版套用到 A/B/C 主題）／W1126-05（設定頁加「小工具・移除 PDF 密碼」入口 pdfunlock.html）／W1126-04（主題 D 健康頁：體重有感版＋記一筆 7 項＋年度健檢；修 .pipe 投標四格）／W1126-03（W1126-02 主題 D＋合併 W0928-02 體重多指標目標值＋達標預估＋BMI 目標自動換算） ════════ */
+const VERSION = 'W1127-15';
 const GCAL_CLIENT_ID = '654856338073-ukdt5nvtc8riq2010lado0i0n5vuhcfl.apps.googleusercontent.com';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
@@ -1844,6 +1844,7 @@ function load(){
   if (!d.prefs.whStart || typeof d.prefs.whStart !== 'object') d.prefs.whStart = {};
   d.prefs.taxP = Object.assign(JSON.parse(JSON.stringify(TAXP_DEF)), d.prefs.taxP||{});
   if (!Array.isArray(d.prefs.taxP.brk) || !d.prefs.taxP.brk.length) d.prefs.taxP.brk = JSON.parse(JSON.stringify(TAXP_DEF.brk));
+  pfBase(d);   /* W1127-15：偏好設定逐欄同步的基準（沒改過的欄以載入時的內容為準） */
   d.settings.gcal = Object.assign({token:null, exp:0, cals:{}, writeOn:false, wId:null, cache:[]}, d.settings.gcal||{});
   if (!d.settings.finScope) d.settings.finScope = 'all';
   /* V13：舊快取的 Ⓖ 前綴一次清掉（顯示資料，本機快取，可安全改寫） */
@@ -3550,7 +3551,7 @@ function renderTripPage(){
   { const ec = D.prefs.extraCountries||[], mv = ec.map(trNormC).filter(c => TR_CITY[c] || !TR_CN[c]);   /* W1127-03：國名表沒有的也搬 */   // 舊補登裡其實是城市的，搬到城市
     if (mv.length){ D.prefs.extraCities = (D.prefs.extraCities||[]).concat(mv); D.prefs.extraCountries = ec.filter(c => !(TR_CITY[trNormC(c)] || !TR_CN[trNormC(c)])); D.prefs.mt = now(); save(); fbPushPrefs(); } }
   const st = trStats();
-  if ((+D.prefs.countries||0) !== st.nC){ D.prefs.countries = st.nC; D.prefs.mt = now(); save(); fbPushPrefs(); }   // 環遊世界目標＝國家數（自動算）
+  if ((+D.prefs.countries||0) !== st.nC){ D.prefs.countries = st.nC; save(); }   // 環遊世界目標＝國家數（自動算；W1127-15 起只存本機、不推雲端）
   const tgt = +D.prefs.countriesTarget || 50;
   /* ① 近期旅程（還沒勾已完成的） */
   const near = D.trips.filter(t => !t.del && t.kind==='near' && !t.done).sort((a,b)=> (a.start||'9999') < (b.start||'9999') ? -1:1);
@@ -4364,9 +4365,50 @@ function fbPushTx(t){
   const coll = 'txs_' + (t.date ? t.date.slice(0,4) : String(new Date().getFullYear()));
   fbW(fbDb.collection(coll).doc(t.id).set(JSON.parse(JSON.stringify(t))));
 }
-function fbPushPrefs(){
-  if (!fbDb || !fbUser) return;
-  fbW(fbDb.collection('meta').doc('prefs').set(JSON.parse(JSON.stringify(D.prefs))));
+/* W1127-15：偏好設定逐欄同步——每一欄各自記修改時間（prefs.fmt），只推真的改過的那幾欄（mergeFields，整欄取代、別欄不動），
+   收雲端時逐欄比：本機沒改過的欄一律聽雲端；自動算的 countries 不推；extraGeo（地名查詢快取）兩邊合併。
+   修 W1127-12 留下的弱點：原本整包比 mt，舊內容只要時間比較新就把雲端整包蓋掉（11/27 16:02 手機推空資料就是這樣） */
+function pfSkip(k){ return k === 'mt' || k === 'fmt' || k === 'countries'; }
+function pfJ(v){ return JSON.stringify(v, function(k, x){ return (x && typeof x === 'object' && !Array.isArray(x)) ? Object.keys(x).sort().reduce((o, kk) => (o[kk] = x[kk], o), {}) : x; }); }
+function pfSync(d){ d = d || D; if (!d.prefSync || typeof d.prefSync !== 'object') d.prefSync = {}; const s = d.prefSync;
+  if (!s.last || typeof s.last !== 'object') s.last = {}; if (!s.dirty || typeof s.dirty !== 'object') s.dirty = {};
+  if (!d.prefs.fmt || typeof d.prefs.fmt !== 'object') d.prefs.fmt = {}; return s; }
+function pfBase(d){ const s = pfSync(d); Object.keys(d.prefs).forEach(k => { if (!pfSkip(k) && !s.dirty[k]) s.last[k] = pfJ(d.prefs[k]); }); }
+function pfStamp(){   // 跟基準比，有變的欄記上修改時間、標成待推
+  const s = pfSync(), f = D.prefs.fmt; let ch = 0;
+  Object.keys(D.prefs).forEach(k => { if (pfSkip(k)) return; const j = pfJ(D.prefs[k]);
+    if (j !== s.last[k]){ s.last[k] = j; f[k] = Math.max(now(), (+f[k]||0) + 1); s.dirty[k] = 1; ch++; } });
+  if (ch) D.prefs.mt = Math.max(+D.prefs.mt||0, ...Object.values(f).map(x => +x||0));
+  return ch;
+}
+function pfRecv(d){   // 收到雲端的 meta/prefs → 逐欄合併；回傳本機內容有沒有變
+  pfStamp();
+  const s = pfSync(), f = D.prefs.fmt, cf = (d.fmt && typeof d.fmt === 'object') ? d.fmt : {}; let ch = false;
+  Object.keys(d).forEach(k => { if (pfSkip(k)) return;
+    const cj = pfJ(d[k]), ct = +cf[k] || 0, lt = +f[k] || 0;
+    if (k === 'extraGeo'){   // 地名快取：聯集，不互蓋
+      const u = Object.assign({}, (d[k] && typeof d[k] === 'object') ? d[k] : {}, D.prefs.extraGeo || {}), uj = pfJ(u);
+      if (uj !== pfJ(D.prefs.extraGeo)){ D.prefs.extraGeo = u; ch = true; }
+      s.last[k] = uj;
+      if (uj === cj){ delete s.dirty[k]; f[k] = Math.max(ct, lt); } else if (!s.dirty[k]){ s.dirty[k] = 1; f[k] = Math.max(now(), ct + 1); }
+      return; }
+    if (s.dirty[k] && lt > ct) return;   // 本機改過、比雲端新 → 留著等推上去
+    if (cj !== pfJ(D.prefs[k])){ D.prefs[k] = JSON.parse(JSON.stringify(d[k])); ch = true; }
+    s.last[k] = cj; f[k] = ct; delete s.dirty[k];
+  });
+  D.prefs.mt = Math.max(+D.prefs.mt||0, +d.mt||0);
+  return ch;
+}
+function fbPushPrefs(){   // 只推改過的欄；還沒收到雲端那份之前先不推（收齊後 fbPushNewer 會推）
+  if (pfStamp()) persist();
+  if (!fbDb || !fbUser || !fbFirst.has('meta/prefs')) return 0;
+  const s = pfSync(), ks = Object.keys(s.dirty).filter(k => k in D.prefs && !pfSkip(k));
+  if (!ks.length) return 0;
+  const o = {mt: +D.prefs.mt || now(), fmt: {}}, sent = {};
+  ks.forEach(k => { o[k] = JSON.parse(JSON.stringify(D.prefs[k])); o.fmt[k] = +D.prefs.fmt[k] || now(); sent[k] = s.last[k]; });
+  fbW(fbDb.collection('meta').doc('prefs').set(o, {mergeFields: ['mt'].concat(ks, ks.map(k => 'fmt.' + k))})
+    .then(() => { ks.forEach(k => { if (s.last[k] === sent[k]) delete s.dirty[k]; }); persist(); }));
+  return ks.length;
 }
 function fbPushAll(){
   if (!fbDb || !fbUser) return;
@@ -4435,7 +4477,7 @@ function fbPushNewer(){
   Object.keys(arr).forEach(c => (D[arr[c]]||[]).forEach(o => { if (o && o.id && newer(c + '/' + o.id, o.mt)){ fbPushDoc(c, o); n++; } }));
   const y0 = new Date().getFullYear(), txc = ['txs_'+(y0-1), 'txs_'+y0, 'txs_'+(y0+1)];
   D.txs.forEach(t => { const c = 'txs_' + (t.date ? t.date.slice(0,4) : String(y0)); if (txc.includes(c) && newer(c + '/' + t.id, t.mt)){ fbPushTx(t); n++; } });
-  if (newer('meta/prefs', D.prefs.mt) && (D.prefs.mt || fbSrv['meta/prefs'] === undefined)){ fbPushPrefs(); n++; }
+  if (fbPushPrefs()) n++;   // W1127-15：只推改過的欄
   const gm = Math.max(0, ...D.goals.map(g => g.mt||0));
   if (gm && newer('meta/goals', gm)){ fbPushGoals(); n++; }
   if (D.ckplan && (D.ckplan.mt||0) && newer('meta/ckplan', D.ckplan.mt)){ fbPushCkplan(); n++; }
@@ -4473,13 +4515,12 @@ function fbStart(){
     }, fbSnapErr);
     fbSubs.push(un);
   });
-  const up = fbDb.collection('meta').doc('prefs').onSnapshot(SNAPO, doc => { fbMark('meta/prefs', doc, [['meta/prefs', doc.exists ? ((doc.data()||{}).mt||0) : undefined]].filter(x => x[1] !== undefined));
-    const d = doc.data();
-    if (d && (d.mt||0) > (D.prefs.mt||0)){
-      D.prefs = Object.assign(D.prefs, d);
-      D.savedAt = Date.now(); persist();
-      renderAll();
-    }
+  const up = fbDb.collection('meta').doc('prefs').onSnapshot(SNAPO, doc => {
+    const d = doc.data();   /* W1127-15：先逐欄合併，再記「收到雲端」（收齊時才推本機改過的欄） */
+    if (d){ const ch = pfRecv(d); if (ch) D.savedAt = Date.now(); persist(); if (ch){ trGeoMerge(); renderAll(); } }
+    const first = !fbFirst.has('meta/prefs');
+    fbMark('meta/prefs', doc, [['meta/prefs', doc.exists ? ((d||{}).mt||0) : undefined]].filter(x => x[1] !== undefined));
+    if (!doc.metadata.fromCache && !first && fbPushedNewer) fbPushPrefs();   // 合併後還有待推的（例：地名快取聯集）
   }, fbSnapErr);
   fbSubs.push(up);
   const ug = fbDb.collection('meta').doc('goals').onSnapshot(SNAPO, doc => { fbMark('meta/goals', doc, [['meta/goals', doc.exists ? ((doc.data()||{}).mt||0) : undefined]].filter(x => x[1] !== undefined));
