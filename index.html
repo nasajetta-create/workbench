@@ -1089,6 +1089,11 @@
   .tr-addc{display:inline-flex; gap:.35rem; align-items:center;}
   .tr-addc input{width:10rem; padding:.2rem .45rem; font-size:.85rem;}
   .tr-cap{font-size:.8rem; color:var(--sub); font-weight:600; margin:.6rem 0 .5rem;}
+  .fid-btn{display:flex; align-items:center; justify-content:center; gap:.5rem; width:100%; margin-bottom:.7rem;}   /* W1127-11 Face ID */
+  .fid-btn .ic{width:1.5em; height:1.5em;}
+  .fid-or{font-size:.8rem; color:var(--sub); margin:.2rem 0 .5rem;}
+  .fid-mini{display:inline-flex; align-items:center; gap:.3rem;}
+  @media (max-width:350px){ #page-trip .tr-ring{gap:.25rem;} #page-trip .tr-ring .cpc{width:2.1rem; height:2.1rem;} #page-trip .tr-stats em input{width:2.4rem;} #page-trip .tr-stats>div{padding:.1rem .5rem;} }   /* W1127-11：小手機 320 */
   .tr-wl{font-size:.85rem; color:var(--sub); font-weight:600; margin:.5rem 0 .2rem; line-height:1.5;}   /* W1127-10：地圖下方列出全部想去的地方 */
   .tr-wl .ic{color:var(--tv); vertical-align:-.2em;}
   .tr-wl b{color:var(--tv); font-weight:700;}
@@ -1135,6 +1140,10 @@
     .tr-col+.tr-col{border-left:0; padding-left:0; border-top:1px solid var(--tl1);}
     .tr-stats{grid-template-columns:repeat(2,minmax(0,1fr));}
     .tr-stats>div:nth-child(3){border-left:0;}
+    .tr-stats>div{padding:.1rem .7rem;}   /* W1127-11：手機「／50 國」不再擠成三行 */
+    .tr-ring{gap:.35rem;}
+    .tr-stats em{white-space:nowrap; margin-left:.1rem;}
+    .tr-stats em input{width:2.7rem; padding:.1rem .2rem;}
     .tr-earth{display:none;}
     .tr-stamps{gap:1.2rem;}
     .tr-stamp{width:8rem; height:8rem;}
@@ -1172,6 +1181,7 @@
   <symbol id="i-look" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8"/></symbol>
   <symbol id="i-page" viewBox="0 0 24 24"><path d="M5 3h9l5 5v13H5z"/><path d="M14 3v5h5"/><path d="M8 13h8M8 17h5"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5"/></symbol>
+  <symbol id="i-face" viewBox="0 0 24 24"><path d="M3 8V3h5M16 3h5v5M21 16v5h-5M8 21H3v-5M8.5 9v1.5M15.5 9v1.5M12 9v4.5h-1M9 16.2c1.8 1.4 4.2 1.4 6 0"/></symbol>
   <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 2.8l2.7 6.3 6.8.4-5.2 4.4 1.7 6.7L12 16.9l-6 3.7 1.7-6.7-5.2-4.4 6.8-.4z"/></symbol>
   <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.8-6 10-6 10 6 10 6-3.8 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="2.8"/></symbol>
   <symbol id="i-pin" viewBox="0 0 24 24"><path d="M9 3h6l-1 6 4 3v2H6v-2l4-3z"/><path d="M12 14v7"/></symbol>
@@ -1305,7 +1315,7 @@
         <button class="btn stat" id="finEye"><svg class="ic"><use href="#i-eye"></use></svg> 金額</button>
         <button class="btn pri" id="finAdd">＋ 記一筆</button>
       </div>
-      <div id="finLock" style="display:none;" class="card"><div class="empty"><svg class="ic"><use href="#i-lock"></use></svg> 財務看板已上鎖<div class="iform" style="justify-content:center;"><input type="password" id="finPin" placeholder="輸入 PIN" style="max-width:140px;"><button class="btn pri" id="finUnlock">解鎖</button></div></div></div>
+      <div id="finLock" style="display:none;" class="card"><div class="empty"><svg class="ic"><use href="#i-lock"></use></svg> 財務看板已上鎖<div class="iform" style="justify-content:center;"><input type="password" id="finPin" placeholder="輸入 PIN" style="max-width:140px;"><button class="btn pri" id="finUnlock">解鎖</button><button class="btn fid-mini" id="finFid" style="display:none;"><svg class="ic"><use href="#i-face"></use></svg>Face ID</button></div></div></div>
       <div id="finBody">
         <div class="subtabs" id="finTabs">
           <button data-fsc="all">全部</button><button data-fsc="work">案場</button><button data-fsc="life">個人</button>
@@ -1326,7 +1336,7 @@
       <div class="pagehead"><h2>健康管理</h2>
         <button class="btn pri" id="whAdd">＋ 記體重</button>
       </div>
-      <div id="healthLock" style="display:none;" class="card"><div class="empty"><svg class="ic"><use href="#i-lock"></use></svg> 健康頁已上鎖<div class="iform" style="justify-content:center;"><input type="password" id="healthPin" placeholder="輸入 PIN" style="max-width:140px;"><button class="btn pri" id="healthUnlock">解鎖</button></div></div></div>
+      <div id="healthLock" style="display:none;" class="card"><div class="empty"><svg class="ic"><use href="#i-lock"></use></svg> 健康頁已上鎖<div class="iform" style="justify-content:center;"><input type="password" id="healthPin" placeholder="輸入 PIN" style="max-width:140px;"><button class="btn pri" id="healthUnlock">解鎖</button><button class="btn fid-mini" id="healthFid" style="display:none;"><svg class="ic"><use href="#i-face"></use></svg>Face ID</button></div></div></div>
       <div id="healthBody">
         <div class="dwonly" id="dWh"></div>
         <div class="card" id="whCard"><h3><svg class="ic"><use href="#i-weight"></use></svg>體重・體組成<span class="pn">（十年趨勢）</span></h3><div class="bd" id="whBox"></div></div>
@@ -1404,6 +1414,7 @@
           <small>合併規則：新者勝（比 mt）・已刪除項目不復活・匯入前顯示差異</small></div>
         <div class="setrow">雲端同步（Firebase）
           <button class="btn pri" id="authBtn" style="margin-left:auto;">連接雲端</button>
+          <button class="btn" id="fsFix" style="margin-left:.4rem;">重新同步</button>
           <small id="authInfo">用 Google 帳號登入後，資料即時同步到雲端（mengjia-workbench），手機電腦共用同一份。</small></div>
       </div></div>
       <div class="card"><h3><svg class="ic"><use href="#i-gcal"></use></svg>Google 行事曆</h3><div class="bd" id="gcalBox">—</div></div>
@@ -1412,6 +1423,9 @@
         <div class="setrow">PIN 密碼
           <span class="iform" style="margin:0 0 0 auto;"><input type="password" id="pinSet" placeholder="4-8 碼，留空=關閉" style="max-width:150px;"><button class="btn" id="pinSave">設定</button></span>
           <small>PIN 僅存在此裝置。設定後配合下面兩個開關決定鎖哪裡。</small></div>
+        <div class="setrow" id="fidRow">Face ID 解鎖
+          <button class="btn" id="fidBtn" style="margin-left:auto;">關</button>
+          <small id="fidInfo">用 iPhone 的 Face ID 代替輸入 PIN（PIN 照樣可用）。只存在這台裝置。</small></div>
         <div class="setrow">開啟工作台需要 PIN
           <button class="btn" id="lockAppBtn" style="margin-left:auto;">開 ✔</button>
           <small>關掉的話 PIN 就只用在財務看板（下面那個開關）。</small></div>
@@ -1716,6 +1730,7 @@
 <div class="mask" id="lockMask" style="z-index:90; align-items:center;">
   <div class="modal" style="max-width:300px; text-align:center;">
     <h3 style="justify-content:center;"><svg class="ic"><use href="#i-lock"></use></svg> 艋舺良的工作台</h3>
+    <div id="lockFid" style="display:none;"><button class="btn pri fid-btn" id="lockFidGo"><svg class="ic"><use href="#i-face"></use></svg>Face ID 解鎖</button><div class="fid-or">或輸入 PIN</div></div>
     <div class="frow"><input type="password" id="lockPin" placeholder="輸入 PIN" style="text-align:center;"></div>
     <button class="btn pri" id="lockGo" style="width:100%;">解鎖</button>
   </div>
@@ -1730,7 +1745,7 @@
 <script>
 'use strict';
 /* ════════ 艋舺良的工作台 W1127-07（地圖的字和點大小跟著地圖實際寬度調：手機 2.3 倍、桌機 1 倍、中間的平板照比例，iPad mini 直向不再過大）／W1127-06（地圖城市名不再重疊：只放在點的旁邊，擠不下、會蓋到別的點、會被邊緣切到的先不顯示（點還在），點國家放大就會出來；放大時那一國的城市先排）／W1127-05（足跡：地圖移到上面；國家收成一排、城市清單預設收起；點國家（地圖上或那一排）→地圖放大到那一國，再點一次或按「看全部」回來；展開清單裡的國家也會跟著放大）／W1127-04（地名表補 178 處：廣州、深圳等中國城市、芭達雅等泰國、東南亞、歐美澳常見旅遊地）／W1127-03（足跡國家／城市改成收折列表：每國一行（前三城＋座數），點開看全部；地名辨識：補日本四國、九州、熊本、青森、十和田等 36 處，認不得的名稱當城市放「其他」，舊補登裡不是國名的自動搬到城市）／W1127-02（補登城市畫航線：每個國家一條、終點 600 km 內不重畫；點「以前去過」的章→補上日期視窗（城市國家先帶好、已完成先勾），存檔後補登自動減一次）／W1127-01（Google 行事曆完全自動：勾選的日曆寫 meta/gcalcfg，Worker 每 30 分鐘抓好放 meta/gcalcache，不用開網頁也更新；補登城市也蓋護照章「以前去過」；地標補畫米蘭、佛羅倫斯、威尼斯、羅馬、梵蒂岡、里斯本、波多）／W1126-22（旅遊頁補登改成城市或國家、同城再補登＝×2、桌機地圖也放大到去過範圍、城市名避免重疊）／W1126-21（旅遊頁：近期｜想去兩欄、我的足跡＋世界地圖、護照章含地標；旅程加國家／城市；已踏國家自動算＋補登；新增 lib/worldmap.json）／W1126-20（右上日期加西元年份與農曆，兩行）／W1126-19（個人頁待辦：「今天到期」只算今天，逾期另外顯示「逾期 N 件」）／W1126-18（主題 D 全部分頁拿掉卡片框改線條分區；當月清單：行程過了顯示已結束並收起，只有待辦才叫逾期）／W1126-17（個人頁：拿掉大標、標題放大加圖示、鎖頭縮小放標題旁、左待辦右三張）／W1126-16（Google 行事曆過期後，點頁面第一下自動續連）／W1126-15（旅程：填出發後回程自動帶入出發日、不能選更早；「工程」改名「案場」，案場頁分段 在建案／已完工；沒有進行中投標案時頂部隱藏「投標」、首頁四格變三格、公司事務頁最上面多「投標」類）／W1126-14（首頁「這一週」可切 週一～週日／從今天起，預設週一，存 prefs.wkStart）／W1126-13（首頁「這一週」：人員休假「休：」拉到日期那一列）／W1126-12（主題 D 首頁「這一週」：沒行程的日子縮窄、有行程的變寬）／W1126-11（主題 D 首頁最下方加版號小字）／W1126-10（年度健檢 A～E：今年該做的事・自費建議・已知狀況・紅字白話說明・四年趨勢・部位分組・預約勾選・看診摘要・記錄看診・健檢前提醒・搜尋；新增 D.ckplan→meta/ckplan）／W1126-09（年度健檢超過 4 年：最近 3 年＋更早下拉）／W1126-08（首頁加小工具捷徑：PDF 解密）／W1126-07（主題 D 設為預設：每台裝置一次性切到 D）／W1126-06（健康頁新版套用到 A/B/C 主題）／W1126-05（設定頁加「小工具・移除 PDF 密碼」入口 pdfunlock.html）／W1126-04（主題 D 健康頁：體重有感版＋記一筆 7 項＋年度健檢；修 .pipe 投標四格）／W1126-03（W1126-02 主題 D＋合併 W0928-02 體重多指標目標值＋達標預估＋BMI 目標自動換算） ════════ */
-const VERSION = 'W1127-10';
+const VERSION = 'W1127-11';
 const GCAL_CLIENT_ID = '654856338073-ukdt5nvtc8riq2010lado0i0n5vuhcfl.apps.googleusercontent.com';
 const FB_CONFIG = {
   apiKey: "AIzaSyDG8bj4wB289Mzb05LsHjLfR0ofiTjyFoU",
@@ -3683,8 +3698,44 @@ $('#noteCancel').onclick = noteReset;
 
 /* ════════ PIN 鎖 ════════ */
 function applyLock(){
-  if (D.settings.pin && D.settings.lockApp && !sessionStorage.getItem('wb_ok')) $('#lockMask').classList.add('on');
+  if (D.settings.pin && D.settings.lockApp && !sessionStorage.getItem('wb_ok')){ $('#lockMask').classList.add('on');
+    fidShowBtns(); if (fidOn()) fidVerify().then(ok => { if (ok) fidPass('wb_ok'); }); }   /* W1127-11：有開 Face ID 就先自動叫一次 */
 }
+/* ════════ W1127-11 Face ID 解鎖（WebAuthn 本機驗證，憑證 id 只存這台裝置 settings.fid） ════════ */
+let fidOK = false, fidBusy = false;
+const b64u = buf => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+const ub64 = s => Uint8Array.from(atob(s.replace(/-/g,'+').replace(/_/g,'/') + '==='.slice((s.length + 3) % 4)), c => c.charCodeAt(0));
+function fidOn(){ return fidOK && !!D.settings.pin && !!D.settings.fid; }
+async function fidCheck(){ try { fidOK = !!(window.PublicKeyCredential && await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()); } catch(e){ fidOK = false; }
+  fidShowBtns(); if (pageNow === 'set') renderStats2(); }
+function fidShowBtns(){ const on = fidOn();
+  ['#lockFid', '#healthFid', '#finFid'].forEach(k => { const e = $(k); if (e) e.style.display = on ? '' : 'none'; });
+  const g = $('#lockGo'); if (g) g.classList.toggle('pri', !on); }
+async function fidEnroll(){
+  const c = await navigator.credentials.create({ publicKey: {
+    challenge: crypto.getRandomValues(new Uint8Array(32)), rp: { name: '艋舺良的工作台' },
+    user: { id: crypto.getRandomValues(new Uint8Array(16)), name: 'monga-wb', displayName: '艋舺良' },
+    pubKeyCredParams: [{type:'public-key', alg:-7}, {type:'public-key', alg:-257}],
+    authenticatorSelection: { authenticatorAttachment:'platform', userVerification:'required', residentKey:'discouraged' }, timeout: 60000 } });
+  return b64u(c.rawId); }
+async function fidVerify(){
+  if (fidBusy || !fidOn()) return false; fidBusy = true;
+  try { const a = await navigator.credentials.get({ publicKey: { challenge: crypto.getRandomValues(new Uint8Array(32)),
+      allowCredentials: [{type:'public-key', id: ub64(D.settings.fid)}], userVerification:'required', timeout: 60000 } });
+    return !!a && a.response && (new Uint8Array(a.response.authenticatorData)[32] & 4) === 4;   // UV 旗標＝真的驗過臉
+  } catch(e){ return false; } finally { fidBusy = false; } }
+function fidPass(key){ sessionStorage.setItem(key, '1');
+  if (key === 'wb_ok' && $('#lockMask')){ $('#lockMask').classList.remove('on'); $('#lockPin').value = ''; }
+  if (key === 'wb_fin_ok') renderFinPage(); if (key === 'wb_health_ok') renderHealthPage(); }
+$('#lockFidGo').onclick = async () => { if (await fidVerify()) fidPass('wb_ok'); else toast('Face ID 沒過，可以改輸入 PIN'); };
+$('#finFid').onclick = async () => { if (await fidVerify()) fidPass('wb_fin_ok'); else toast('Face ID 沒過，可以改輸入 PIN'); };
+$('#healthFid').onclick = async () => { if (await fidVerify()) fidPass('wb_health_ok'); else toast('Face ID 沒過，可以改輸入 PIN'); };
+$('#fidBtn').onclick = async () => {
+  if (D.settings.fid){ D.settings.fid = null; save(); fidShowBtns(); renderStats2(); toast('已關閉 Face ID 解鎖'); return; }
+  if (!D.settings.pin){ toast('先設定 PIN'); return; }
+  if (!fidOK){ toast('這台裝置不支援 Face ID 解鎖'); return; }
+  try { D.settings.fid = await fidEnroll(); save(); fidShowBtns(); renderStats2(); toast('已開啟 Face ID 解鎖'); }
+  catch(e){ toast('沒有開成：' + (e && e.name === 'NotAllowedError' ? '取消或逾時' : (e && e.message || e))); } };
 $('#lockGo').onclick = () => {
   if ($('#lockPin').value === D.settings.pin){ sessionStorage.setItem('wb_ok','1'); $('#lockMask').classList.remove('on'); }
   else toast('PIN 不對');
@@ -3710,6 +3761,9 @@ $('#lockHealthBtn').onclick = () => {
   D.settings.lockHealth = !D.settings.lockHealth; save(); renderStats2();
 };
 function renderStats2(){
+  $('#fidBtn').textContent = D.settings.fid ? '開' : '關';
+  $('#fidBtn').disabled = !fidOK && !D.settings.fid;
+  $('#fidInfo').textContent = fidOK || D.settings.fid ? '用 iPhone 的 Face ID 代替輸入 PIN（PIN 照樣可用）。只存在這台裝置。' : '這台裝置不支援 Face ID／指紋解鎖，請用 PIN。';
   $('#lockMoneyBtn').textContent = D.settings.lockMoney ? '開 ✔' : '關';
   $('#lockAppBtn').textContent = D.settings.lockApp ? '開 ✔' : '關';
   $('#lockHealthBtn').textContent = D.settings.lockHealth ? '開 ✔' : '關';
@@ -4281,17 +4335,31 @@ function mergeIncoming(inc){
   else if ((inc.mt||0) > (ex.mt||0)){ Object.assign(ex, inc); changed = true; }
   return changed;
 }
+/* W1127-11：同步自我修復——Firestore 本機快取壞掉（INTERNAL ASSERTION FAILED）時，監聽會默默停掉、畫面卻還寫「已同步」。
+   偵測到就清掉 Firestore 本機快取重新載入（每個分頁只自動做一次）；設定頁顯示最後收到雲端資料的時間＋「重新同步」按鈕 */
+let fbLastSnap = 0, fbErr = '';
+function fbSnapErr(e){ console.warn('snap', e); fbErr = String(e && e.message || e).slice(0, 80); applyAuthUI(); fbHeal(e, true); }
+function fbHeal(e, auto){ const m = String(e && (e.message || e.reason && e.reason.message || e.reason) || e || '');
+  if (auto && !/INTERNAL ASSERTION FAILED/.test(m)) return;
+  if (auto && sessionStorage.getItem('wb_fsfix')) return;
+  sessionStorage.setItem('wb_fsfix', '1');
+  try { fbSubs.forEach(x => { try { x(); } catch(_){} }); } catch(_){}
+  try { indexedDB.deleteDatabase('firestore/[DEFAULT]/' + FB_CONFIG.projectId + '/main'); } catch(_){}
+  toast('同步重新連線中…'); setTimeout(() => location.reload(), 600); }
+addEventListener('unhandledrejection', e => fbHeal(e.reason, true));
+addEventListener('error', e => fbHeal(e.error || e.message, true));
+function fbSeen(){ fbLastSnap = now(); fbErr = ''; if (pageNow === 'set') applyAuthUI(); }
 function fbStart(){
   fbSubs.forEach(u => u()); fbSubs = [];
   syncYears().forEach(coll => {
     const un = fbDb.collection(coll).onSnapshot(snap => {
       let changed = false;
-      snap.docChanges().forEach(ch => {
+      fbSeen(); snap.docChanges().forEach(ch => {
         if (ch.type === 'removed') return;
         if (mergeIncoming(ch.doc.data())) changed = true;
       });
       if (changed){ try{ localStorage.setItem(KEY, JSON.stringify(D)); }catch(e){ mem = D; } renderAll(); }
-    }, e => console.warn('snap', e));
+    }, fbSnapErr);
     fbSubs.push(un);
   });
   const collMap = {projects:'projects', bids:'bids', clients:'clients', weights:'weights', trips:'trips', notes:'notes', recurs:'recurs', loans:'loans', bp:'bp', allergy:'allergy', company:'company', checkups:'checkups'};
@@ -4300,14 +4368,14 @@ function fbStart(){
   Object.keys(collMap).forEach(coll => {
     const key = collMap[coll];
     const un = fbDb.collection(coll).onSnapshot(snap => {
-      if (key === 'txs') fbReadyTx = true;   // 🔴 txs 快照到了才准固定收支自動入帳
+      fbSeen(); if (key === 'txs') fbReadyTx = true;   // 🔴 txs 快照到了才准固定收支自動入帳
       let changed = false;
       snap.docChanges().forEach(ch => {
         if (ch.type === 'removed') return;
         if (mergeArr(D[key], ch.doc.data())) changed = true;
       });
       if (changed){ try{ localStorage.setItem(KEY, JSON.stringify(D)); }catch(e){ mem = D; } renderAll(); }
-    }, e => console.warn('snap', e));
+    }, fbSnapErr);
     fbSubs.push(un);
   });
   const up = fbDb.collection('meta').doc('prefs').onSnapshot(doc => {
@@ -4317,7 +4385,7 @@ function fbStart(){
       try{ localStorage.setItem(KEY, JSON.stringify(D)); }catch(e){ mem = D; }
       renderAll();
     }
-  }, e => console.warn('snap', e));
+  }, fbSnapErr);
   fbSubs.push(up);
   const ug = fbDb.collection('meta').doc('goals').onSnapshot(doc => {
     const d = doc.data();
@@ -4326,7 +4394,7 @@ function fbStart(){
       try{ localStorage.setItem(KEY, JSON.stringify(D)); }catch(e){ mem = D; }
       renderAll();
     }
-  }, e => console.warn('snap', e));
+  }, fbSnapErr);
   fbSubs.push(ug);
   const uck = fbDb.collection('meta').doc('ckplan').onSnapshot(doc => {   // W1126-10 年度健檢規劃
     const d = doc.data();
@@ -4335,24 +4403,27 @@ function fbStart(){
       try{ localStorage.setItem(KEY, JSON.stringify(D)); }catch(e){ mem = D; }
       renderAll();
     }
-  }, e => console.warn('snap', e));
+  }, fbSnapErr);
   fbSubs.push(uck);
   const ugc = fbDb.collection('meta').doc('gcalcache').onSnapshot(doc => {   // W1127-01 行事曆雲端自動
     const ch = gApplyCloud(doc.data());
     try{ localStorage.setItem(KEY, JSON.stringify(D)); }catch(e){ mem = D; }
     if (ch) renderAll(); else renderGcal();
-  }, e => console.warn('snap', e));
+  }, fbSnapErr);
   fbSubs.push(ugc);
   fbPushAll();                      // 本機較新的推上去（set 冪等）
   const today = todayStr();          // 每日還原點
   const ref = fbDb.collection('snaps').doc(today);
   ref.get().then(s => { if (!s.exists) ref.set({at: now(), items: JSON.stringify(D.items), goals: JSON.stringify(D.goals)}); }).catch(()=>{});
 }
+$('#fsFix').onclick = () => { if (!fbUser){ toast('先連接雲端'); return; } fbHeal('manual', false); };
 function applyAuthUI(){
   const b = $('#authBtn'), info = $('#authInfo');
   if (!b) return;
   if (!FB_ON){ b.textContent = '離線'; info.textContent = '目前載入不到雲端元件（可能無網路），先以本機模式運作。'; return; }
-  if (fbUser){ b.textContent = '登出'; b.classList.remove('pri'); info.textContent = '✔ 已同步・' + (fbUser.email||''); }
+  if (fbUser){ b.textContent = '登出'; b.classList.remove('pri');
+    const t = fbLastSnap ? new Date(fbLastSnap) : null, hm = t ? String(t.getHours()).padStart(2,'0') + ':' + String(t.getMinutes()).padStart(2,'0') : '';
+    info.textContent = (fbErr ? '同步中斷（' + fbErr + '），按「重新同步」' : t ? '已同步・最後收到雲端 ' + hm : '連線中…') + '・' + (fbUser.email||''); }
   else { b.textContent = '連接雲端'; b.classList.add('pri'); info.textContent = '用 Google 帳號登入後，資料即時同步到雲端，手機電腦共用同一份。'; }
 }
 if (FB_ON){
@@ -5647,7 +5718,7 @@ function renderAll(){
 })();
 renderAll();
 fetchWX();
-applyLock();
+fidCheck().then(applyLock);   /* W1127-11：先查這台能不能用 Face ID，再決定鎖畫面要不要出 Face ID 按鈕 */
 bridgeWeight();   // 58B：開啟時自動補舊體重 App 的新紀錄
 if (gOK()) setTimeout(()=>{ gLoadCals().then(gSync); }, 1500);   // 連線仍有效→開頁自動同步 GCal
 
